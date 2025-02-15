@@ -11,7 +11,9 @@ public class BoardGame {
   private List<Player> players;
   private Dice dice;
 
-  //Add constructor here.
+  public BoardGame() {
+    createDice();
+  }
 
   //Fill in methods as
   public void addPlayer(String name) {
@@ -22,7 +24,7 @@ public class BoardGame {
   }
 
   public void createDice() {
-
+    this.dice = new Dice(2);
   }
 
   public void play() {
