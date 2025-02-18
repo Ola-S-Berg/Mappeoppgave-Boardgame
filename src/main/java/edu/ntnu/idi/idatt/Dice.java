@@ -6,7 +6,7 @@ import java.util.List;
  * Class representing a collection of die. Creates a list of die and stores them in an ArrayList.
  */
 public class Dice {
-  List<Die> dice;
+  private final List<Die> dice;
 
   public Dice(int numberOfDice) {
     dice = new ArrayList<>();
