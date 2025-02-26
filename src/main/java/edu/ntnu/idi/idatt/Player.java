@@ -11,7 +11,7 @@ public class Player {
    * The constructor for Player.
    * @param name The name of the player.
    * @param currentTile The current tile the player is on.
-   *                    Default value is 'null' as the player starts outside the board.
+   *                    Default value is 'null' until the game starts.
    */
   public Player(String name, Tile currentTile) {
     this.name = name;
@@ -27,6 +27,8 @@ public class Player {
   }
 
   public void move (int steps) {
+    if (currentTile == null) {
 
+    }
   }
 }
