@@ -12,8 +12,13 @@ public class Tile {
     this.tileId = tileId;
   }
 
-  //public void landPlayer(player Player) {}
-  //public void leavePlayer(player Player){}
+  public void landPlayer(Player player) {
+
+  }
+
+  public void leavePlayer(Player player){
+
+  }
 
   public void setNextTile (Tile nextTile ) {
     this.nextTile = nextTile;
