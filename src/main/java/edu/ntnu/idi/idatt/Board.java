@@ -5,20 +5,25 @@ import java.util.HashMap;
 /**
  * Class representing the game board. Consists of a collection of tiles.
  * Also keeps a complete overview of all tiles.
- * Note: Wait with implementing until the creation and implementation of class Tile and TileAction.
  */
-/*
 public class Board {
-  private Map<Integer, Tile> tiles;
+  private Map<Integer, Tile> tiles = new HashMap<>();
 
-  public void addTile() {
-
+  /**
+   * Adds a tile to the board.
+   * @param tile The tile to add.
+   */
+  public void addTile(Tile tile) {
+    tiles.put(tile.getTileId(), tile);
   }
 
+  /**
+   * Accessor that gets the ID (number) of the tile.
+   * @param tileId The tile ID represented by an integer.
+   * @return The ID.
+   */
   public Tile getTile(int tileId) {
     return tiles.get(tileId);
   }
-
 }
 
- */

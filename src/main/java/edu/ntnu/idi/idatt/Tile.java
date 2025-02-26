@@ -18,4 +18,12 @@ public class Tile {
   public void setNextTile (Tile nextTile ) {
     this.nextTile = nextTile;
   }
+
+  public int getTileId() {
+    return tileId;
+  }
+
+  public Tile getNextTile() {
+    return nextTile;
+  }
 }
