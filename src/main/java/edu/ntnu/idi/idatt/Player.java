@@ -18,11 +18,15 @@ public class Player {
     this.currentTile = null;
   }
 
+  /**
+   * Places the player on a specific tile.
+   * @param tile The tile to place the player on.
+   */
   public void placeOnTile (Tile tile) {
-
+    this.currentTile = tile;
   }
 
   public void move (int steps) {
-    
+
   }
 }
