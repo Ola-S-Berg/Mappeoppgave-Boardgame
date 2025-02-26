@@ -7,6 +7,7 @@ import java.util.HashMap;
  * Also keeps a complete overview of all tiles.
  * Note: Wait with implementing until the creation and implementation of class Tile and TileAction.
  */
+/*
 public class Board {
   private Map<Integer, Tile> tiles;
 
@@ -19,3 +20,5 @@ public class Board {
   }
 
 }
+
+ */
