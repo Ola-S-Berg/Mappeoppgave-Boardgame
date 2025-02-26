@@ -1,5 +1,5 @@
 package edu.ntnu.idi.idatt;
 
-public class TileAction {
-
+public interface TileAction {
+  void perform(Player player);
 }
