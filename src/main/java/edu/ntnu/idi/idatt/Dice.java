@@ -8,6 +8,10 @@ import java.util.List;
 public class Dice {
   private final List<Die> dice;
 
+  /**
+   * Creates an array list of dice and adds a pre-defined number of dice.
+   * @param numberOfDice The number of dice to add.
+   */
   public Dice(int numberOfDice) {
     dice = new ArrayList<>();
     for (int i = 0; i < numberOfDice; i++) {

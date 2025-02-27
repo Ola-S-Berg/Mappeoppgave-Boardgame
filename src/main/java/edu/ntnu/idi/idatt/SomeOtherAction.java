@@ -3,7 +3,7 @@ package edu.ntnu.idi.idatt;
 /**
  * Placeholder class for other actions.
  */
-public class SomeOtherAction {
+public class SomeOtherAction implements TileAction {
 
   /**
    * Does an action.

@@ -2,7 +2,7 @@ package edu.ntnu.idi.idatt;
 import java.util.Random;
 
 /**
- * Class representing a single die. Rolls a random value between 1 and 6.
+ * Class representing a single die.
  */
 public class Die {
     private int lastRolledValue;
@@ -12,7 +12,11 @@ public class Die {
       this.random = new Random();
     }
 
-    public int roll() {
+  /**
+   * Rolls a random value between 1 and 6.
+   * @return The value rolled.
+   */
+  public int roll() {
       lastRolledValue = random.nextInt(6) + 1;
       return lastRolledValue;
     }

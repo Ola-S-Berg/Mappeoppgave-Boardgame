@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Class responsible for the game. Sets up the board, sets up dice, registers players
@@ -8,23 +9,29 @@ import java.util.List;
 public class BoardGame {
   private Board board;
   private Player currentPlayer;
-  private List<Player> players;
+  private List<Player> players = new ArrayList<>();
   private Dice dice;
 
-  public BoardGame() {
-    createDice();
+  /**
+   * Adds a player when called upon.
+   * @param player The player to add.
+   */
+  public void addPlayer (Player player) {
+    players.add(player);
   }
 
-  //Fill in methods as
-  public void addPlayer(String name) {
-  }
-
+  /**
+   * Creates a new board.
+   */
   public void createBoard() {
-
+    board = new Board();
   }
 
+  /**
+   * Creates a number of dice.
+   */
   public void createDice() {
-    this.dice = new Dice(2);
+    dice = new Dice(2);
   }
 
   public void play() {
