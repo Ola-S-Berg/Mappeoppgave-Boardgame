@@ -26,6 +26,10 @@ public class Player {
     this.currentTile = tile;
   }
 
+  /**
+   * Moves the player a certain amount of tile based on pips rolled from dice.
+   * @param steps The amount of steps the player moves.
+   */
   public void move (int steps) {
     for (int i = 0; i < steps; i++) {
       if (currentTile.getNextTile() != null) {
