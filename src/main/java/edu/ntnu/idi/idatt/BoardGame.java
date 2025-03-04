@@ -47,11 +47,18 @@ public class BoardGame {
   }
 
   /**
-   * Plays the game.
+   * Plays the game by iterating over players until a winner is found.
    */
   public void play () {
+    while (getWinner() == null) {}
+      for (Player player : players) {
+        currentPlayer = player;
+        int steps = dice.roll();
+        player.move(steps);
 
+        if (getWinner() != null) {
+          break;
+      }
+    }
   }
-
-
 }
