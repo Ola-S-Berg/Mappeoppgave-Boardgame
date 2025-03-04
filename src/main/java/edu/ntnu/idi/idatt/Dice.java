@@ -37,6 +37,4 @@ public class Dice {
     }
     return dice.get(dieNumber).getValue();
   }
-
-
 }

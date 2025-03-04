@@ -50,7 +50,7 @@ public class BoardGame {
    * Plays the game by iterating over players until a winner is found.
    */
   public void play () {
-    while (getWinner() == null) {}
+    while (getWinner() == null) {
       for (Player player : players) {
         currentPlayer = player;
         int steps = dice.roll();
@@ -58,6 +58,7 @@ public class BoardGame {
 
         if (getWinner() != null) {
           break;
+        }
       }
     }
   }

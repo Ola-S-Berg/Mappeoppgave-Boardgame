@@ -24,5 +24,4 @@ public class LadderAction implements TileAction {
   @Override
   public void perform(Player player) {
   }
-
 }
