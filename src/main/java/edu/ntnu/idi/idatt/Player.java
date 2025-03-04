@@ -45,4 +45,9 @@ public class Player {
   public Tile getCurrentTile() {
     return currentTile;
   }
+
+  public String getName() {
+    return name;
+  }
+  
 }

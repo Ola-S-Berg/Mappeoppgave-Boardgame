@@ -12,11 +12,15 @@ public class Tile {
     this.tileId = tileId;
   }
 
+  /**
+   *
+   * @param player
+   */
   public void landPlayer(Player player) {
-
+    System.out.println(player.);
   }
   public void leavePlayer(Player player){
-    
+
   }
 
   public void setNextTile (Tile nextTile ) {
