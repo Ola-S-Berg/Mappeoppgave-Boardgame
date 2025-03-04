@@ -33,5 +33,25 @@ public class BoardGame {
     dice = new Dice(2);
   }
 
+  /**
+   * Gets the winner of the game.
+   * @return The name of the player that won.
+   */
+  public Player getWinner() {
+    for (Player player : players) {
+      if (player.getCurrentTile().getNextTile() == null) {
+        return player;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Plays the game.
+   */
+  public void play () {
+
+  }
+
 
 }
