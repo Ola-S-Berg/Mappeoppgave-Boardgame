@@ -13,14 +13,15 @@ public class Tile {
   }
 
   /**
-   *
-   * @param player
+   * Checks which tile the player has landed on.
+   * @param player The player that lands.
    */
   public void landPlayer(Player player) {
-    System.out.println(player.);
+    System.out.println(player.getName() + " lands at " + tileId);
   }
-  public void leavePlayer(Player player){
 
+  public void leavePlayer(Player player){
+    System.out.println(player.getName() + " leaves at " + tileId);
   }
 
   public void setNextTile (Tile nextTile ) {
