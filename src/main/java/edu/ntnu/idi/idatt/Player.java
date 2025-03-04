@@ -37,4 +37,12 @@ public class Player {
       }
     }
   }
+
+  /**
+   * Gets the current tile the player is standing on.
+   * @return The current tile.
+   */
+  public Tile getCurrentTile() {
+    return currentTile;
+  }
 }
