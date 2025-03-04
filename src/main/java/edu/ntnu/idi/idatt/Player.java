@@ -6,15 +6,17 @@ package edu.ntnu.idi.idatt;
 public class Player {
   private String name;
   private Tile currentTile;
+  private BoardGame game;
 
   /**
    * The constructor for Player.
-   * @param name The name of the player.
-   * @param currentTile The current tile the player is on.
-   *                    Default value is 'null' until the game starts.
+   *
+   * @param name name The name of the player.
+   * @param game The game the player is connected to.
    */
-  public Player(String name, Tile currentTile) {
+  public Player(String name, BoardGame game) {
     this.name = name;
+    this.game = game;
     this.currentTile = null;
   }
 
@@ -50,4 +52,11 @@ public class Player {
     return name;
   }
 
+  /**
+   * Accessor method that gets the board game instance a player is playing on.
+   * @return The board game.
+   */
+  public BoardGame getGame() {
+    return game;
+  }
 }

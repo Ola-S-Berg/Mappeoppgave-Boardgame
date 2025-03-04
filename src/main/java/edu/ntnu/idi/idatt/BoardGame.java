@@ -62,4 +62,12 @@ public class BoardGame {
       }
     }
   }
+
+  /**
+   * Accessor method that gets the board.
+   * @return The board.
+   */
+  public Board getBoard() {
+    return board;
+  }
 }
