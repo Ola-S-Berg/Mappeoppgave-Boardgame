@@ -43,7 +43,7 @@ public class BoardGame {
    */
   public Player getWinner() {
     for (Player player : players) {
-      if (player.getCurrentTile().getNextTile() == null) {
+      if (player.getCurrentTile().getTileId() == 90) {
         return player;
       }
     }
