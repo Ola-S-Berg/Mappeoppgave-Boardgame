@@ -31,6 +31,11 @@ public class Main {
     }
 
     System.out.println("Starting game...");
-    
+    game.play();
+
+    Player winner = game.getWinner();
+    System.out.println("Winner is " + winner.getName());
+
+    scanner.close();
   }
 }
