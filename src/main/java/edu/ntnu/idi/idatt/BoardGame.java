@@ -23,7 +23,11 @@ public class BoardGame {
    * Creates a new board.
    */
   public void createBoard() {
+
     board = new Board();
+
+    Tile startTile = new Tile(1);
+    board.addTile(startTile);
   }
 
   /**
@@ -50,6 +54,10 @@ public class BoardGame {
    * Plays the game by iterating over players until a winner is found.
    */
   public void play () {
+    for (Player player : players) {
+      player.placeOnTile(board.getTile(1));
+    }
+
     while (getWinner() == null) {
       for (Player player : players) {
         currentPlayer = player;

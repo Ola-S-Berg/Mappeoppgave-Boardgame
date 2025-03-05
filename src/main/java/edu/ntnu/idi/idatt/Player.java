@@ -33,6 +33,10 @@ public class Player {
    * @param steps The amount of steps the player moves.
    */
   public void move (int steps) {
+    if (currentTile == null) {
+      currentTile = game.getBoard().getTile(1);
+    }
+
     for (int i = 0; i < steps; i++) {
       if (currentTile.getNextTile() != null) {
         currentTile = currentTile.getNextTile();
