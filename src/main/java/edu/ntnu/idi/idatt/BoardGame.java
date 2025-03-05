@@ -20,7 +20,7 @@ public class BoardGame {
   }
 
   /**
-   * Creates a new board.
+   * Creates a new board. NOTE: MISSING LOGIC FOR THE SNAKE GAME. CREATE SNAKE PATTERN BOARD.
    */
   public void createBoard() {
 
