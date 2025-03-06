@@ -1,4 +1,6 @@
 package edu.ntnu.idi.idatt;
+import edu.ntnu.idi.idatt.GameLogic.BoardGame;
+import edu.ntnu.idi.idatt.GameLogic.Player;
 import java.util.Scanner;
 
 /**

@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.GameLogic;
 
 /**
  * Class representing a player in the game

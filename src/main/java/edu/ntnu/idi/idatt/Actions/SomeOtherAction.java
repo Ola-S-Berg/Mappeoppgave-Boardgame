@@ -1,4 +1,6 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.Actions;
+
+import edu.ntnu.idi.idatt.GameLogic.Player;
 
 /**
  * Placeholder class for other actions.

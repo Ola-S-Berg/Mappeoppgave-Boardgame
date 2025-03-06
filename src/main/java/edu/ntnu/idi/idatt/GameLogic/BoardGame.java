@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.GameLogic;
 import java.util.List;
 import java.util.ArrayList;
 
