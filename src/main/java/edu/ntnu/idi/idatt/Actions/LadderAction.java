@@ -1,4 +1,6 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.Actions;
+
+import edu.ntnu.idi.idatt.GameLogic.Player;
 
 /**
  * Class representing the action of landing on a ladder.
@@ -23,6 +25,7 @@ public class LadderAction implements TileAction {
    */
   @Override
   public void perform(Player player) {
+    System.out.println(player.getName() + " Took a ladder to tile " + destinationTileId);
+    player.placeOnTile(player.getGame().getBoard().getTile(destinationTileId));
   }
-
 }

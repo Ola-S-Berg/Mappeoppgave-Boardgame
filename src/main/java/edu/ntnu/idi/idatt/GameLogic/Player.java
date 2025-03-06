@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.GameLogic;
 
 /**
  * Class representing a player in the game
@@ -6,15 +6,17 @@ package edu.ntnu.idi.idatt;
 public class Player {
   private String name;
   private Tile currentTile;
+  private BoardGame game;
 
   /**
    * The constructor for Player.
-   * @param name The name of the player.
-   * @param currentTile The current tile the player is on.
-   *                    Default value is 'null' until the game starts.
+   *
+   * @param name name The name of the player.
+   * @param game The game the player is connected to.
    */
-  public Player(String name, Tile currentTile) {
+  public Player(String name, BoardGame game) {
     this.name = name;
+    this.game = game;
     this.currentTile = null;
   }
 
@@ -31,10 +33,34 @@ public class Player {
    * @param steps The amount of steps the player moves.
    */
   public void move (int steps) {
+    if (currentTile == null) {
+      currentTile = game.getBoard().getTile(1);
+    }
+
     for (int i = 0; i < steps; i++) {
       if (currentTile.getNextTile() != null) {
         currentTile = currentTile.getNextTile();
       }
     }
+  }
+
+  /**
+   * Gets the current tile the player is standing on.
+   * @return The current tile.
+   */
+  public Tile getCurrentTile() {
+    return currentTile;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Accessor method that gets the board game instance a player is playing on.
+   * @return The board game.
+   */
+  public BoardGame getGame() {
+    return game;
   }
 }

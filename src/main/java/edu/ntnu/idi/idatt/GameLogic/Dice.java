@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.GameLogic;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +37,4 @@ public class Dice {
     }
     return dice.get(dieNumber).getValue();
   }
-
-
 }

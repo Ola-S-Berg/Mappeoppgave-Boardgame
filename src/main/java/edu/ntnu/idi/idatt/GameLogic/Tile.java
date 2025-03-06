@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.GameLogic;
 
 /**
  * Class representing a tile on the game board.
@@ -12,12 +12,16 @@ public class Tile {
     this.tileId = tileId;
   }
 
+  /**
+   * Checks which tile the player has landed on.
+   * @param player The player that lands.
+   */
   public void landPlayer(Player player) {
-
+    System.out.println(player.getName() + " lands at " + tileId);
   }
 
   public void leavePlayer(Player player){
-
+    System.out.println(player.getName() + " leaves at " + tileId);
   }
 
   public void setNextTile (Tile nextTile ) {
