@@ -2,9 +2,9 @@ package edu.ntnu.idi.idatt;
 import java.util.Scanner;
 
 /**
- * The class that plays the game. (Name subject to change).
+ * The class that plays the game.
  */
-public class Main {
+public class BoardGameApp {
 
   /**
    * Creates a new board game, board and dice.
