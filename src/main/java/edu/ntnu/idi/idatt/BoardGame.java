@@ -85,6 +85,7 @@ public class BoardGame {
       for (Player player : players) {
         currentPlayer = player;
         int steps = dice.roll();
+        System.out.println(currentPlayer.getName() + " rolled " + steps);
         player.move(steps);
 
         if (getWinner() != null) {
