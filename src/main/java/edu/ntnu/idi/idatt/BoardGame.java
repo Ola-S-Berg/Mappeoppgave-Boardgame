@@ -77,21 +77,28 @@ public class BoardGame {
    * Plays the game by iterating over players until a winner is found.
    */
   public void play () {
+    int roundNumber = 1;
+
     for (Player player : players) {
       player.placeOnTile(board.getTile(1));
     }
 
     while (getWinner() == null) {
+      System.out.println("Round " + roundNumber);
+
       for (Player player : players) {
         currentPlayer = player;
         int steps = dice.roll();
         System.out.println(currentPlayer.getName() + " rolled " + steps);
         player.move(steps);
 
+        System.out.println(player.getName() + " is now on tile " + player.getCurrentTile().getTileId());
+
         if (getWinner() != null) {
           break;
         }
       }
+      roundNumber++;
     }
   }
 
