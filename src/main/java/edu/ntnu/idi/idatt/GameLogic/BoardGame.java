@@ -15,9 +15,13 @@ public class BoardGame {
    * Adds a player when called upon.
    * @param player The player to add.
    */
-  public void addPlayer (Player player) {
+  public void addPlayer(Player player) {
+    if (player == null) {
+        throw new NullPointerException("Player cannot be null.");
+    }
     players.add(player);
-  }
+}
+
 
   /**
    * Creates a new board. The board takes the form of a 9x10 snake game board.
@@ -102,6 +106,39 @@ public class BoardGame {
     }
   }
 
+
+  /**
+   * Rolls the dice.
+   * @return The value rolled.
+   */
+  public int rollDice() {
+    if (dice == null) {
+        throw new IllegalStateException("Dice must be initialized before rolling.");
+    }
+    return dice.roll();
+}
+
+
+/**
+ * Accessor method that gets the dice.
+ * @return The dice.
+ */
+public Dice getDice() {
+  return dice;
+}
+
+
+/**
+ * Accessor method that gets the current player.
+ * @return The current player.
+ */
+public List<Player> getPlayers() {
+  return players;
+}
+
+
+
+
   /**
    * Accessor method that gets the board.
    * @return The board.
@@ -110,3 +147,6 @@ public class BoardGame {
     return board;
   }
 }
+
+
+
