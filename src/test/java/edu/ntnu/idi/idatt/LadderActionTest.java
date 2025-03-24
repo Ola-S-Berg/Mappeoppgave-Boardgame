@@ -17,7 +17,7 @@ class LadderActionTest {
     void setUp() {
         game = new BoardGame();
         game.createBoard();
-        player = new Player("Alice", game);
+        player = new Player("Markus", game);
     }
 
     @Test
@@ -31,7 +31,7 @@ class LadderActionTest {
     @Test
     void ladderToWinningTile() {
     player.placeOnTile(game.getBoard().getTile(89));
-      game.addPlayer(player); // ✅ Important: add player to the game
+      game.addPlayer(player);
       LadderAction ladder = new LadderAction(90, "Climb to finish line");
       ladder.perform(player);
     
