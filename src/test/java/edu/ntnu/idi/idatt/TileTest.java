@@ -1,20 +1,33 @@
 package edu.ntnu.idi.idatt;
 
-import static org.junit.jupiter.api.Assertions.*;
+import edu.ntnu.idi.idatt.GameLogic.Tile;
 
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TileTest {
 
-  @Test
-  void setNextTile() {
-  }
+    private Tile tile;
 
-  @Test
-  void getTileId() {
-  }
+    @BeforeEach
+    void setUp() {
+        tile = new Tile(42);
+    }
 
-  @Test
-  void getNextTile() {
-  }
+    @Test
+    void tileIdIsSetCorrectly() {
+        assertEquals(42, tile.getTileId());
+    }
+
+    @Test
+    void canSetAndGetNextTile() {
+        Tile next = new Tile(43);
+        tile.setNextTile(next);
+        assertEquals(43, tile.getNextTile().getTileId());
+    }
+
+    
 }
