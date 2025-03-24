@@ -56,6 +56,18 @@ public class Player {
     return name;
   }
 
+ /**
+   * Method for overriding the toString method for Player.
+   * @param name The name of the player.
+   */
+  
+  @Override
+  public String toString() {
+      return "Player{name='" + name + "', tile=" + currentTile.getTileId() + "}";
+  }
+  
+
+
   /**
    * Accessor method that gets the board game instance a player is playing on.
    * @return The board game.
@@ -64,3 +76,4 @@ public class Player {
     return game;
   }
 }
+
