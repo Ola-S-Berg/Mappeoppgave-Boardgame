@@ -9,7 +9,7 @@ public class Player {
   private BoardGame game;
 
   /**
-   * The constructor for Player.
+   * The constructor for Player with a game instance.
    *
    * @param name name The name of the player.
    * @param game The game the player is connected to.
@@ -18,6 +18,25 @@ public class Player {
     this.name = name;
     this.game = game;
     this.currentTile = null;
+  }
+
+  /**
+   * The constructor for Player without a game instance.
+   * Used when reading players from a file and the game will be assigned later.
+   * @param name The name of the player.
+   */
+  public Player(String name) {
+    this.name = name;
+    this.game = null;
+    this.currentTile = null;
+  }
+
+  /**
+   * Sets the game instance for this player.
+   * @param game The game associated with this player.
+   */
+  public void setGame(BoardGame game) {
+    this.game = game;
   }
 
   /**
@@ -65,8 +84,6 @@ public class Player {
   public String toString() {
       return "Player{name='" + name + "', tile=" + currentTile.getTileId() + "}";
   }
-  
-
 
   /**
    * Accessor method that gets the board game instance a player is playing on.
