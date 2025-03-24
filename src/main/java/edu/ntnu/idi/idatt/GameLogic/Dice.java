@@ -32,7 +32,7 @@ public class Dice {
   }
 
   public int getDie(int dieNumber) {
-    if (dieNumber < 0 && dieNumber < dice.size()) {
+    if (dieNumber < 0 || dieNumber >= dice.size()) {
       throw new IllegalArgumentException("Invalid dieNumber.");
     }
     return dice.get(dieNumber).getValue();
