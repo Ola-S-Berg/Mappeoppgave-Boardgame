@@ -6,12 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Tile;
-import edu.ntnu.idi.idatt.GameLogic.Board;
 
 import com.google.gson.Gson;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 
