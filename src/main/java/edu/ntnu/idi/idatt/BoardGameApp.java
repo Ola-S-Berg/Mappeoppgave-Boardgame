@@ -25,13 +25,14 @@ public class BoardGameApp {
     int players = scanner.nextInt();
     scanner.nextLine();
 
+
     for (int i = 1; i <= players; i++) {
       System.out.println("Player " + i + ":");
       String playerName = scanner.nextLine();
-      Player player = new Player(playerName, game);
+      String playerToken = scanner.nextLine();
+      Player player = new Player(playerName, playerToken, game);
       game.addPlayer(player);
     }
-
     System.out.println("Starting game...");
     game.play();
 

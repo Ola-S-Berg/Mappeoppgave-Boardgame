@@ -20,7 +20,7 @@ class BoardGameTest {
   @Test
   void addPlayer_Positive() {
    
-    Player player = new Player("Alice", boardGame);
+    Player player = new Player("Alice", "Blue",boardGame);
     
    
     boardGame.addPlayer(player);
@@ -72,8 +72,8 @@ class BoardGameTest {
     boardGame.createBoard();
     boardGame.createDice();
     
-    Player player1 = new Player("Alice", boardGame);
-    Player player2 = new Player("Bob", boardGame);
+    Player player1 = new Player("Alice", "Blue" ,boardGame);
+    Player player2 = new Player("Bob", "Red", boardGame);
     
     boardGame.addPlayer(player1);
     boardGame.addPlayer(player2);

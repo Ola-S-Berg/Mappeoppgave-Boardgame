@@ -28,7 +28,8 @@ public class PlayerFileHandler implements FileHandler<Player> {
   public void writeToFile(String filename, List<Player> players) throws IOException {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
       for (Player player : players) {
-        writer.write(player.getName() + ", " + player.getGame().toString());
+        String gameName = (player.getGame() != null) ? player.getGame().toString() : "null";
+        writer.write(player.getName() + ", " + player.getToken() + ", " + gameName);
         writer.newLine();
       }
     }
@@ -48,8 +49,8 @@ public class PlayerFileHandler implements FileHandler<Player> {
       String line;
       while ((line = reader.readLine()) != null) {
         String[] tokens = line.split(",");
-        if (tokens.length == 1) {
-          players.add(new Player(tokens[0].trim()));
+        if (tokens.length >= 2) {
+          players.add(new Player(tokens[0].trim(), tokens[1].trim(), null));
         }
       }
     }

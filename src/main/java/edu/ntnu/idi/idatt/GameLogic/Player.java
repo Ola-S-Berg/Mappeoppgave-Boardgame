@@ -7,28 +7,19 @@ public class Player {
   private String name;
   private Tile currentTile;
   private BoardGame game;
+  private String token;
 
   /**
    * The constructor for Player with a game instance.
    *
    * @param name name The name of the player.
-   * @param game The game the player is connected to.
+   * @param token The player's token.
    */
-  public Player(String name, BoardGame game) {
-    this.name = name;
-    this.game = game;
-    this.currentTile = null;
-  }
-
-  /**
-   * The constructor for Player without a game instance.
-   * Used when reading players from a file and the game will be assigned later.
-   * @param name The name of the player.
-   */
-  public Player(String name) {
+  public Player(String name, String token, BoardGame game) {
     this.name = name;
     this.game = null;
     this.currentTile = null;
+    this.token = (token != null) ? token : "Default";
   }
 
   /**
@@ -93,5 +84,10 @@ public class Player {
   public BoardGame getGame() {
     return game;
   }
+
+  public String getToken() {
+    return token;
+  }
+
 }
 
