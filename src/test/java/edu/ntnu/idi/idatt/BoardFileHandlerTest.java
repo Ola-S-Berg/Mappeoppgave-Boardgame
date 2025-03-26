@@ -2,7 +2,7 @@ package edu.ntnu.idi.idatt;
 
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 
-public class FileHandlingTest {
+public class BoardFileHandlerTest {
   public static void main(String[] args) {
     BoardGame game = new BoardGame();
     game.createBoard();
