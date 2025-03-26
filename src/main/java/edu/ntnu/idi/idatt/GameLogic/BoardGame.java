@@ -1,4 +1,6 @@
 package edu.ntnu.idi.idatt.GameLogic;
+import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -10,6 +12,7 @@ public class BoardGame {
   private Player currentPlayer;
   private List<Player> players = new ArrayList<>();
   private Dice dice;
+  private BoardFileHandler fileHandler;
 
   /**
    * Adds a player when called upon.
@@ -106,16 +109,27 @@ public class BoardGame {
     }
   }
 
-  /**
-   * Rolls the dice.
-   * @return The value rolled.
-   */
-  public int rollDice() {
-    if (dice == null) {
-        throw new IllegalStateException("Dice must be initialized before rolling.");
+  public void saveBoard(String filename) {
+    try {
+      fileHandler.writeToFile(filename, List.of(this));
+      System.out.println("Board saved to file: " + filename);
+    } catch (IOException e) {
+      System.err.println("Error saving board to file: " + filename);
     }
-    return dice.roll();
-}
+  }
+
+  public void loadBoard(String filename) {
+    try {
+      List<BoardGame> loadedBoards = fileHandler.readFromFile(filename);
+      if (!loadedBoards.isEmpty()) {
+        BoardGame loadedGame = loadedBoards.get(0);
+        this.board = loadedGame.getBoard();
+        System.out.println("Board loaded from file: " + filename);
+      }
+    } catch (IOException e) {
+      System.err.println("Error loading board from file: " + filename);
+    }
+  }
 
 /**
  * Accessor method that gets the dice.
