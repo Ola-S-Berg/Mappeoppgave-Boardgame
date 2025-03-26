@@ -14,6 +14,10 @@ public class BoardGame {
   private Dice dice;
   private BoardFileHandler fileHandler;
 
+  public BoardGame() {
+    fileHandler = new BoardFileHandler();
+  }
+
   /**
    * Adds a player when called upon.
    * @param player The player to add.
