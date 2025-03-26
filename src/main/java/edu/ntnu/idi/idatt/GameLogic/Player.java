@@ -75,11 +75,12 @@ public class Player {
     return name;
   }
 
- /**
-   * Method for overriding the toString method for Player.
-   * @param name The name of the player.
+  /**
+   * Returns a string representation of the Player object, including the player's name
+   * and the ID of the tile the player is currently standing on.
+   *
+   * @return A string representation of the Player object, displaying the name and current tile ID.
    */
-  
   @Override
   public String toString() {
       return "Player{name='" + name + "', tile=" + currentTile.getTileId() + "}";
