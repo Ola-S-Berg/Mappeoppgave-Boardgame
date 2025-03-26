@@ -22,7 +22,6 @@ public class BoardGame {
     players.add(player);
 }
 
-
   /**
    * Creates a new board. The board takes the form of a 9x10 snake game board.
    */
@@ -61,6 +60,7 @@ public class BoardGame {
    * Creates a number of dice.
    */
   public void createDice() {
+
     dice = new Dice(2);
   }
 
@@ -106,7 +106,6 @@ public class BoardGame {
     }
   }
 
-
   /**
    * Rolls the dice.
    * @return The value rolled.
@@ -118,26 +117,23 @@ public class BoardGame {
     return dice.roll();
 }
 
-
 /**
  * Accessor method that gets the dice.
  * @return The dice.
  */
 public Dice getDice() {
+
   return dice;
 }
-
 
 /**
  * Accessor method that gets the current player.
  * @return The current player.
  */
 public List<Player> getPlayers() {
+
   return players;
 }
-
-
-
 
   /**
    * Accessor method that gets the board.
