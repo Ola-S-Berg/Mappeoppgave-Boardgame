@@ -13,7 +13,7 @@ public class GUI extends Application {
   @Override
   public void start(Stage primaryStage) {
 
-    Button playButton = new Button("Play");
+    Button rollButton = new Button("Roll dice");
 
     Image image = new Image("file:src/main/java/edu/ntnu/idi/idatt/GUI/Images/LadderGameClassic.png");
     ImageView imageView = new ImageView(image);
@@ -23,9 +23,9 @@ public class GUI extends Application {
     imageView.setPreserveRatio(true);
 
     VBox layout = new VBox(10);
-    layout.getChildren().addAll(playButton, imageView);
+    layout.getChildren().addAll(rollButton, imageView);
 
-    Scene scene = new Scene(layout, 1800, 1000);
+    Scene scene = new Scene(layout, 800, 800);
 
     primaryStage.setTitle("Ladder game");
     primaryStage.setScene(scene);
