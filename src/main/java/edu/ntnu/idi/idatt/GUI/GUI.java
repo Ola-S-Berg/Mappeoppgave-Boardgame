@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.GUI;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -55,8 +56,9 @@ public class GUI extends Application {
 
     Label titleLabel = new Label("Select a game to play");
     titleLabel.setStyle("-fx-font-size: 24px");
+    layout.getChildren().add(titleLabel);
 
-    String[] games = {"Ladder Game", "TBA", "TBA"};
+    String[] games = {"Ladder Game"};
 
     for (String game : games) {
       Button gameButton = new Button(game);
@@ -84,7 +86,7 @@ public class GUI extends Application {
     titleLabel.setStyle("-fx-font-size: 24px");
 
     for (int i = 1; i <= 4; i++) {
-      Button playerCountButton = new Button(i + " Player +" + (i > 1 ? "s" : ""));
+      Button playerCountButton = new Button(i + " Player" + (i > 1 ? "s" : ""));
       final int count = i;
       playerCountButton.setOnAction(event -> {
         playerCount = count;
@@ -94,6 +96,10 @@ public class GUI extends Application {
       });
       layout.getChildren().add(playerCountButton);
     }
+
+    Scene scene = new Scene(layout, 800, 800);
+    primaryStage.setScene(scene);
+    primaryStage.show();
   }
 
   /**
@@ -126,7 +132,7 @@ public class GUI extends Application {
 
     layout.getChildren().addAll(titleLabel, nameField, continueButton);
 
-    Scene scene = new Scene(layout, 300, 400);
+    Scene scene = new Scene(layout, 800, 800);
     primaryStage.setScene(scene);
   }
 
@@ -141,15 +147,15 @@ public class GUI extends Application {
     gridPane.setHgap(20);
     gridPane.setVgap(20);
 
-    Label instructionLabel = new Label(playerNames[currentPlayer] + "Select a token");
+    Label instructionLabel = new Label(playerNames[currentPlayer] + " Select a token");
     gridPane.add(instructionLabel, 0, 0, 2, 1);
     instructionLabel.setStyle("-fx-font-size: 18px;");
 
     String[] tokenPaths = {
-        "edu/ntnu/idi/idatt/GUI/Images/BlueToken.png",
-        "edu/ntnu/idi/idatt/GUI/Images/RedToken.png",
-        "edu/ntnu/idi/idatt/GUI/Images/GreenToken.png",
-        "edu/ntnu/idi/idatt/GUI/Images/PinkToken.png"
+        "/Images/BlueToken.png",
+        "/Images/RedToken.png",
+        "/Images/GreenToken.png",
+        "/Images/PinkToken.png"
     };
 
     //Creates token selection buttons, loads token image and a button with the image.
@@ -188,7 +194,7 @@ public class GUI extends Application {
 
       gridPane.add(tokenButton, i % 2, i + 1);
     }
-    Scene scene = new Scene(gridPane, 300, 300);
+    Scene scene = new Scene(gridPane, 800, 800);
     primaryStage.setScene(scene);
   }
 
@@ -217,7 +223,6 @@ public class GUI extends Application {
         System.out.println("Winner is " + winner.getName());
       }
     }).start();
-
 
   }
   public static void main(String[] args) {
