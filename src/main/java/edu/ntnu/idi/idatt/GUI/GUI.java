@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.GUI;
 
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
+import edu.ntnu.idi.idatt.GameLogic.Player;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -115,8 +116,6 @@ public class GUI extends Application {
       String playerName = nameField.getText().trim();
       if (!playerName.isEmpty()) {
         playerNames[currentPlayer] = playerName;
-
-        // Move to next player name or start token selection
         if (currentPlayer + 1 < playerCount) {
           showPlayerNameScreen(currentPlayer + 1);
         } else {
@@ -142,7 +141,7 @@ public class GUI extends Application {
     gridPane.setHgap(20);
     gridPane.setVgap(20);
 
-    Label instructionLabel = new Label("Select a token");
+    Label instructionLabel = new Label(playerNames[currentPlayer] + "Select a token");
     gridPane.add(instructionLabel, 0, 0, 2, 1);
     instructionLabel.setStyle("-fx-font-size: 18px;");
 
@@ -153,6 +152,7 @@ public class GUI extends Application {
         "edu/ntnu/idi/idatt/GUI/Images/PinkToken.png"
     };
 
+    //Creates token selection buttons, loads token image and a button with the image.
     for (int i = 0; i < tokenPaths.length; i++) {
       Image tokenImage = new Image(getClass().getResourceAsStream(tokenPaths[i]));
       ImageView tokenImageView = new ImageView(tokenImage);
@@ -161,26 +161,65 @@ public class GUI extends Application {
       tokenImageView.setFitWidth(100);
       tokenImageView.setPreserveRatio(true);
 
-      javafx.scene.control.Button tokenButton = new javafx.scene.control.Button();
+      Button tokenButton = new javafx.scene.control.Button();
       tokenButton.setGraphic(tokenImageView);
       tokenButton.setStyle("-fx-background-color: transparent;");
 
+      //Checks if a token is already selected by another player.
       final int tokenIndex = i;
       tokenButton.setOnAction(event -> {
-        selectedToken = tokenPaths[tokenIndex];
-        System.out.println("Selected token: " + selectedToken);
-
-        primaryStage.close();
+        boolean tokenSelected = false;
+        for (String selectedToken : playerTokens) {
+          if (tokenPaths[tokenIndex].equals(selectedToken)) {
+            tokenSelected = true;
+            break;
+          }
+        }
+        //Moves to next player or calls the startGame method.
+        if (!tokenSelected) {
+          playerTokens[currentPlayer] = tokenPaths[tokenIndex];
+          if (currentPlayer + 1 < playerCount) {
+            showTokenSelectionScreen(currentPlayer + 1);
+          } else {
+            startGame();
+          }
+        }
       });
-      gridPane.add(tokenButton, i, 1);
-    }
 
+      gridPane.add(tokenButton, i % 2, i + 1);
+    }
     Scene scene = new Scene(gridPane, 300, 300);
-    primaryStage.setTitle("Token Selection");
     primaryStage.setScene(scene);
-    primaryStage.show();
   }
 
+  private void startGame() {
+    BoardGame game = new BoardGame();
+    game.createBoard();
+    game.createDice();
+
+    for (int i = 0; i < playerCount; i++) {
+      Player player = new Player(playerNames[i], boardGame);
+      boardGame.addPlayer(player);
+    }
+
+    System.out.println("Game starting");
+
+    for (int i = 0; i < playerCount; i++) {
+      System.out.println("Player " + (i + 1) + ": " + playerNames[i] + " Tokens: " + playerTokens[i]);
+    }
+
+    //Placeholder for future gameView.
+    new Thread(() -> {
+      boardGame.play();
+
+      Player winner = boardGame.getWinner();
+      if (winner != null) {
+        System.out.println("Winner is " + winner.getName());
+      }
+    }).start();
+
+
+  }
   public static void main(String[] args) {
     launch(args);
     }
