@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.GsonBuilder;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Tile;
 
@@ -18,7 +19,7 @@ import java.io.*;
  */
 public class BoardFileHandler implements FileHandler<BoardGame> {
 
-  private final Gson gson = new Gson();
+  private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
   /**
    * Serializes a BoardGame object into a JSON representation, including the board's tiles
