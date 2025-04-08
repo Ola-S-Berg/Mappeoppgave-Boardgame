@@ -5,7 +5,7 @@ import edu.ntnu.idi.idatt.GameLogic.Player;
 /**
  * Placeholder class for other actions.
  */
-public class SomeOtherAction implements TileAction {
+public class WaitAction implements TileAction {
 
   /**
    * Does an action.
