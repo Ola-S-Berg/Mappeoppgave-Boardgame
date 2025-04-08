@@ -15,7 +15,7 @@ public class BoardFileHandlerTest {
 
     if (loadGame.getBoard() != null) {
       System.out.println("Board loaded successfully");
-      //new java.io.File(filename).delete();
+      new java.io.File(filename).delete();
     }
   }
 }

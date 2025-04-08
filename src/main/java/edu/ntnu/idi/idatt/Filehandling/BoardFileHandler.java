@@ -26,7 +26,7 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
 
   /**
    * Serializes a BoardGame object into a JSON representation, including the board's tiles
-   * and their properties such as tile ID and the next tile in the sequence.
+   * and their properties such as tile ID, the next tile in the sequence and their actions.
    *
    * @param boardGame the BoardGame object to be serialized; it contains the board and its tiles
    * @return a JsonObject representing the serialized board game, including the board name, description,
@@ -110,6 +110,26 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
       if (tileJson.has("nextTile")) {
         int nextTileId = tileJson.get("nextTile").getAsInt();
         tile.setNextTile(boardGame.getBoard().getTile(nextTileId));
+      }
+
+      if (tileJson.has("actionType")) {
+        String actionType = tileJson.get("actionType").getAsString();
+
+        switch (actionType) {
+          case "ladder":
+            int destination = tileJson.get("destination").getAsInt();
+            String direction = tileJson.get("direction").getAsString();
+            tile.setAction(new LadderAction(destination, direction));
+            break;
+
+          case "backToStart":
+            tile.setAction(new BackToStartAction());
+            break;
+
+          case "wait":
+            tile.setAction(new WaitAction());
+            break;
+        }
       }
     }
 
