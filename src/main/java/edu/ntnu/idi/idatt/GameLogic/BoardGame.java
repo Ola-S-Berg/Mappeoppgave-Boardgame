@@ -36,12 +36,12 @@ public class BoardGame {
   public void createBoard() {
     board = new Board();
 
-    Board.setupTileActions(board);
-
     //Adds 90 tiles
     for (int i = 1; i <= 90; i++) {
       board.addTile(new Tile(i));
     }
+
+    Board.setupTileActions(board);
 
     //Creates a 9x10 board and gives each tile a unique tile number (ID).
     for (int i = 1; i <= 9; i++) {
