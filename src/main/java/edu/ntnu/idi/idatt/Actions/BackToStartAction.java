@@ -12,6 +12,7 @@ public class BackToStartAction implements TileAction {
    * Performs the action of moving the player back to start.
    * @param player The player that lands on the tile with this action.
    */
+  @Override
   public void perform(Player player) {
     System.out.println(player.getName() + " moved back to start");
     Tile startTile = player.getGame().getBoard().getTile(1);
