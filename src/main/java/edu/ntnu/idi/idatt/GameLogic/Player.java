@@ -8,6 +8,7 @@ public class Player {
   private Tile currentTile;
   private BoardGame game;
   private String token;
+  private boolean waitTurn = false;
 
   /**
    * The constructor for Player with a game instance.
@@ -35,7 +36,15 @@ public class Player {
    * @param tile The tile to place the player on.
    */
   public void placeOnTile (Tile tile) {
+    if (currentTile != null) {
+      currentTile.leavePlayer(this);
+    }
+
     this.currentTile = tile;
+
+    if (tile != null) {
+      tile.landPlayer(this);
+    }
   }
 
   /**
@@ -43,13 +52,21 @@ public class Player {
    * @param steps The amount of steps the player moves.
    */
   public void move (int steps) {
-    if (currentTile == null) {
-      currentTile = game.getBoard().getTile(1);
+    if (waitTurn) {
+      System.out.println(name + " Skips this turn");
+      waitTurn = false;
+      return;
     }
 
+    if (currentTile == null) {
+      placeOnTile(game.getBoard().getTile(1));
+      return;
+    }
+
+    Tile destinationTile = currentTile;
     for (int i = 0; i < steps; i++) {
       if (currentTile.getNextTile() != null) {
-        currentTile = currentTile.getNextTile();
+        destinationTile = destinationTile.getNextTile();
       }
     }
   }
@@ -64,6 +81,22 @@ public class Player {
 
   public String getName() {
     return name;
+  }
+
+  /**
+   * Sets whether the player should skip their next turn.
+   * @param skip True if the player has landed on a skip turn tile.
+   */
+  public void setWaitTurn(boolean skip) {
+    this.waitTurn = skip;
+  }
+
+  /**
+   * Checks if the player will skip their next turn.
+   * @return True if the player will skip their next turn.
+   */
+  public boolean willWaitTurn() {
+    return waitTurn;
   }
 
   /**

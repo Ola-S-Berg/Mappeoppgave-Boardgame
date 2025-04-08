@@ -12,5 +12,8 @@ public class WaitAction implements TileAction {
    * @param player The player that lands on the tile with this action.
    */
   public void perform(Player player) {
+
+    System.out.println(player.getName() + " must wait a turn before rolling");
+    player.setWaitTurn(true);
   }
 }
