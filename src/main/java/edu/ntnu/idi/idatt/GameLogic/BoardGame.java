@@ -1,4 +1,5 @@
 package edu.ntnu.idi.idatt.GameLogic;
+
 import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +35,8 @@ public class BoardGame {
    */
   public void createBoard() {
     board = new Board();
+
+    Board.setupTileActions(board);
 
     //Adds 90 tiles
     for (int i = 1; i <= 90; i++) {
