@@ -18,7 +18,7 @@ class PlayerTest {
     void setUp() {
         game = new BoardGame();
         game.createBoard();
-        player = new Player("Markus", game);
+        player = new Player("Markus", "Blue", game);
     }
 
     /* A test that makes sure the name is returned properly */

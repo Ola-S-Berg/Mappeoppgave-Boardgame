@@ -17,7 +17,7 @@ class LadderActionTest {
     void setUp() {
         game = new BoardGame();
         game.createBoard();
-        player = new Player("Markus", game);
+        player = new Player("Markus", "Blue", game);
     }
 
     @Test

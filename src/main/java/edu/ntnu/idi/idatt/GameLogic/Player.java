@@ -7,17 +7,28 @@ public class Player {
   private String name;
   private Tile currentTile;
   private BoardGame game;
+  private String token;
+  private boolean waitTurn = false;
 
   /**
-   * The constructor for Player.
+   * The constructor for Player with a game instance.
    *
    * @param name name The name of the player.
-   * @param game The game the player is connected to.
+   * @param token The player's token.
    */
-  public Player(String name, BoardGame game) {
+  public Player(String name, String token, BoardGame game) {
     this.name = name;
     this.game = game;
     this.currentTile = null;
+    this.token = (token != null) ? token : "Default";
+  }
+
+  /**
+   * Sets the game instance for this player.
+   * @param game The game associated with this player.
+   */
+  public void setGame(BoardGame game) {
+    this.game = game;
   }
 
   /**
@@ -25,7 +36,15 @@ public class Player {
    * @param tile The tile to place the player on.
    */
   public void placeOnTile (Tile tile) {
+    if (currentTile != null) {
+      currentTile.leavePlayer(this);
+    }
+
     this.currentTile = tile;
+
+    if (tile != null) {
+      tile.landPlayer(this);
+    }
   }
 
   /**
@@ -33,15 +52,25 @@ public class Player {
    * @param steps The amount of steps the player moves.
    */
   public void move (int steps) {
-    if (currentTile == null) {
-      currentTile = game.getBoard().getTile(1);
+    if (waitTurn) {
+      System.out.println(name + " Skips this turn");
+      waitTurn = false;
+      return;
     }
 
+    if (currentTile == null) {
+      placeOnTile(game.getBoard().getTile(1));
+      return;
+    }
+
+    Tile destinationTile = currentTile;
     for (int i = 0; i < steps; i++) {
-      if (currentTile.getNextTile() != null) {
-        currentTile = currentTile.getNextTile();
+      if (destinationTile.getNextTile() != null) {
+        destinationTile = destinationTile.getNextTile();
       }
     }
+
+    placeOnTile(destinationTile);
   }
 
   /**
@@ -56,17 +85,32 @@ public class Player {
     return name;
   }
 
- /**
-   * Method for overriding the toString method for Player.
-   * @param name The name of the player.
+  /**
+   * Sets whether the player should skip their next turn.
+   * @param skip True if the player has landed on a skip turn tile.
    */
-  
+  public void setWaitTurn(boolean skip) {
+    this.waitTurn = skip;
+  }
+
+  /**
+   * Checks if the player will skip their next turn.
+   * @return True if the player will skip their next turn.
+   */
+  public boolean willWaitTurn() {
+    return waitTurn;
+  }
+
+  /**
+   * Returns a string representation of the Player object, including the player's name
+   * and the ID of the tile the player is currently standing on.
+   *
+   * @return A string representation of the Player object, displaying the name and current tile ID.
+   */
   @Override
   public String toString() {
       return "Player{name='" + name + "', tile=" + currentTile.getTileId() + "}";
   }
-  
-
 
   /**
    * Accessor method that gets the board game instance a player is playing on.
@@ -75,5 +119,10 @@ public class Player {
   public BoardGame getGame() {
     return game;
   }
+
+  public String getToken() {
+    return token;
+  }
+
 }
 

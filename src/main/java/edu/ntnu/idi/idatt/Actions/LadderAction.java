@@ -8,16 +8,16 @@ import edu.ntnu.idi.idatt.GameLogic.Tile;
  */
 public class LadderAction implements TileAction {
   private int destinationTileId;
-  private String description;
+  private String direction;
 
   /**
    * The constructor for LadderAction.
    * @param destinationTileId The ID for the tile a player moves to.
-   * @param description A description of the action.
+   * @param direction The direction of movement (up or down).
    */
-  public LadderAction(int destinationTileId, String description) {
+  public LadderAction(int destinationTileId, String direction) {
     this.destinationTileId = destinationTileId;
-    this.description = description;
+    this.direction = direction;
   }
 
   /**
@@ -31,7 +31,23 @@ public class LadderAction implements TileAction {
         throw new IllegalStateException("Destination tile does not exist: " + destinationTileId);
     }
 
-    System.out.println(player.getName() + " Took a ladder to tile " + destinationTileId);
+    System.out.println(player.getName() + " moves " + direction + " to tile " + destinationTileId);
     player.placeOnTile(destination);
-}
+  }
+
+  /**
+   * Gets the destination tile ID.
+   * @return The ID of the destination.
+   */
+  public int getDestinationTileId() {
+    return destinationTileId;
+  }
+
+  /**
+   * Gets the direction of the ladder.
+   * @return The direction (up or down).
+   */
+  public String getDirection() {
+    return direction;
+  }
 }
