@@ -5,6 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.GsonBuilder;
+import edu.ntnu.idi.idatt.Actions.BackToStartAction;
+import edu.ntnu.idi.idatt.Actions.LadderAction;
+import edu.ntnu.idi.idatt.Actions.WaitAction;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Tile;
 
@@ -32,7 +35,7 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
   public JsonObject serializeBoard(BoardGame boardGame) {
     JsonObject boardJson = new JsonObject();
     boardJson.addProperty("name", "Ladder game 90");
-    boardJson.addProperty("description", "A classic ladder game with 90 tiles and 2 ladders.");
+    boardJson.addProperty("description", "A classic ladder game with 90 tiles and 12 ladders.");
 
     JsonArray tilesArray = new JsonArray();
     for (int i = 1; i <= 90; i++) {
@@ -41,7 +44,16 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
       tileJson.addProperty("id", tile.getTileId());
 
       if (tile.getNextTile() != null) {
-        tileJson.addProperty("nextTile", tile.getNextTile().getTileId());
+        if (tile.getAction() instanceof LadderAction) {
+          LadderAction ladderAction = (LadderAction) tile.getAction();
+          tileJson.addProperty("actionType", "ladder");
+          tileJson.addProperty("destination", ladderAction.getDestinationTileId());
+          tileJson.addProperty("direction", ladderAction.getDirection());
+        } else if (tile.getAction() instanceof BackToStartAction) {
+          tileJson.addProperty("actionType", "backToStart");
+        } else if (tile.getAction() instanceof WaitAction) {
+          tileJson.addProperty("actionType", "wait");
+        }
       }
 
       tilesArray.add(tileJson);
