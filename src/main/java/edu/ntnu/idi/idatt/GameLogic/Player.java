@@ -18,7 +18,7 @@ public class Player {
    */
   public Player(String name, String token, BoardGame game) {
     this.name = name;
-    this.game = null;
+    this.game = game;
     this.currentTile = null;
     this.token = (token != null) ? token : "Default";
   }
@@ -65,10 +65,12 @@ public class Player {
 
     Tile destinationTile = currentTile;
     for (int i = 0; i < steps; i++) {
-      if (currentTile.getNextTile() != null) {
+      if (destinationTile.getNextTile() != null) {
         destinationTile = destinationTile.getNextTile();
       }
     }
+
+    placeOnTile(destinationTile);
   }
 
   /**
