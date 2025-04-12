@@ -3,7 +3,6 @@ package edu.ntnu.idi.idatt.GUI;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -115,7 +114,7 @@ public class GUI extends Application {
     titleLabel.setStyle("-fx-font-size: 18px;");
 
     TextField nameField = new TextField();
-    nameField.setPromptText("Enter player name");
+    nameField.setPromptText("Enter Player Name");
 
     Button continueButton = new Button("Continue");
     continueButton.setOnAction(e -> {
@@ -147,15 +146,15 @@ public class GUI extends Application {
     gridPane.setHgap(20);
     gridPane.setVgap(20);
 
-    Label instructionLabel = new Label(playerNames[currentPlayer] + " Select a token");
+    Label instructionLabel = new Label(playerNames[currentPlayer] + " Select A Token");
     gridPane.add(instructionLabel, 0, 0, 2, 1);
     instructionLabel.setStyle("-fx-font-size: 18px;");
 
     String[] tokenPaths = {
-        "/Images/BlueToken.png",
-        "/Images/RedToken.png",
-        "/Images/GreenToken.png",
-        "/Images/PinkToken.png"
+        "/Images/Tokens/BlueToken.png",
+        "/Images/Tokens/RedToken.png",
+        "/Images/Tokens/GreenToken.png",
+        "/Images/Tokens/PinkToken.png"
     };
 
     //Creates token selection buttons, loads token image and a button with the image.
