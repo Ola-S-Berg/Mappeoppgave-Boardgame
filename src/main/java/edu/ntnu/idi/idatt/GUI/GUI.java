@@ -204,7 +204,7 @@ public class GUI extends Application {
     game.createDice();
 
     for (int i = 0; i < playerCount; i++) {
-      Player player = new Player(playerNames[i], boardGame);
+      Player player = new Player(playerNames[i], playerTokens[i], game);
       boardGame.addPlayer(player);
     }
 
