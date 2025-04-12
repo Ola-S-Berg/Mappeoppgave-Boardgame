@@ -170,7 +170,6 @@ public class GUI extends Application {
       tokenButton.setGraphic(tokenImageView);
       tokenButton.setStyle("-fx-background-color: transparent;");
 
-      //Checks if a token is already selected by another player.
       final int tokenIndex = i;
       tokenButton.setOnAction(event -> {
         boolean tokenSelected = false;
