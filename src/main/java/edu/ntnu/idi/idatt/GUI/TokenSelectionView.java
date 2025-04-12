@@ -9,6 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * View class for token selection.
+ * Allows each player to select a unique token.
+ */
 public class TokenSelectionView {
   private BoardGameApplication application;
   private String selectedGame;
@@ -26,6 +30,12 @@ public class TokenSelectionView {
 
   private Button[] tokenButtons;
 
+  /**
+   * Constructor that creates the token selection view.
+   * @param application The main application instance.
+   * @param selectedGame The game selected by the user.
+   * @param playerNames Array of player names.
+   */
   public TokenSelectionView(BoardGameApplication application, String selectedGame, String[] playerNames) {
     this.application = application;
     this.selectedGame = selectedGame;
@@ -36,6 +46,9 @@ public class TokenSelectionView {
     createView();
   }
 
+  /**
+   * Creates the token selection view components.
+   */
   private void createView() {
     VBox mainLayout = new VBox(20);
     mainLayout.setAlignment(Pos.CENTER);
@@ -81,24 +94,28 @@ public class TokenSelectionView {
     scene = new Scene(mainLayout, 400, 400);
   }
 
+  /**
+   * Handles token selection for the current player.
+   * !!Has a bug where views won't change after last person has picked WIP.
+   * @param tokenPath The path of the selected token.
+   */
   private void selectToken(String tokenPath) {
     playerTokens[currentPlayerIndex] = tokenPath;
     currentPlayerIndex++;
 
     if (currentPlayerIndex < playerNames.length) {
+      //Updates view for the current player.
       VBox layout = (VBox) scene.getRoot();
       Label titleLabel = (Label) layout.getChildren().get(0);
       titleLabel.setText(playerNames[currentPlayerIndex] + ", Select Your Token");
 
+      //Iterates between selected tokens and disables previously selected tokens.
       for (int i = 0; i < TOKEN_PATHS.length; i++) {
-        // Make sure we have this button
         if (i < tokenButtons.length) {
           Button tokenButton = tokenButtons[i];
 
           boolean tokenAlreadySelected = false;
-          // Only check players who have already selected (indices less than currentPlayerIndex)
           for (int j = 0; j < currentPlayerIndex; j++) {
-            // Make sure we're within bounds of playerTokens array
             if (j < playerTokens.length && TOKEN_PATHS[i].equals(playerTokens[j])) {
               tokenAlreadySelected = true;
               break;
@@ -109,7 +126,9 @@ public class TokenSelectionView {
         }
       }
     } else {
-      // All players have selected tokens, start the game
+      //!!Bug likely starts here at the start game method.
+      //Next view does not get triggered and the view remains on token selection allowing the same
+      //player to pick a token twice, causing an exception.!!
       application.startGame(playerNames, playerTokens);
     }
   }

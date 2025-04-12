@@ -1,6 +1,5 @@
 package edu.ntnu.idi.idatt.GUI;
 
-import edu.ntnu.idi.idatt.GameLogic.Board;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

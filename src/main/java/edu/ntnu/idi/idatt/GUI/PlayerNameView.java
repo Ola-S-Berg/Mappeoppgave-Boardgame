@@ -7,6 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+/**
+ * View for collecting player names.
+ * Collects names for each player individually.
+ */
 public class PlayerNameView {
   private BoardGameApplication application;
   private String selectedGame;
@@ -15,6 +19,12 @@ public class PlayerNameView {
   private int currentPlayerIndex;
   private Scene scene;
 
+  /**
+   * Constructor that creates the player name view.
+   * @param application The main application instance.
+   * @param selectedGame The game selected by the user.
+   * @param playerCount The number of players.
+   */
   public PlayerNameView(BoardGameApplication application, String selectedGame, int playerCount) {
     this.application = application;
     this.selectedGame = selectedGame;

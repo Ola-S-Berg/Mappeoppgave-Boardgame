@@ -6,17 +6,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+/**
+ * View class for the player count selection screen.
+ * Allows selection of how many players will participate in the game.
+ */
 public class PlayerCountView {
   private BoardGameApplication application;
   private String selectedGame;
   private Scene scene;
 
+  /**
+   * Constructor that creates the player count view.
+   * @param application The main application instance.
+   * @param selectedGame The game selected by the user.
+   */
   public PlayerCountView(BoardGameApplication application, String selectedGame) {
     this.application = application;
     this.selectedGame = selectedGame;
     createView();
   }
 
+  /**
+   * Creates the player count view components.
+   */
   private void createView() {
     VBox layout = new VBox(20);
     layout.setAlignment(Pos.CENTER);
@@ -36,6 +48,10 @@ public class PlayerCountView {
     scene = new Scene(layout, 800, 800);
   }
 
+  /**
+   * Returns the scene for this view.
+   * @return The scene.
+   */
   public Scene getScene() {
     return scene;
   }
