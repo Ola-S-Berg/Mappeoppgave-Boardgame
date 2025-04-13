@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
  */
 public class TokenSelectionView {
   private BoardGameApplication application;
-  private String selectedGame;
+  private String selectedGame; //Used later when more games are added
   private String[] playerNames;
   private String [] playerTokens;
   private int currentPlayerIndex;
