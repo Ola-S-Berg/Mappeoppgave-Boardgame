@@ -20,6 +20,12 @@ import java.util.Map;
 /**
  * View for the "Ladder Game Classic" game.
  * Displays the game board, handles dice rolling, and shows player movement.
+ * TODO:
+ * Display die images when rolling.
+ * Add tile information.
+ * Make GUI look and flow better in general.
+ * Remove unnecessary code.
+ * Fix a bug with wait action.
  */
 public class LadderGameClassicView {
 
