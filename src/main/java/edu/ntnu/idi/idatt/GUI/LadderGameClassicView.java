@@ -25,6 +25,7 @@ import java.util.Map;
  * Add tile information.
  * Make GUI look and flow better in general.
  * Remove unnecessary code.
+ * Create GUI and code for saving and loading the board and players from files.
  * Fix a bug with wait action.
  */
 public class LadderGameClassicView {
@@ -101,7 +102,7 @@ public class LadderGameClassicView {
 
     mainLayout.getChildren().addAll(statusLabel, boardPane, rollButton);
 
-    Scene scene = new Scene(mainLayout, 700, 750);
+    Scene scene = new Scene(mainLayout, 800, 800);
     stage.setScene(scene);
     stage.setTitle("Ladder Game Classic");
     stage.show();

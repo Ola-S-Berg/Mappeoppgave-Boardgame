@@ -44,7 +44,7 @@ public class GameSelectionView {
       layout.getChildren().add(gameButton);
     }
 
-    scene = new Scene(layout, 300, 400);
+    scene = new Scene(layout, 800, 800);
   }
 
   /**

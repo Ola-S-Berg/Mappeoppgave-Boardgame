@@ -91,7 +91,7 @@ public class TokenSelectionView {
     }
 
     mainLayout.getChildren().add(tokenGrid);
-    scene = new Scene(mainLayout, 400, 400);
+    scene = new Scene(mainLayout, 800, 800);
   }
 
   /**
