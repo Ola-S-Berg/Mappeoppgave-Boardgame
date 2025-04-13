@@ -96,7 +96,6 @@ public class TokenSelectionView {
 
   /**
    * Handles token selection for the current player.
-   * !!Has a bug where views won't change after last person has picked WIP.
    * @param tokenPath The path of the selected token.
    */
   private void selectToken(String tokenPath) {
@@ -126,9 +125,6 @@ public class TokenSelectionView {
         }
       }
     } else {
-      //!!Bug likely starts here at the start game method.
-      //Next view does not get triggered and the view remains on token selection allowing the same
-      //player to pick a token twice, causing an exception.!!
       application.startGame(playerNames, playerTokens);
     }
   }

@@ -220,43 +220,31 @@ public class LadderGameClassicView {
    */
   private void animateTokenMovement(ImageView tokenView, int fromTileId, int toTileId, int playerIndex, Runnable onFinished) {
     if (fromTileId == toTileId) {
-      if (onFinished != null) {
-        onFinished.run();
-      }
+      if (onFinished != null) onFinished.run();
       return;
     }
-
-    int[] fromCoords = tileIdToGridCoordinates(fromTileId);
-    int[] toCoords = tileIdToGridCoordinates(toTileId);
-
-    StackPane fromCell = getStackPaneAt(fromCoords[0], fromCoords[1]);
-    StackPane toCell = getStackPaneAt(toCoords[0], toCoords[1]);
-
-    if (fromCell != null) {
-      fromCell.getChildren().remove(tokenView);
-    }
-    if (toCell != null) {
-      toCell.getChildren().add(tokenView);
-    }
-
-    double offsetX = (playerIndex % 2) * 20;
-    double offsetY = (playerIndex / 2) * 20;
 
     tokenView.setTranslateX(0);
     tokenView.setTranslateY(0);
 
+    int[] fromCoords = tileIdToGridCoordinates(fromTileId);
+    int[] toCoords = tileIdToGridCoordinates(toTileId);
+
+    double offsetX = (playerIndex % 2) * 20;
+    double offsetY = (playerIndex / 2) * 20;
+
+    double deltaX = (toCoords[1] - fromCoords[1]) * CELL_SIZE;
+    double deltaY = (toCoords[0] - fromCoords[0]) * CELL_SIZE;
+
     TranslateTransition transition = new TranslateTransition(Duration.millis(1000), tokenView);
-    transition.setFromX(0);
-    transition.setFromY(0);
-    transition.setToX((toCoords[1] - fromCoords[1]) * CELL_SIZE + (offsetX));
-    transition.setToY((toCoords[0] - fromCoords[0]) * CELL_SIZE + (offsetY));
+    transition.setFromX(offsetX);
+    transition.setFromY(offsetY);
+    transition.setToX(offsetX + deltaX);
+    transition.setToY(offsetY + deltaY);
 
     transition.setOnFinished(event -> {
-      tokenView.setTranslateX(offsetX);
-      tokenView.setTranslateY(offsetY);
-      if (onFinished != null) {
-        onFinished.run();
-      }
+      positionTokenAtTile(tokenView, toTileId, playerIndex);
+      if (onFinished != null) onFinished.run();
     });
 
     transition.play();
@@ -273,8 +261,12 @@ public class LadderGameClassicView {
     int row = coords[0];
     int col = coords[1];
 
-    double offsetX = (playerIndex % 2) * 20;
-    double offsetY = (playerIndex / 2) * 20;
+    double baseOffset = (CELL_SIZE - tokenView.getFitWidth()) / 2.0;
+    double playerOffsetX = (playerIndex % 2) * 20 - 10;
+    double playerOffsetY = (playerIndex / 2) * 20 - 20;
+
+    double offsetX = baseOffset + playerOffsetX;
+    double offsetY = baseOffset + playerOffsetY;
 
     boardGridPane.getChildren().remove(tokenView);
 
