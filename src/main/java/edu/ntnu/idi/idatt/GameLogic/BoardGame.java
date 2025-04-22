@@ -14,6 +14,7 @@ public class BoardGame {
   private List<Player> players = new ArrayList<>();
   private Dice dice;
   private BoardFileHandler fileHandler;
+  private String variantName;
 
   public BoardGame() {
     fileHandler = new BoardFileHandler();
@@ -41,7 +42,21 @@ public class BoardGame {
       board.addTile(new Tile(i));
     }
 
-    Board.setupTileActions(board);
+    if (variantName != null) {
+      switch (variantName) {
+        case "ladderGame1":
+          Board.setupTileActionsLadderGame1(board);
+          break;
+        case "ladderGame2":
+          Board.setupTileActionsLadderGame2(board);
+          break;
+        case "ladderGame3":
+          Board.setupTileActionsLadderGame3(board);
+          break;
+        default:
+          System.out.println("Unknown game variant: " + variantName);
+      }
+    }
 
     //Creates a 9x10 board and gives each tile a unique tile number (ID).
     for (int i = 1; i <= 9; i++) {
@@ -162,6 +177,14 @@ public List<Player> getPlayers() {
    */
   public Board getBoard() {
     return board;
+  }
+
+  public String getVariantName() {
+    return variantName;
+  }
+
+  public void setVariantName(String variantName) {
+    this.variantName = variantName;
   }
 }
 

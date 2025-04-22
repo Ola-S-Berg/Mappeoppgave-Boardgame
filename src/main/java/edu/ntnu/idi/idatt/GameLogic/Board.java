@@ -33,7 +33,57 @@ public class Board {
    * Sets up all the tile actions on the board.
    * @param board The game board to set up.
    */
-  public static void setupTileActions(Board board) {
+  public static void setupTileActionsLadderGame1(Board board) {
+    board.getTile(5).setAction(new LadderAction(17, "up"));
+    board.getTile(12).setAction(new LadderAction(49, "up"));
+    board.getTile(21).setAction(new LadderAction(41, "up"));
+    board.getTile(43).setAction(new LadderAction(61, "up"));
+    board.getTile(55).setAction(new LadderAction(87, "up"));
+    board.getTile(65).setAction(new LadderAction(84, "up"));
+
+    board.getTile(25).setAction(new LadderAction(7, "down"));
+    board.getTile(38).setAction(new LadderAction(1, "down"));
+    board.getTile(48).setAction(new LadderAction(13, "down"));
+    board.getTile(70).setAction(new LadderAction(30, "down"));
+    board.getTile(79).setAction(new LadderAction(27, "down"));
+    board.getTile(89).setAction(new LadderAction(53, "down"));
+
+    board.getTile(37).setAction(new WaitAction());
+    board.getTile(54).setAction(new WaitAction());
+    board.getTile(71).setAction(new WaitAction());
+
+    board.getTile(10).setAction(new BackToStartAction());
+    board.getTile(81).setAction(new BackToStartAction());
+  }
+
+  public static void setupTileActionsLadderGame2(Board board) {
+    board.getTile(5).setAction(new LadderAction(17, "up"));
+    board.getTile(12).setAction(new LadderAction(49, "up"));
+    board.getTile(21).setAction(new LadderAction(41, "up"));
+    board.getTile(43).setAction(new LadderAction(61, "up"));
+    board.getTile(55).setAction(new LadderAction(87, "up"));
+    board.getTile(65).setAction(new LadderAction(84, "up"));
+
+    board.getTile(25).setAction(new LadderAction(7, "down"));
+    board.getTile(38).setAction(new LadderAction(1, "down"));
+    board.getTile(48).setAction(new LadderAction(13, "down"));
+    board.getTile(70).setAction(new LadderAction(30, "down"));
+    board.getTile(79).setAction(new LadderAction(27, "down"));
+    board.getTile(89).setAction(new LadderAction(53, "down"));
+
+    board.getTile(37).setAction(new WaitAction());
+    board.getTile(54).setAction(new WaitAction());
+    board.getTile(71).setAction(new WaitAction());
+
+    board.getTile(10).setAction(new BackToStartAction());
+    board.getTile(81).setAction(new BackToStartAction());
+  }
+
+  /**
+   * Sets up the actions for the third variant of the Ladder game.
+   * @param board
+   */
+  public static void setupTileActionsLadderGame3(Board board) {
     board.getTile(5).setAction(new LadderAction(17, "up"));
     board.getTile(12).setAction(new LadderAction(49, "up"));
     board.getTile(21).setAction(new LadderAction(41, "up"));
