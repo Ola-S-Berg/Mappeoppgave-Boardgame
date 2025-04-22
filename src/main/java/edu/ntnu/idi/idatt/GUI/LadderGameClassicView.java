@@ -1,7 +1,10 @@
 package edu.ntnu.idi.idatt.GUI;
 
+import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
+import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
+import java.io.IOException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -96,11 +99,15 @@ public class LadderGameClassicView {
 
     setupPlayerTokens();
 
+    Button saveButton = new Button("Save Game");
+    saveButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px");
+    saveButton.setOnAction(event -> saveGame());
+
     rollButton = new Button("Roll Die");
     rollButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px");
     rollButton.setOnAction(event -> rollDice());
 
-    mainLayout.getChildren().addAll(statusLabel, boardPane, rollButton);
+    mainLayout.getChildren().addAll(statusLabel, boardPane, saveButton, rollButton);
 
     Scene scene = new Scene(mainLayout, 800, 800);
     stage.setScene(scene);
@@ -115,6 +122,18 @@ public class LadderGameClassicView {
       Player player = boardGame.getPlayers().get(i);
       ImageView tokenView = playerTokenViews.get(player);
       positionTokenAtTile(tokenView, 1, i);
+    }
+  }
+
+  private void saveGame() {
+    try {
+      String saveName = "SavedGame";
+      BoardGameFactory.saveBoardGame(boardGame, saveName);
+      new PlayerFileHandler().writeToFile("src/main/resources/Saves/" + saveName + "_players.csv", boardGame.getPlayers());
+      statusLabel.setText("Game saved successfully!");
+    } catch (IOException e) {
+      statusLabel.setText("Failed to save game.");
+      e.printStackTrace();
     }
   }
 
