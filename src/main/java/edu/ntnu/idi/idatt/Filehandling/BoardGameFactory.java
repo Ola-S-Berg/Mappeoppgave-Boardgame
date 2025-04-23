@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  */
 public class BoardGameFactory {
   private static final String GAME_FILES_DIRECTORY = "src/main/resources/Games";
+  private static final String SAVE_FILES_DIRECTORY = "src/main/resources/Saves";
 
   /**
    * Creates a classic ladder game.
@@ -119,7 +120,7 @@ public class BoardGameFactory {
    * @throws IOException If an error occurs during file writing.
    */
   public static void saveBoardGame(BoardGame boardGame, String boardName) throws IOException {
-    String filename = getGameFilePath(boardName);
+    String filename = getSaveFilePath(boardName);
     BoardFileHandler fileHandler = new BoardFileHandler();
     fileHandler.writeToFile(filename, List.of(boardGame));
   }
@@ -137,6 +138,14 @@ public class BoardGameFactory {
     return gamesDir;
   }
 
+  private static Path ensureSavesDirectory() throws IOException {
+    Path savesDir = Paths.get(SAVE_FILES_DIRECTORY);
+    if (!Files.exists(savesDir)) {
+      Files.createDirectories(savesDir);
+    }
+    return savesDir;
+  }
+
   /**
    * Gets the full file path for a game board file.
    * @param boardName The name of the board.
@@ -145,5 +154,10 @@ public class BoardGameFactory {
   private static String getGameFilePath(String boardName) throws IOException {
     Path gamesDir = ensureGamesDirectory();
     return gamesDir.resolve(boardName + ".json").toString();
+  }
+
+  private static String getSaveFilePath(String saveName) throws IOException {
+    Path savesDir = ensureSavesDirectory();
+    return savesDir.resolve(saveName + ".json").toString();
   }
 }

@@ -17,11 +17,11 @@ import java.util.List;
 public class PlayerFileHandler implements FileHandler<Player> {
 
   /**
-   * Writes a list of players to a CSV file.
-   * Each player is written on a new line with the format:
+   * Writes a list of players to a CSV file. Each player is written on a new line with the format:
    * playerName, game
+   *
    * @param filename The name of the file to write to.
-   * @param players The list of players to write to the file.
+   * @param players  The list of players to write to the file.
    * @throws IOException If an error occurs during file writing.
    */
   @Override
@@ -29,7 +29,9 @@ public class PlayerFileHandler implements FileHandler<Player> {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
       for (Player player : players) {
         String gameName = (player.getGame() != null) ? player.getGame().toString() : "null";
-        writer.write(player.getName() + ", " + player.getToken() + ", " + gameName);
+        int currentTileId =
+            (player.getCurrentTile() != null) ? player.getCurrentTile().getTileId() : 1;
+        writer.write(player.getName() + ", " + player.getToken() + ", " + currentTileId);
         writer.newLine();
       }
     }
@@ -37,6 +39,7 @@ public class PlayerFileHandler implements FileHandler<Player> {
 
   /**
    * Reads a list of players from a CSV file.
+   *
    * @param filename The name of the file to read from.
    * @return A list of player objects.
    * @throws IOException If an error occurs during file reading.
@@ -49,8 +52,10 @@ public class PlayerFileHandler implements FileHandler<Player> {
       String line;
       while ((line = reader.readLine()) != null) {
         String[] tokens = line.split(",");
-        if (tokens.length >= 2) {
-          players.add(new Player(tokens[0].trim(), tokens[1].trim(), null));
+        if (tokens.length >= 3) {
+          Player player = new Player(tokens[0].trim(), tokens[1].trim(), null);
+          player.setProperty("savedTileId", tokens[2].trim());
+          players.add(player);
         }
       }
     }

@@ -1,5 +1,8 @@
 package edu.ntnu.idi.idatt.GameLogic;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class representing a player in the game
  */
@@ -9,6 +12,8 @@ public class Player {
   private BoardGame game;
   private String token;
   private boolean waitTurn = false;
+  private Map<String, String> properties = new HashMap<>();
+
 
   /**
    * The constructor for Player with a game instance.
@@ -124,5 +129,31 @@ public class Player {
     return token;
   }
 
+  /**
+   * Stores a temporary property for the player.
+   * @param key The property key.
+   * @param value The property value.
+   */
+  public void setProperty(String key, String value) {
+    properties.put(key, value);
+  }
+
+  /**
+   * Gets a temporary property value.
+   * @param key The property key.
+   * @return The property value, or null if not found.
+   */
+  public String getProperty(String key) {
+    return properties.get(key);
+  }
+
+  /**
+   * Checks if a property exists.
+   * @param key The property key.
+   * @return True if the property exists.
+   */
+  public boolean hasProperty(String key) {
+    return properties.containsKey(key);
+  }
 }
 
