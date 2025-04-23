@@ -15,9 +15,29 @@ public class BoardGame {
   private Dice dice;
   private BoardFileHandler fileHandler;
   private String variantName;
+  private List<BoardGameObserver> observers = new ArrayList<>();
 
   public BoardGame() {
     fileHandler = new BoardFileHandler();
+  }
+
+  /**
+   * Registers an observer to receive game state updates.
+   * @param observer The observer to register.
+   */
+  public void addObserver (BoardGameObserver observer) {
+    if (observer != null) {
+      throw new NullPointerException("Observer cannot be null");
+    }
+    observers.add(observer);
+  }
+
+  /**
+   * Removes an observer from the list of registered observers.
+   * @param observer The observer to remove.
+   */
+  public void removeObserver (BoardGameObserver observer) {
+    observers.remove(observer);
   }
 
   /**
@@ -63,7 +83,7 @@ public class BoardGame {
       for (int j = 1; j <= 10; j++) {
         int currentId = (i - 1) * 10 + j; //Equation that finds the tile number of the tile created.
 
-        //If statement that finds if the next tile is 90, if not sets the next tile to ID to the current til ID +1.
+        //If statement that finds if the next tile is 90, if not sets the next tile to ID to the current tile ID +1.
         int nextId;
         if (i == 9 && j == 10) {
           nextId = -1;
