@@ -161,13 +161,15 @@ public class LadderGameClassicView implements BoardGameObserver {
     stage.show();
 
     for (Player player : boardGame.getPlayers()) {
-      player.placeOnTile(boardGame.getBoard().getTile(1));
+      if (player.getCurrentTile() == null) {
+        player.placeOnTile(boardGame.getBoard().getTile(1));
+      }
     }
 
     for (int i = 0; i < boardGame.getPlayers().size(); i++) {
       Player player = boardGame.getPlayers().get(i);
       ImageView tokenView = playerTokenViews.get(player);
-      positionTokenAtTile(tokenView, 1, i);
+      positionTokenAtTile(tokenView, player.getCurrentTile().getTileId(), i);
     }
   }
 

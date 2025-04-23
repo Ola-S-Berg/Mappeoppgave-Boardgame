@@ -134,15 +134,31 @@ public class GameSelectionView {
       BoardGame loadedGame = new BoardFileHandler().readFromFile("src/main/resources/Saves/" + saveName + ".json").get(0);
       List<Player> players = new PlayerFileHandler().readFromFile("src/main/resources/Saves/" + saveName + "_players.csv");
 
+      if (loadedGame.getDice() == null) {
+        loadedGame.createDice();
+      }
+
       for (Player player : players) {
         player.setGame(loadedGame);
 
-        if (player.hasProperty("savedTileId")) {
-          int tileId = Integer.parseInt(player.getProperty("savedTileId"));
-          Tile tile = loadedGame.getBoard().getTile(tileId);
-          player.placeOnTile(tile);
+        String savedTileIdStr = player.getProperty("savedTileId");
+        if (savedTileIdStr != null && !savedTileIdStr.trim().isEmpty()) {
+          try {
+            int tileId = Integer.parseInt(savedTileIdStr.trim());
+            Tile tile = loadedGame.getBoard().getTile(tileId);
+            if (tile != null) {
+              player.placeOnTile(tile);
+              System.out.println("Placed " + player.getName() + " on tile " + tileId);
+            } else {
+              System.out.println("Tile " + tileId + " not found, placing " + player.getName() + " on tile 1");
+              player.placeOnTile(loadedGame.getBoard().getTile(1));
+            }
+          } catch (NumberFormatException e) {
+            System.out.println("Invalid tile ID format: " + savedTileIdStr + ", placing " + player.getName() + " on tile 1");
+            player.placeOnTile(loadedGame.getBoard().getTile(1));
+          }
         } else {
-          // Default to tile 1 if no saved position
+          System.out.println("No saved tile ID for " + player.getName() + ", placing on tile 1");
           player.placeOnTile(loadedGame.getBoard().getTile(1));
         }
 
