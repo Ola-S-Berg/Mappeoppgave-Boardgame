@@ -1,5 +1,10 @@
-package edu.ntnu.idi.idatt.GUI;
+package edu.ntnu.idi.idatt;
 
+import edu.ntnu.idi.idatt.GUI.GameSelectionView;
+import edu.ntnu.idi.idatt.GUI.LadderGameClassicView;
+import edu.ntnu.idi.idatt.GUI.PlayerCountView;
+import edu.ntnu.idi.idatt.GUI.PlayerNameView;
+import edu.ntnu.idi.idatt.GUI.TokenSelectionView;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import javafx.application.Application;

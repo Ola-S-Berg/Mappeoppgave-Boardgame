@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.GUI;
 
+import edu.ntnu.idi.idatt.BoardGameApplication;
 import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
 
