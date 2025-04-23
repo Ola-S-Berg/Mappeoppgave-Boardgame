@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.GameLogic.BoardGameObserver;
 import java.io.IOException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -31,7 +32,7 @@ import java.util.Map;
  * Create GUI and code for saving and loading the board and players from files.
  * Fix a bug with wait action.
  */
-public class LadderGameClassicView {
+public class LadderGameClassicView implements BoardGameObserver {
 
   private Stage stage;
   private BoardGame boardGame;
@@ -52,13 +53,58 @@ public class LadderGameClassicView {
    * @param boardGame The game logic.
    * @param stage The JavaFX stage to display the game on.
    */
-  public LadderGameClassicView(BoardGame boardGame, Stage stage) {
+  public LadderGameClassicView (BoardGame boardGame, Stage stage) {
     this.boardGame = boardGame;
     this.stage = stage;
     this.playerTokenViews = new HashMap<>();
 
+    boardGame.addObserver(this);
+
     setupGameView();
   }
+
+  @Override
+  public void onPlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
+    ImageView tokenView = playerTokenViews.get(player);
+    if (tokenView != null) {
+      int playerIndex = boardGame.getPlayers().indexOf(player);
+
+      animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
+        statusLabel.setText(player.getName() + " flyttet fra " + fromTileId +
+            " til " + toTileId + " (terningkast: " + diceValue + ")");
+      });
+    }
+  }
+
+  @Override
+  public void onGameWon(Player player) {
+    endGame(player);
+  }
+
+  @Override
+  public void onPlayerSkipTurn(Player player) {
+    Platform.runLater(() -> {
+      statusLabel.setText(player.getName() + " må stå over sin tur!");
+      rollButton.setDisable(true);
+      new Thread(() -> {
+        try {
+          Thread.sleep(2000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        Platform.runLater(() -> rollButton.setDisable(false));
+      }).start();
+    });
+  }
+
+  @Override
+  public void onCurrentPlayerChanged(Player player) {
+    Platform.runLater(() -> {
+      statusLabel.setText("Det er " + player.getName() + "s tur");
+      currentPlayerIndex = boardGame.getPlayers().indexOf(player);
+    });
+  }
+
 
   /**
    * Sets up the game view with board image, player tokens, and controls.
