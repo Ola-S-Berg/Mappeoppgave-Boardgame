@@ -70,8 +70,8 @@ public class LadderGameClassicView implements BoardGameObserver {
       int playerIndex = boardGame.getPlayers().indexOf(player);
 
       animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
-        statusLabel.setText(player.getName() + " flyttet fra " + fromTileId +
-            " til " + toTileId + " (terningkast: " + diceValue + ")");
+        statusLabel.setText(player.getName() + " moved from " + fromTileId +
+            " to " + toTileId + " (dice roll: " + diceValue + ")");
       });
     }
   }
@@ -84,7 +84,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   @Override
   public void onPlayerSkipTurn(Player player) {
     Platform.runLater(() -> {
-      statusLabel.setText(player.getName() + " må stå over sin tur!");
+      statusLabel.setText(player.getName() + " Must skip their turn");
       rollButton.setDisable(true);
       new Thread(() -> {
         try {
@@ -100,7 +100,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   @Override
   public void onCurrentPlayerChanged(Player player) {
     Platform.runLater(() -> {
-      statusLabel.setText("Det er " + player.getName() + "s tur");
+      statusLabel.setText("It is " + player.getName() + "'s turn");
       currentPlayerIndex = boardGame.getPlayers().indexOf(player);
     });
   }

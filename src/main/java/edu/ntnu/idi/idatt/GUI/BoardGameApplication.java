@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 public class BoardGameApplication extends Application {
   private Stage primaryStage;
   private BoardGame boardGame;
+  private String selectedGame;
 
   @Override
   public void start(Stage primaryStage) {
@@ -43,6 +44,7 @@ public class BoardGameApplication extends Application {
    * @param selectedGame The game selected by the user.
    */
   public void showPlayerCountView(String selectedGame) {
+    this.selectedGame = selectedGame;
     PlayerCountView playerCountView = new PlayerCountView(this, selectedGame);
     Scene scene = playerCountView.getScene();
     primaryStage.setScene(scene);
@@ -77,6 +79,7 @@ public class BoardGameApplication extends Application {
    */
   public void startGame(String[] playerNames, String[] playerTokens) {
     boardGame = new BoardGame();
+    boardGame.setVariantName(getVariantNameFromGameType(selectedGame));
     boardGame.createBoard();
     boardGame.createDice();
 
@@ -86,6 +89,24 @@ public class BoardGameApplication extends Application {
     }
 
     LadderGameClassicView ladderGameClassicView = new LadderGameClassicView(boardGame, primaryStage);
+  }
+
+  /**
+   *
+   * @param selectedGame
+   * @return
+   */
+  private String getVariantNameFromGameType(String selectedGame) {
+    switch (selectedGame) {
+      case "Classic Ladder Game 1":
+        return "ladderGame1";
+      case "Classic Ladder Game 2":
+        return "ladderGame2";
+      case "Classic Ladder Game 3":
+        return "ladderGame3";
+      default:
+        return "ladderGame1";  // Default variant if not recognized
+    }
   }
 
   /**
