@@ -7,7 +7,7 @@ public interface BoardGameObserver {
    * @param player The player that moved.
    * @param fromTileId The ID of the tile the player moved from.
    * @param toTileId The ID of the tile the player moved to.
-   * @param diceValue The value rolled on the dice.
+   * @param diceValue The value rolled on the die.
    */
   void onPlayerMove(Player player, int fromTileId, int toTileId, int diceValue);
 

@@ -41,6 +41,49 @@ public class BoardGame {
   }
 
   /**
+   * Notifies all observers when a player has moved.
+   * @param player The player who moved.
+   * @param fromTileId The tile ID the player moved from.
+   * @param toTileId The tile ID the player moved to.
+   * @param diceValue The value rolled on the die.
+   */
+  private void notifyPlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
+    for (BoardGameObserver observer : observers) {
+      observer.onPlayerMove(player, fromTileId, toTileId, diceValue);
+    }
+  }
+
+  /**
+   * Notifies all observers when a player has won the game.
+   * @param player The player that won the game.
+   */
+  private void notifyGameWon(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onGameWon(player);
+    }
+  }
+
+  /**
+   * Notifies all observers when a player skips their turn.
+   * @param player The player who skipped their turn.
+   */
+  private void notifyPlayerSkipTurn(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onPlayerSkipTurn(player);
+    }
+  }
+
+  /**
+   * Notifies all observers when the current player changes.
+   * @param player The new current player.
+   */
+  private void notifyCurrentPlayerChanged(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onCurrentPlayerChanged(player);
+    }
+  }
+
+  /**
    * Adds a player when called upon.
    * @param player The player to add.
    */
