@@ -181,20 +181,20 @@ public class GameSelectionView {
       String displayName;
 
       switch (gameVariation) {
-        case "ladderGame1":
-        case "Classic Ladder Game 1":
-          displayName = "Classic Ladder Game 1";
+        case "ladderGame":
+        case "Classic Ladder Game":
+          displayName = "Classic Ladder Game";
           break;
-        case "Classic Ladder Game 2":
-        case "ladderGame2":
-          displayName = "Classic Ladder Game 2";
+        case "Classic Ladder Game Advanced":
+        case "ladderGameAdvanced":
+          displayName = "Classic Ladder Game Advanced";
           break;
-        case "Classic Ladder Game 3":
-        case "ladderGame3":
-          displayName = "Classic Ladder Game 3";
+        case "Classic Ladder Game Extreme":
+        case "ladderGameExtreme":
+          displayName = "Classic Ladder Game Extreme";
           break;
         default:
-          displayName = "Classic Ladder Game 1";
+          displayName = "Classic Ladder Game";
           break;
       }
 

@@ -140,14 +140,14 @@ public class LadderGameClassicView implements BoardGameObserver {
    */
   private String getBoardImagePath() {
     switch (gameVariation) {
-      case "Classic Ladder Game 1":
-        return "/images/Games/LadderGameVariant1.png";
-      case "Classic Ladder Game 2":
-        return "/images/Games/LadderGameVariant2.png";
-      case "Classic Ladder Game 3":
-        return "/images/Games/LadderGameVariant3.png";
+      case "Classic Ladder Game":
+        return "/images/Games/LadderGame.png";
+      case "Classic Ladder Game Advanced":
+        return "/images/Games/LadderGameAdvanced.png";
+      case "Classic Ladder Game Extreme":
+        return "/images/Games/LadderGameExtreme.png";
       default:
-        return "/images/Games/LadderGameVariant1.png";
+        return "/images/Games/LadderGame.png";
     }
   }
 

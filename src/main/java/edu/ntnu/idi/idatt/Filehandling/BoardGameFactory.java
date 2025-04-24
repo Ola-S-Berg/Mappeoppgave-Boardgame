@@ -22,9 +22,9 @@ public class BoardGameFactory {
    * Creates a classic ladder game.
    * @return A configured board game.
    */
-  public static BoardGame createClassicLadderGame1() {
+  public static BoardGame createClassicLadderGame() {
     BoardGame boardGame = new BoardGame();
-    boardGame.setVariantName("ladderGame1");
+    boardGame.setVariantName("ladderGame");
     boardGame.createBoard();
     boardGame.createDice();
 
@@ -35,9 +35,9 @@ public class BoardGameFactory {
    * Creates a second version of the classic ladder game with mixed tile actions.
    * @return A configured board game.
    */
-  public static BoardGame createClassicLadderGame2() {
+  public static BoardGame createClassicLadderGameAdvanced() {
     BoardGame boardGame = new BoardGame();
-    boardGame.setVariantName("ladderGame2");
+    boardGame.setVariantName("ladderGameAdvanced");
     boardGame.createBoard();
     boardGame.createDice();
 
@@ -48,9 +48,9 @@ public class BoardGameFactory {
    * Creates a third version of the classic ladder game with mixed tile actions.
    * @return A configured board game.
    */
-  public static BoardGame createClassicLadderGame3() {
+  public static BoardGame createClassicLadderGameExtreme() {
     BoardGame boardGame = new BoardGame();
-    boardGame.setVariantName("ladderGame3");
+    boardGame.setVariantName("ladderGameExtreme");
     boardGame.createBoard();
     boardGame.createDice();
 
@@ -64,9 +64,9 @@ public class BoardGameFactory {
   public static List<String> getAvailableBoardGames() {
     List<String> boardNames = new ArrayList<>();
 
-    boardNames.add("Classic Ladder Game 1");
-    boardNames.add("Classic Ladder Game 2");
-    boardNames.add("Classic Ladder Game 3");
+    boardNames.add("Classic Ladder Game");
+    boardNames.add("Classic Ladder Game Advanced");
+    boardNames.add("Classic Ladder Game Extreme");
 
     try {
       Path gamesDir = ensureGamesDirectory();
@@ -90,12 +90,12 @@ public class BoardGameFactory {
    * @return A configured board game.
    */
   public static BoardGame createBoardGame(String boardName) {
-    if (boardName.equals("Classic Ladder Game 1")) {
-      return createClassicLadderGame1();
-    } else if (boardName.equals("Classic Ladder Game 2")) {
-      return createClassicLadderGame2();
-    } else if (boardName.equals("Classic Ladder Game 3")) {
-      return createClassicLadderGame3();
+    if (boardName.equals("Classic Ladder Game")) {
+      return createClassicLadderGame();
+    } else if (boardName.equals("Classic Ladder Game Advanced")) {
+      return createClassicLadderGameAdvanced();
+    } else if (boardName.equals("Classic Ladder Game Extreme")) {
+      return createClassicLadderGameExtreme();
     } else {
 
       try {
@@ -110,7 +110,7 @@ public class BoardGameFactory {
       }
     }
 
-    return createClassicLadderGame1();
+    return createClassicLadderGame();
   }
 
   /**

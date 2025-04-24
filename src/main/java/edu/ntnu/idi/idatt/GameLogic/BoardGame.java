@@ -133,14 +133,14 @@ public class BoardGame {
 
     if (variantName != null) {
       switch (variantName) {
-        case "ladderGame1":
-          Board.setupTileActionsLadderGame1(board);
+        case "ladderGame":
+          Board.setupTileActionsLadderGame(board);
           break;
-        case "ladderGame2":
-          Board.setupTileActionsLadderGame2(board);
+        case "ladderGameAdvanced":
+          Board.setupTileActionsLadderGameAdvanced(board);
           break;
-        case "ladderGame3":
-          Board.setupTileActionsLadderGame3(board);
+        case "ladderGameExtreme":
+          Board.setupTileActionsLadderGameExtreme(board);
           break;
         default:
           System.out.println("Unknown game variant: " + variantName);

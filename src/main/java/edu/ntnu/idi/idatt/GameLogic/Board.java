@@ -34,7 +34,7 @@ public class Board {
    * A classic balanced ladder game with a normal amount of actions.
    * @param board The game board to set up.
    */
-  public static void setupTileActionsLadderGame1(Board board) {
+  public static void setupTileActionsLadderGame(Board board) {
     board.getTile(5).setAction(new LadderAction(17, "up"));
     board.getTile(12).setAction(new LadderAction(49, "up"));
     board.getTile(21).setAction(new LadderAction(41, "up"));
@@ -62,7 +62,7 @@ public class Board {
    * Increased amount of actions from the first variation.
    * @param board The board game to set up.
    */
-  public static void setupTileActionsLadderGame2(Board board) {
+  public static void setupTileActionsLadderGameAdvanced(Board board) {
     board.getTile(5).setAction(new LadderAction(17, "up"));
     board.getTile(12).setAction(new LadderAction(49, "up"));
     board.getTile(14).setAction(new LadderAction(47, "up"));
@@ -106,7 +106,7 @@ public class Board {
    * A diabolical version of the classic ladder game.
    * @param board The board game to set up.
    */
-  public static void setupTileActionsLadderGame3(Board board) {
+  public static void setupTileActionsLadderGameExtreme(Board board) {
 
     board.getTile(17).setAction(new LadderAction(5, "down"));
     board.getTile(25).setAction(new LadderAction(7, "down"));
