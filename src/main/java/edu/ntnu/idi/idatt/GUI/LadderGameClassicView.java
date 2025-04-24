@@ -263,12 +263,13 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     Player currentPlayer = boardGame.getPlayers().get(currentPlayerIndex);
 
-    statusLabel.setText(currentPlayer.getName() + "'s Turn To Roll");
-
     if (currentPlayer.willWaitTurn()) {
-      statusLabel.setText(currentPlayer.getName() + " must skip their turn!");
-
+      boardGame.notifyPlayerSkipTurn(currentPlayer);
       currentPlayer.setWaitTurn(false);
+
+      currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
+      Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
+      boardGame.notifyCurrentPlayerChanged(nextPlayer);
 
       new Thread(() -> {
         try {
@@ -276,13 +277,7 @@ public class LadderGameClassicView implements BoardGameObserver {
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-
-        Platform.runLater(() -> {
-          currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
-          final Player updatedNextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
-          statusLabel.setText(updatedNextPlayer.getName() + "'s turn to roll.");
-          rollButton.setDisable(false);
-        });
+        Platform.runLater(() -> {rollButton.setDisable(false);});
       }).start();
 
       return;
@@ -291,49 +286,23 @@ public class LadderGameClassicView implements BoardGameObserver {
     new Thread(() -> {
       int diceValue = boardGame.getDice().roll();
 
-      int oldTileId = currentPlayer.getCurrentTile().getTileId();
-
-      final boolean willSkipTurn = currentPlayer.willWaitTurn();
-
       currentPlayer.move(diceValue);
 
-      int newTileId = currentPlayer.getCurrentTile().getTileId();
-
       Platform.runLater(() -> {
-        StringBuilder statusText = new StringBuilder();
-        statusText.append(currentPlayer.getName()).append(" Rolled ").append(diceValue);
+        if (currentPlayer.getCurrentTile().getTileId() != 90) {
+          currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
+          Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
+          boardGame.notifyCurrentPlayerChanged(nextPlayer);
 
-        if (newTileId != oldTileId) {
-          statusText.append(". Moving from ").append(oldTileId).append(" to ").append(newTileId);
-
-          if (newTileId > oldTileId + diceValue) {
-            statusText.append(" (Climbed Up A Ladder)");
-          } else if (newTileId < oldTileId + diceValue && newTileId != 1) {
-            statusText.append(" (Climbed Down A Ladder)");
-          } else if (newTileId == 1 && oldTileId != 1) {
-            statusText.append(" (went back to start)");
-          }
-
-          if (currentPlayer.willWaitTurn() && !willSkipTurn) {
-            statusText.append(" (Must skip next turn)");
-          }
-        } else {
-          statusText.append(" (No movement)");
+          new Thread(() -> {
+            try {
+              Thread.sleep(1000);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+            Platform.runLater(() -> rollButton.setDisable(false));
+          }).start();
         }
-        statusLabel.setText(statusText.toString());
-
-        ImageView tokenView = playerTokenViews.get(currentPlayer);
-        animateTokenMovement(tokenView, oldTileId, newTileId, currentPlayerIndex, () -> {
-          if (newTileId == 90) {
-            endGame(currentPlayer);
-          } else {
-            currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
-            Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
-
-            statusLabel.setText(nextPlayer.getName() + "'s turn to roll.");
-            rollButton.setDisable(false);
-          }
-        });
       });
     }).start();
   }
