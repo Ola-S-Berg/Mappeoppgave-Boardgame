@@ -45,6 +45,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   private Image boardImage;
   private ImageView boardImageView;
   private int currentPlayerIndex = 0;
+  private String gameVariation;
 
   private static final int CELL_SIZE = 60;
   private static final int GRID_SIZE = 10;
@@ -54,10 +55,11 @@ public class LadderGameClassicView implements BoardGameObserver {
    * @param boardGame The game logic.
    * @param stage The JavaFX stage to display the game on.
    */
-  public LadderGameClassicView (BoardGame boardGame, Stage stage) {
+  public LadderGameClassicView (BoardGame boardGame, Stage stage, String gameVariation) {
     this.boardGame = boardGame;
     this.stage = stage;
     this.playerTokenViews = new HashMap<>();
+    this.gameVariation = gameVariation;
 
     boardGame.addObserver(this);
 
@@ -106,6 +108,22 @@ public class LadderGameClassicView implements BoardGameObserver {
     });
   }
 
+  /**
+   * Gets the appropriate board image path based on the game variation.
+   * @return The path to the board image.
+   */
+  private String getBoardImagePath() {
+    switch (gameVariation) {
+      case "Classic Ladder Game 1":
+        return "/images/Games/LadderGameVariant1.png";
+      case "Classic Ladder Game 2":
+        return "/images/Games/LadderGameVariant2.png";
+      case "Classic Ladder Game 3":
+        return "/images/Games/LadderGameVariant3.png";
+      default:
+        return "/images/Games/LadderGameVariant1.png";
+    }
+  }
 
   /**
    * Sets up the game view with board image, player tokens, and controls.
@@ -123,7 +141,8 @@ public class LadderGameClassicView implements BoardGameObserver {
     boardPane.setMinSize(600, 600);
     boardPane.setMaxSize(600, 600);
 
-    boardImage = new Image(getClass().getResourceAsStream("/images/Games/LadderGameClassic.png"));
+    String imagePath = getBoardImagePath();
+    boardImage = new Image(getClass().getResourceAsStream(imagePath));
     boardImageView = new ImageView(boardImage);
     boardImageView.setFitWidth(600);
     boardImageView.setFitHeight(600);

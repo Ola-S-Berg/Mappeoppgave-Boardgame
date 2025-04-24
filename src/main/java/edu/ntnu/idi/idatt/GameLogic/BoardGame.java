@@ -211,6 +211,7 @@ public class BoardGame {
       List<BoardGame> loadedBoards = fileHandler.readFromFile(filename);
       if (!loadedBoards.isEmpty()) {
         BoardGame loadedGame = loadedBoards.get(0);
+        this.variantName = loadedGame.getVariantName();
         this.board = loadedGame.getBoard();
         System.out.println("Board loaded from file: " + filename);
       }

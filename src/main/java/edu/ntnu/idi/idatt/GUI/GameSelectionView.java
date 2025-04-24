@@ -166,7 +166,28 @@ public class GameSelectionView {
         loadedGame.addPlayer(player);
       }
 
-      new LadderGameClassicView(loadedGame, application.getPrimaryStage());
+      String gameVariation = loadedGame.getVariantName();
+      String displayName;
+
+      switch (gameVariation) {
+        case "ladderGame1":
+        case "Classic Ladder Game 1":
+          displayName = "Classic Ladder Game 1";
+          break;
+        case "Classic Ladder Game 2":
+        case "ladderGame2":
+          displayName = "Classic Ladder Game 2";
+          break;
+        case "Classic Ladder Game 3":
+        case "ladderGame3":
+          displayName = "Classic Ladder Game 3";
+          break;
+        default:
+          displayName = "Classic Ladder Game 1";
+          break;
+      }
+
+      new LadderGameClassicView(loadedGame, application.getPrimaryStage(), displayName);
     } catch (IOException e) {
       System.err.println("Failed to load save: " + e.getMessage());
     }

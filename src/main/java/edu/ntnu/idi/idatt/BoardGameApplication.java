@@ -93,7 +93,7 @@ public class BoardGameApplication extends Application {
       boardGame.addPlayer(player);
     }
 
-    LadderGameClassicView ladderGameClassicView = new LadderGameClassicView(boardGame, primaryStage);
+    LadderGameClassicView ladderGameClassicView = new LadderGameClassicView(boardGame, primaryStage, selectedGame);
   }
 
   /**

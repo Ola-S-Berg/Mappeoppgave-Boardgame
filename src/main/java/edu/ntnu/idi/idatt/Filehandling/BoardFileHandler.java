@@ -34,8 +34,9 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
    */
   public JsonObject serializeBoard(BoardGame boardGame) {
     JsonObject boardJson = new JsonObject();
-    boardJson.addProperty("name", "Ladder game 90");
-    boardJson.addProperty("description", "A classic ladder game with 90 tiles and 12 ladders.");
+    boardJson.addProperty("name", "Ladder game");
+    boardJson.addProperty("description", "A classic ladder game with 90 tiles.");
+    boardJson.addProperty("variantName", boardGame.getVariantName());
 
     JsonArray tilesArray = new JsonArray();
     for (int i = 1; i <= 90; i++) {
@@ -100,6 +101,11 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
 
     BoardGame boardGame = new BoardGame();
     boardGame.createBoard();
+
+    if (boardJson.has("variantName")) {
+      String variantName = boardJson.get("variantName").getAsString();
+      boardGame.setVariantName(variantName);
+    }
 
     JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
     for (JsonElement tileElement : tilesJson) {
