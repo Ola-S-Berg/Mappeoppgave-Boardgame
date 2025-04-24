@@ -54,6 +54,7 @@ public class Player {
 
   /**
    * Moves the player a certain amount of tile based on pips rolled from dice.
+   * Notifies BoardGame about movement and game win.
    * @param steps The amount of steps the player moves.
    */
   public void move (int steps) {
@@ -68,6 +69,8 @@ public class Player {
       return;
     }
 
+    int fromTileId = currentTile.getTileId();
+
     Tile destinationTile = currentTile;
     for (int i = 0; i < steps; i++) {
       if (destinationTile.getNextTile() != null) {
@@ -76,6 +79,12 @@ public class Player {
     }
 
     placeOnTile(destinationTile);
+
+    game.notifyPlayerMove(this, fromTileId, currentTile.getTileId(), steps);
+
+    if (currentTile.getTileId() == 90) {
+      game.notifyGameWon(this);
+    }
   }
 
   /**
