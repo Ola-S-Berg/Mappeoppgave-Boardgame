@@ -255,7 +255,8 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Handles the roll dice button click event.
+   * Manages the player's dice roll during the game, updates the game state,
+   * and handles gameplay logic for movement, skipping turns, and checking victory conditions.
    */
   private void rollDice() {
     rollButton.setDisable(true);
@@ -263,6 +264,29 @@ public class LadderGameClassicView implements BoardGameObserver {
     Player currentPlayer = boardGame.getPlayers().get(currentPlayerIndex);
 
     statusLabel.setText(currentPlayer.getName() + "'s Turn To Roll");
+
+    if (currentPlayer.willWaitTurn()) {
+      statusLabel.setText(currentPlayer.getName() + " must skip their turn!");
+
+      currentPlayer.setWaitTurn(false);
+
+      new Thread(() -> {
+        try {
+          Thread.sleep(2000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+
+        Platform.runLater(() -> {
+          currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
+          final Player updatedNextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
+          statusLabel.setText(updatedNextPlayer.getName() + "'s turn to roll.");
+          rollButton.setDisable(false);
+        });
+      }).start();
+
+      return;
+    }
 
     new Thread(() -> {
       int diceValue = boardGame.getDice().roll();
@@ -277,7 +301,7 @@ public class LadderGameClassicView implements BoardGameObserver {
 
       Platform.runLater(() -> {
         StringBuilder statusText = new StringBuilder();
-        statusText.append(currentPlayer.getName()).append(" Rolled ").append(diceValue); // Added space after name
+        statusText.append(currentPlayer.getName()).append(" Rolled ").append(diceValue);
 
         if (newTileId != oldTileId) {
           statusText.append(". Moving from ").append(oldTileId).append(" to ").append(newTileId);
@@ -306,27 +330,8 @@ public class LadderGameClassicView implements BoardGameObserver {
             currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
             Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
 
-            if (nextPlayer.willWaitTurn()) {
-              statusLabel.setText(nextPlayer.getName() + " must skip their turn!");
-
-              new Thread(() -> {
-                try {
-                  Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                }
-
-                Platform.runLater(() -> {
-                  currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
-                  final Player updatedNextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
-                  statusLabel.setText(updatedNextPlayer.getName() + "'s turn to roll.");
-                  rollButton.setDisable(false);
-                });
-              }).start();
-            } else {
-              statusLabel.setText(nextPlayer.getName() + "'s turn to roll.");
-              rollButton.setDisable(false);
-            }
+            statusLabel.setText(nextPlayer.getName() + "'s turn to roll.");
+            rollButton.setDisable(false);
           }
         });
       });
