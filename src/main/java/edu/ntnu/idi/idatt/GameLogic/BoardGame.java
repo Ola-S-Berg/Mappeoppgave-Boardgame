@@ -171,7 +171,9 @@ public class BoardGame {
   }
 
   /**
-   * Plays the game by iterating over players until a winner is found.
+   * Iterates through players and managing game rounds until a winner is determined. Handles player
+   * movements, skipping turns, and notifications to observers for updates
+   * such as player moves, turn changes, and game completion.
    */
   public void play () {
     int roundNumber = 1;
@@ -184,14 +186,32 @@ public class BoardGame {
       System.out.println("Round " + roundNumber);
 
       for (Player player : players) {
+        Player previousPlayer = currentPlayer;
         currentPlayer = player;
+
+        if (previousPlayer != currentPlayer) {
+          notifyCurrentPlayerChanged(currentPlayer);
+        }
+
+        if (player.willWaitTurn()) {
+          System.out.println(player.getName() + " will skip their turn");
+          notifyPlayerSkipTurn(player);
+          player.setWaitTurn(false);
+          continue;
+        }
+
         int steps = dice.roll();
+        int fromTileId = player.getCurrentTile().getTileId();
         System.out.println(currentPlayer.getName() + " rolled " + steps);
         player.move(steps);
+        int toTileId = player.getCurrentTile().getTileId();
+
+        notifyPlayerMove(player, fromTileId, toTileId, steps);
 
         System.out.println(player.getName() + " is now on tile " + player.getCurrentTile().getTileId());
 
         if (getWinner() != null) {
+          notifyGameWon(getWinner());
           break;
         }
       }
@@ -279,6 +299,3 @@ public List<Player> getPlayers() {
     this.variantName = variantName;
   }
 }
-
-
-
