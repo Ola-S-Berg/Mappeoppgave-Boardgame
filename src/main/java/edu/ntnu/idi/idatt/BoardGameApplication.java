@@ -20,6 +20,11 @@ public class BoardGameApplication extends Application {
   private BoardGame boardGame;
   private String selectedGame;
 
+  /**
+   * Initializes and starts the primary stage of the application.
+   *
+   * @param primaryStage The primary stage for this application, provided by the JavaFX framework.
+   */
   @Override
   public void start(Stage primaryStage) {
 
@@ -97,9 +102,10 @@ public class BoardGameApplication extends Application {
   }
 
   /**
+   * Determines the variant name of a game based on the selected game type.
    *
-   * @param selectedGame
-   * @return
+   * @param selectedGame The name of the selected game type.
+   * @return The variant name corresponding to the selected game type. Defaults to "ladderGame1" if the input is unrecognized.
    */
   private String getVariantNameFromGameType(String selectedGame) {
     switch (selectedGame) {

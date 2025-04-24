@@ -138,6 +138,12 @@ public class BoardGameFactory {
     return gamesDir;
   }
 
+  /**
+   * Ensures that the directory for saving files exists. If the directory does not exist, it creates it.
+   *
+   * @return The path to the "saves" directory.
+   * @throws IOException If an I/O error occurs while checking for or creating the directory.
+   */
   private static Path ensureSavesDirectory() throws IOException {
     Path savesDir = Paths.get(SAVE_FILES_DIRECTORY);
     if (!Files.exists(savesDir)) {
@@ -156,6 +162,14 @@ public class BoardGameFactory {
     return gamesDir.resolve(boardName + ".json").toString();
   }
 
+  /**
+   * Resolves and returns the full file path for a save file, using the specified save name.
+   * Ensures that the directory for saving files exists before constructing the file path.
+   *
+   * @param saveName The name of the save file (without extension).
+   * @return The full path to the save file, as a string.
+   * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.
+   */
   private static String getSaveFilePath(String saveName) throws IOException {
     Path savesDir = ensureSavesDirectory();
     return savesDir.resolve(saveName + ".json").toString();

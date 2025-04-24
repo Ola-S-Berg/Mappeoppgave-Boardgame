@@ -65,8 +65,12 @@ public class GameSelectionView {
     scene = new Scene(layout, 800, 800);
   }
 
+
   /**
-   * Shows a popup for selecting ladder game variations.
+   * Displays a popup for selecting a variant of the ladder game or loading a previously saved game.
+   * This method creates a modal popup window where users can:
+   * 1. Choose from a list of predefined or available ladder game variations to start a new game.
+   * 2. View saved game files, load a selected saved game, or delete a saved game file.
    */
   private void showLadderVariationsPopup() {
     Stage popup = new Stage();
@@ -130,6 +134,13 @@ public class GameSelectionView {
     popup.showAndWait();
   }
 
+  /**
+   * Loads a saved game from the specified save file, restores player positions, and initializes
+   * the game with its saved state. If applicable, sets the players on the correct tiles and
+   * configures the game display.
+   *
+   * @param saveName The name of the save file (without extension) to load the game from.
+   */
   private void loadSavedGame(String saveName) {
     try {
       BoardGame loadedGame = new BoardFileHandler().readFromFile("src/main/resources/Saves/" + saveName + ".json").get(0);

@@ -35,17 +35,17 @@ import java.util.Map;
  */
 public class LadderGameClassicView implements BoardGameObserver {
 
-  private Stage stage;
-  private BoardGame boardGame;
+  private final Stage stage;
+  private final BoardGame boardGame;
   private GridPane boardGridPane;
   private VBox mainLayout;
   private Label statusLabel;
   private Button rollButton;
-  private Map<Player, ImageView> playerTokenViews;
+  private final Map<Player, ImageView> playerTokenViews;
   private Image boardImage;
   private ImageView boardImageView;
   private int currentPlayerIndex = 0;
-  private String gameVariation;
+  private final String gameVariation;
 
   private static final int CELL_SIZE = 60;
   private static final int GRID_SIZE = 10;
@@ -66,6 +66,14 @@ public class LadderGameClassicView implements BoardGameObserver {
     setupGameView();
   }
 
+  /**
+   * Handles the movement of a player's token on the game board.
+   *
+   * @param player The player whose token is moving.
+   * @param fromTileId The ID of the tile the player is moving from.
+   * @param toTileId The ID of the tile the player is moving to.
+   * @param diceValue The value rolled on the dice which determined the movement.
+   */
   @Override
   public void onPlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
     ImageView tokenView = playerTokenViews.get(player);
@@ -79,11 +87,22 @@ public class LadderGameClassicView implements BoardGameObserver {
     }
   }
 
+  /**
+   * Ends the game and displays the winner's information.
+   *
+   * @param player The player who has won the game.
+   */
   @Override
   public void onGameWon(Player player) {
     endGame(player);
   }
 
+  /**
+   * Handles the action when a player must skip their turn. Updates the game status
+   * to reflect the player's skipped turn and disables the roll button temporarily.
+   *
+   * @param player The player who is skipping their turn.
+   */
   @Override
   public void onPlayerSkipTurn(Player player) {
     Platform.runLater(() -> {
@@ -100,6 +119,13 @@ public class LadderGameClassicView implements BoardGameObserver {
     });
   }
 
+  /**
+   * Updates the view when the current player changes.
+   * Displays a status message indicating the current player's turn
+   * and updates the index of the current player in the game.
+   *
+   * @param player The player who is currently taking their turn.
+   */
   @Override
   public void onCurrentPlayerChanged(Player player) {
     Platform.runLater(() -> {
@@ -193,6 +219,9 @@ public class LadderGameClassicView implements BoardGameObserver {
     }
   }
 
+  /**
+   * Saves the current state of the game to a file.
+   */
   private void saveGame() {
     try {
       String saveName = "SavedGame";

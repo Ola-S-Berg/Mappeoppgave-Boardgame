@@ -11,11 +11,11 @@ import java.util.ArrayList;
 public class BoardGame {
   private Board board;
   private Player currentPlayer;
-  private List<Player> players = new ArrayList<>();
+  private final List<Player> players = new ArrayList<>();
   private Dice dice;
-  private BoardFileHandler fileHandler;
+  private final BoardFileHandler fileHandler;
   private String variantName;
-  private List<BoardGameObserver> observers = new ArrayList<>();
+  private final List<BoardGameObserver> observers = new ArrayList<>();
 
   public BoardGame() {
     fileHandler = new BoardFileHandler();
@@ -97,7 +97,10 @@ public class BoardGame {
 }
 
   /**
-   * Creates a new board. The board takes the form of a 9x10 snake game board.
+   * Creates an instance of the Board.
+   * Adds 90 tiles, with unique identifiers ranging from 1 to 90.
+   * Links the tiles in sequential order, with exceptions for the last tile.
+   * Configures the board's tile actions based on the game variant, if specified.
    */
   public void createBoard() {
     board = new Board();
@@ -197,6 +200,12 @@ public class BoardGame {
     }
   }
 
+  /**
+   * Saves the current state of the game board to a file. The board is serialized
+   * and written to the specified file.
+   *
+   * @param filename The name of the file to which the board should be saved.
+   */
   public void saveBoard(String filename) {
     try {
       fileHandler.writeToFile(filename, List.of(this));
@@ -206,6 +215,13 @@ public class BoardGame {
     }
   }
 
+  /**
+   * Loads the board configuration from a specified file. The method reads the file, parses the
+   * content, and updates the game board and variant name based on the file's data. If the file
+   * cannot be read or is empty, no changes are made to the current state, and an error is logged.
+   *
+   * @param filename The name of the file containing the board configuration to be loaded.
+   */
   public void loadBoard(String filename) {
     try {
       List<BoardGame> loadedBoards = fileHandler.readFromFile(filename);
@@ -246,10 +262,20 @@ public List<Player> getPlayers() {
     return board;
   }
 
+  /**
+   * Retrieves the name of the game variant currently in use.
+   *
+   * @return The name of the variant as a String.
+   */
   public String getVariantName() {
     return variantName;
   }
 
+  /**
+   * Sets the name of the game variant to the specified value.
+   *
+   * @param variantName The name of the variant to set.
+   */
   public void setVariantName(String variantName) {
     this.variantName = variantName;
   }
