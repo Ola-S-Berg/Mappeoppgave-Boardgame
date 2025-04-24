@@ -26,10 +26,9 @@ public class BoardGame {
    * @param observer The observer to register.
    */
   public void addObserver (BoardGameObserver observer) {
-   // if (observer != null) {
-    //  throw new NullPointerException("Observer cannot be null");
-   // }
-
+   if (observer == null) {
+     throw new NullPointerException("Observer cannot be null");
+    }
 
     observers.add(observer);
   }
