@@ -76,15 +76,17 @@ public class LadderGameClassicView implements BoardGameObserver {
    */
   @Override
   public void onPlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
-    ImageView tokenView = playerTokenViews.get(player);
-    if (tokenView != null) {
-      int playerIndex = boardGame.getPlayers().indexOf(player);
+    Platform.runLater(() -> {
+      ImageView tokenView = playerTokenViews.get(player);
+      if (tokenView != null) {
+        int playerIndex = boardGame.getPlayers().indexOf(player);
 
-      animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
-        statusLabel.setText(player.getName() + " moved from " + fromTileId +
-            " to " + toTileId + " (dice roll: " + diceValue + ")");
-      });
-    }
+        animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
+          statusLabel.setText(player.getName() + " moved from " + fromTileId +
+              " to " + toTileId + " (dice roll: " + diceValue + ")");
+        });
+      }
+    });
   }
 
   /**
