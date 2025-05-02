@@ -116,7 +116,7 @@ public class BoardGameApplication extends Application {
       case "Classic Ladder Game Extreme":
         return "ladderGame3";
       default:
-        return "ladderGame1";  // Default variant if not recognized
+        return "ladderGame1";  // Default variant, if not recognized.
     }
   }
 

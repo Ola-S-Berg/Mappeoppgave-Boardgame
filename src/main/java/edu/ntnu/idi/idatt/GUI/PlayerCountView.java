@@ -12,8 +12,8 @@ import javafx.scene.layout.VBox;
  * Allows selection of how many players will participate in the game.
  */
 public class PlayerCountView {
-  private BoardGameApplication application;
-  private String selectedGame;
+  private final BoardGameApplication application;
+  private final String selectedGame;
   private Scene scene;
 
   /**
@@ -34,16 +34,14 @@ public class PlayerCountView {
     VBox layout = new VBox(20);
     layout.setAlignment(Pos.CENTER);
 
-    Label titleLabel = new Label("Select Number of Players (Max 4)");
+    Label titleLabel = new Label("Select Number of Players");
     titleLabel.setStyle("-fx-font-size: 24px");
     layout.getChildren().add(titleLabel);
 
-    for (int i = 1; i <= 4; i++) {
+    for (int i = 1; i <= 5; i++) {
       Button playerCountButton = new Button(i + " Player" + (i > 1 ? "s" : ""));
       final int count = i;
-      playerCountButton.setOnAction(event -> {
-        application.showPlayerNameView(selectedGame, count);
-      });
+      playerCountButton.setOnAction(event -> application.showPlayerNameView(selectedGame, count));
       layout.getChildren().add(playerCountButton);
     }
     scene = new Scene(layout, 800, 800);

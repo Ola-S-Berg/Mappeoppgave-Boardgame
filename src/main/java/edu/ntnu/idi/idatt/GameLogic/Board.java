@@ -10,7 +10,7 @@ import java.util.HashMap;
  * Also keeps a complete overview of all tiles.
  */
 public class Board {
-  private Map<Integer, Tile> tiles = new HashMap<>();
+  private final Map<Integer, Tile> tiles = new HashMap<>();
 
   /**
    * Adds a tile to the board.
@@ -31,7 +31,7 @@ public class Board {
 
   /**
    * Sets up actions for the first variation of the ladder game.
-   * A classic balanced ladder game with a normal amount of actions.
+   * A classic balanced ladder game with a normal number of actions.
    * @param board The game board to set up.
    */
   public static void setupTileActionsLadderGame(Board board) {
@@ -59,7 +59,7 @@ public class Board {
 
   /**
    * Sets up actions for the second variation of the ladder game.
-   * Increased amount of actions from the first variation.
+   * Increased number of actions from the first variation.
    * @param board The board game to set up.
    */
   public static void setupTileActionsLadderGameAdvanced(Board board) {
