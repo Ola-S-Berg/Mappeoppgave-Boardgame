@@ -110,11 +110,11 @@ public class BoardGameApplication extends Application {
   private String getVariantNameFromGameType(String selectedGame) {
     switch (selectedGame) {
       case "Classic Ladder Game":
-        return "ladderGame1";
+        return "ladderGame";
       case "Classic Ladder Game Advanced":
-        return "ladderGame2";
+        return "ladderGameAdvanced";
       case "Classic Ladder Game Extreme":
-        return "ladderGame3";
+        return "ladderGameExtreme";
       default:
         return "ladderGame1";  // Default variant, if not recognized.
     }
