@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.GameLogic.Player;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.GameLogic.BoardGameObserver;
 import java.io.IOException;
+import java.util.Objects;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -42,13 +43,14 @@ public class LadderGameClassicView implements BoardGameObserver {
   private Label statusLabel;
   private Button rollButton;
   private final Map<Player, ImageView> playerTokenViews;
-  private Image boardImage;
-  private ImageView boardImageView;
   private int currentPlayerIndex = 0;
   private final String gameVariation;
 
   private static final int CELL_SIZE = 60;
   private static final int GRID_SIZE = 10;
+  double radius = CELL_SIZE * 0.65;
+  double imageOffsetY = -60;
+
 
   /**
    * Constructor that initializes the game view.
@@ -81,10 +83,9 @@ public class LadderGameClassicView implements BoardGameObserver {
       if (tokenView != null) {
         int playerIndex = boardGame.getPlayers().indexOf(player);
 
-        animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
-          statusLabel.setText(player.getName() + " moved from " + fromTileId +
-              " to " + toTileId + " (dice roll: " + diceValue + ")");
-        });
+        animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
+            statusLabel.setText(player.getName() + " moved from " + fromTileId +
+            " to " + toTileId + " (dice roll: " + diceValue + ")"));
       }
     });
   }
@@ -141,16 +142,11 @@ public class LadderGameClassicView implements BoardGameObserver {
    * @return The path to the board image.
    */
   private String getBoardImagePath() {
-    switch (gameVariation) {
-      case "Classic Ladder Game":
-        return "/images/Games/LadderGame.png";
-      case "Classic Ladder Game Advanced":
-        return "/images/Games/LadderGameAdvanced.png";
-      case "Classic Ladder Game Extreme":
-        return "/images/Games/LadderGameExtreme.png";
-      default:
-        return "/images/Games/LadderGame.png";
-    }
+    return switch (gameVariation) {
+      case "Classic Ladder Game Advanced" -> "/images/Games/LadderGameAdvanced.png";
+      case "Classic Ladder Game Extreme" -> "/images/Games/LadderGameExtreme.png";
+      default -> "/images/Games/LadderGame.png";
+    };
   }
 
   /**
@@ -162,7 +158,7 @@ public class LadderGameClassicView implements BoardGameObserver {
     mainLayout.setAlignment(Pos.CENTER);
 
     statusLabel = new Label(
-        "Game Started! " + boardGame.getPlayers().get(0).getName() + "'s Turn To Roll");
+        "Game Started! " + boardGame.getPlayers().getFirst().getName() + "'s Turn To Roll");
     statusLabel.setStyle("-fx-font-size: 18px");
 
     StackPane boardPane = new StackPane();
@@ -170,8 +166,8 @@ public class LadderGameClassicView implements BoardGameObserver {
     boardPane.setMaxSize(600, 600);
 
     String imagePath = getBoardImagePath();
-    boardImage = new Image(getClass().getResourceAsStream(imagePath));
-    boardImageView = new ImageView(boardImage);
+    Image boardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
+    ImageView boardImageView = new ImageView(boardImage);
     boardImageView.setFitWidth(600);
     boardImageView.setFitHeight(600);
     boardImageView.setPreserveRatio(true);
@@ -205,7 +201,7 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     Scene scene = new Scene(mainLayout, 800, 800);
     stage.setScene(scene);
-    stage.setTitle("Ladder Game Classic");
+    stage.setTitle("Ladder Game");
     stage.show();
 
     for (Player player : boardGame.getPlayers()) {
@@ -242,17 +238,16 @@ public class LadderGameClassicView implements BoardGameObserver {
   private void setupPlayerTokens() {
     playerTokenViews.clear();
 
-    int playerOffset = 0;
     for (Player player : boardGame.getPlayers()) {
-      Image tokenImage = new Image(getClass().getResourceAsStream(player.getToken()));
+      Image tokenImage = new Image(
+          Objects.requireNonNull(getClass().getResourceAsStream(player.getToken())));
       ImageView tokenView = new ImageView(tokenImage);
-      tokenView.setFitHeight(40);
-      tokenView.setFitWidth(40);
+      tokenView.setFitHeight(30);
+      tokenView.setFitWidth(30);
       tokenView.setPreserveRatio(true);
 
       playerTokenViews.put(player, tokenView);
 
-      playerOffset++;
     }
   }
 
@@ -279,7 +274,7 @@ public class LadderGameClassicView implements BoardGameObserver {
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-        Platform.runLater(() -> {rollButton.setDisable(false);});
+        Platform.runLater(() -> rollButton.setDisable(false));
       }).start();
 
       return;
@@ -323,25 +318,28 @@ public class LadderGameClassicView implements BoardGameObserver {
       return;
     }
 
-    tokenView.setTranslateX(0);
-    tokenView.setTranslateY(0);
-
     int[] fromCoords = tileIdToGridCoordinates(fromTileId);
     int[] toCoords = tileIdToGridCoordinates(toTileId);
 
-    double offsetX = (playerIndex % 2) * 20;
-    double offsetY = (playerIndex / 2) * 20;
+    double startX = tokenView.getTranslateX();
+    double startY = tokenView.getTranslateY();
 
     double deltaX = (toCoords[1] - fromCoords[1]) * CELL_SIZE;
     double deltaY = (toCoords[0] - fromCoords[0]) * CELL_SIZE;
 
     TranslateTransition transition = new TranslateTransition(Duration.millis(1000), tokenView);
-    transition.setFromX(offsetX);
-    transition.setFromY(offsetY);
-    transition.setToX(offsetX + deltaX);
-    transition.setToY(offsetY + deltaY);
+    transition.setFromX(startX);
+    transition.setFromY(startY);
+    transition.setToX(deltaX);
+    transition.setToY(deltaY);
 
     transition.setOnFinished(event -> {
+      StackPane currentParent = (StackPane) tokenView.getParent();
+      if (currentParent != null) {
+        currentParent.getChildren().remove(tokenView);
+      }
+      tokenView.setTranslateX(0);
+      tokenView.setTranslateY(0);
       positionTokenAtTile(tokenView, toTileId, playerIndex);
       if (onFinished != null) onFinished.run();
     });
@@ -360,27 +358,24 @@ public class LadderGameClassicView implements BoardGameObserver {
     int row = coords[0];
     int col = coords[1];
 
-    double baseOffset = (CELL_SIZE - tokenView.getFitWidth()) / 2.0;
-    double playerOffsetX = (playerIndex % 2) * 20 - 10;
-    double playerOffsetY = (playerIndex / 2) * 20 - 20;
+    float totalPlayers = boardGame.getPlayers().size();
+    double angle = (playerIndex * (360 / totalPlayers)) * Math.PI / 180;
 
-    double offsetX = baseOffset + playerOffsetX;
-    double offsetY = baseOffset + playerOffsetY;
+    double offsetX = radius * Math.cos(angle);
+    double offsetY = radius * Math.sin(angle) + imageOffsetY;
 
     boardGridPane.getChildren().remove(tokenView);
 
-    tokenView.setTranslateX(offsetX);
-    tokenView.setTranslateY(offsetY);
-    tokenView.setLayoutX(0);
-    tokenView.setLayoutY(0);
+    StackPane currentParent = (StackPane) tokenView.getParent();
+    if (currentParent != null) {
+      currentParent.getChildren().remove(tokenView);
+    }
 
     StackPane cell = getStackPaneAt(row, col);
     if (cell != null) {
+      StackPane.setAlignment(tokenView, Pos.CENTER);
+      StackPane.setMargin(tokenView, new Insets(offsetY, 0, 0, offsetX));
       cell.getChildren().add(tokenView);
-    } else {
-      tokenView.setLayoutX(col * CELL_SIZE + offsetX);
-      tokenView.setLayoutY(row * CELL_SIZE + offsetY);
-      boardGridPane.getChildren().add(tokenView);
     }
   }
 

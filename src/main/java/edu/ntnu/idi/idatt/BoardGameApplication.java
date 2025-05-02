@@ -12,7 +12,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Main application that serves as the entry point for the JavaFX application.
+ * Application that serves as the entry point for the JavaFX application.
  * Manages the different views.
  */
 public class BoardGameApplication extends Application {
@@ -50,7 +50,7 @@ public class BoardGameApplication extends Application {
   }
 
   /**
-   * Shows the player count selection view.
+   * Shows the player-count selection view.
    * @param selectedGame The game selected by the user.
    */
   public void showPlayerCountView(String selectedGame) {
@@ -108,16 +108,12 @@ public class BoardGameApplication extends Application {
    * @return The variant name corresponding to the selected game type. Defaults to "ladderGame1" if the input is unrecognized.
    */
   private String getVariantNameFromGameType(String selectedGame) {
-    switch (selectedGame) {
-      case "Classic Ladder Game":
-        return "ladderGame";
-      case "Classic Ladder Game Advanced":
-        return "ladderGameAdvanced";
-      case "Classic Ladder Game Extreme":
-        return "ladderGameExtreme";
-      default:
-        return "ladderGame1";  // Default variant, if not recognized.
-    }
+    return switch (selectedGame) {
+      case "Classic Ladder Game" -> "ladderGame";
+      case "Classic Ladder Game Advanced" -> "ladderGameAdvanced";
+      case "Classic Ladder Game Extreme" -> "ladderGameExtreme";
+      default -> "ladderGame1";  // Default variant, if not recognized.
+    };
   }
 
   /**
