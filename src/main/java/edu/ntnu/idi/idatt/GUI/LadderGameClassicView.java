@@ -42,6 +42,8 @@ public class LadderGameClassicView implements BoardGameObserver {
   private VBox mainLayout;
   private Label statusLabel;
   private Button rollButton;
+  private ImageView diceView1;
+  private ImageView diceView2;
   private final Map<Player, ImageView> playerTokenViews;
   private int currentPlayerIndex = 0;
   private final String gameVariation;
@@ -197,7 +199,21 @@ public class LadderGameClassicView implements BoardGameObserver {
     rollButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px");
     rollButton.setOnAction(event -> rollDice());
 
-    mainLayout.getChildren().addAll(statusLabel, boardPane, saveButton, rollButton);
+    HBox diceBox = new HBox(10);
+    diceBox.setAlignment(Pos.CENTER);
+
+    diceView1 = new ImageView();
+    diceView2 = new ImageView();
+    diceView1.setFitWidth(50);
+    diceView1.setFitHeight(50);
+    diceView2.setFitWidth(50);
+    diceView2.setFitHeight(50);
+
+    updateDieImages(1, 1);
+
+    diceBox.getChildren().addAll(diceView1, diceView2);
+
+    mainLayout.getChildren().addAll(statusLabel, boardPane, saveButton, diceBox, rollButton);
 
     Scene scene = new Scene(mainLayout, 800, 800);
     stage.setScene(scene);
@@ -251,6 +267,17 @@ public class LadderGameClassicView implements BoardGameObserver {
     }
   }
 
+  private void updateDieImages(int dice1, int dice2) {
+    String path1 = "/images/die/Dice" + dice1 + ".png";
+    String path2 = "/images/die/Dice" + dice2 + ".png";
+
+    Image diceImage1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path1)));
+    Image diceImage2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path2)));
+
+    diceView1.setImage(diceImage1);
+    diceView2.setImage(diceImage2);
+  }
+
   /**
    * Manages the player's dice roll during the game, updates the game state,
    * and handles gameplay logic for movement, skipping turns, and checking victory conditions.
@@ -281,11 +308,17 @@ public class LadderGameClassicView implements BoardGameObserver {
     }
 
     new Thread(() -> {
-      int diceValue = boardGame.getDice().roll();
+      int dice1 = boardGame.getDice().roll();
+      int dice2 = boardGame.getDice().roll();
+      int diceValue = dice1 + dice2;
 
       currentPlayer.move(diceValue);
 
+      final int finalDice1 = dice1;
+      final int finalDice2 = dice2;
+
       Platform.runLater(() -> {
+        updateDieImages(finalDice1, finalDice2);
         if (currentPlayer.getCurrentTile().getTileId() != 90) {
           currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
           Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);

@@ -28,5 +28,4 @@ public interface BoardGameObserver {
    * @param player The new current player.
    */
   void onCurrentPlayerChanged(Player player);
-
 }
