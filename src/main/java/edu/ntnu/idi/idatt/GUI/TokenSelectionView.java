@@ -24,9 +24,21 @@ public class TokenSelectionView {
 
   private final String[] TOKEN_PATHS = {
       "/Images/Tokens/BlueToken.png",
+      "/Images/Tokens/LightBlueToken.png",
       "/Images/Tokens/RedToken.png",
       "/Images/Tokens/GreenToken.png",
       "/Images/Tokens/PinkToken.png"
+  };
+
+  /**
+   * Defines the positions for each token.
+   */
+  private final int[][] TOKEN_POSITIONS = {
+      {1, 0},
+      {0, 1},
+      {1, 1},
+      {2, 1},
+      {1, 2},
   };
 
   private Button[] tokenButtons;
@@ -83,7 +95,7 @@ public class TokenSelectionView {
           selectToken(TOKEN_PATHS[tokenIndex]);
         });
 
-        tokenGrid.add(tokenButton, i % 2, i / 2);
+        tokenGrid.add(tokenButton, TOKEN_POSITIONS[i][0], TOKEN_POSITIONS[i][1]);
 
       } catch (Exception e) {
         System.err.println("Error loading token image: " + TOKEN_PATHS[i]);
