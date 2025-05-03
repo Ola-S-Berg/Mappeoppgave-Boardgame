@@ -9,6 +9,7 @@ import edu.ntnu.idi.idatt.GameLogic.BoardGameObserver;
 import java.io.IOException;
 import java.util.Objects;
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,14 +28,14 @@ import java.util.Map;
  * View for the "Ladder Game Classic" game.
  * Displays the game board, handles dice rolling, and shows player movement.
  * TODO:
- * Make GUI look and flow better in general.
+ * Fix bug with GridPane where tokens get misaligned the further up they get.
+ * Fix the statusLabel to more accurately display the status of the game.
  */
 public class LadderGameClassicView implements BoardGameObserver {
 
   private final Stage stage;
   private final BoardGame boardGame;
   private GridPane boardGridPane;
-  private VBox mainLayout;
   private Label statusLabel;
   private Button rollButton;
   private ImageView diceView1;
@@ -42,11 +43,10 @@ public class LadderGameClassicView implements BoardGameObserver {
   private final Map<Player, ImageView> playerTokenViews;
   private int currentPlayerIndex = 0;
   private final String gameVariation;
-
-  private static final int CELL_SIZE = 60;
   private static final int GRID_SIZE = 10;
-  double radius = CELL_SIZE * 0.65;
-  double imageOffsetY = -60;
+  private double tokenSize = 30;
+  private double boardWidth;
+  private double boardHeight;
 
 
   /**
@@ -79,6 +79,8 @@ public class LadderGameClassicView implements BoardGameObserver {
       ImageView tokenView = playerTokenViews.get(player);
       if (tokenView != null) {
         int playerIndex = boardGame.getPlayers().indexOf(player);
+
+        positionTokenAtTile(tokenView, toTileId, playerIndex);
 
         animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
             statusLabel.setText(player.getName() + " moved from " + fromTileId +
@@ -150,67 +152,67 @@ public class LadderGameClassicView implements BoardGameObserver {
    * Sets up the game view with board image, player tokens, and controls.
    */
   private void setupGameView() {
-    mainLayout = new VBox(20);
-    mainLayout.setPadding(new Insets(20));
-    mainLayout.setAlignment(Pos.CENTER);
+    BorderPane root = new BorderPane();
+    root.setPadding(new Insets(10));
 
     statusLabel = new Label(
         "Game Started! " + boardGame.getPlayers().getFirst().getName() + "'s Turn To Roll");
-    statusLabel.setStyle("-fx-font-size: 18px");
+    statusLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+    VBox topSection = new VBox(10);
+    topSection.setAlignment(Pos.CENTER);
+    topSection.setPadding(new Insets(0, 0, 10, 0));
+    topSection.getChildren().addAll(statusLabel);
+    root.setTop(topSection);
 
     StackPane boardPane = new StackPane();
-    boardPane.setMinSize(600, 600);
-    boardPane.setMaxSize(600, 600);
+    boardPane.setPadding(new Insets(5));
+    boardPane.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+    boardPane.prefWidthProperty().bind(root.widthProperty().multiply(0.85));
+    boardPane.prefHeightProperty().bind(root.heightProperty().multiply(0.85));
+    boardPane.setMinSize(400, 400);
 
     String imagePath = getBoardImagePath();
     Image boardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
     ImageView boardImageView = new ImageView(boardImage);
-    boardImageView.setFitWidth(600);
-    boardImageView.setFitHeight(600);
+    boardImageView.fitWidthProperty().bind(boardPane.widthProperty());
+    boardImageView.fitHeightProperty().bind(boardPane.heightProperty());
     boardImageView.setPreserveRatio(true);
 
     boardGridPane = new GridPane();
-    boardGridPane.setMinSize(600, 600);
-    boardGridPane.setMaxSize(600, 600);
+    boardImageView.imageProperty().addListener((obs, oldImg, newImg) -> updateGridPaneSize());
+    boardImageView.fitWidthProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
+    boardImageView.fitHeightProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
 
     for (int row = 0; row < GRID_SIZE; row++) {
       for (int col = 0; col < GRID_SIZE; col++) {
         StackPane cell = new StackPane();
-        cell.setMinSize(CELL_SIZE, CELL_SIZE);
-        cell.setMaxSize(CELL_SIZE, CELL_SIZE);
+        cell.prefWidthProperty().bind(boardGridPane.widthProperty().divide(GRID_SIZE));
+        cell.prefHeightProperty().bind(boardGridPane.heightProperty().divide(GRID_SIZE));
         boardGridPane.add(cell, col, row);
       }
     }
 
     boardPane.getChildren().addAll(boardImageView, boardGridPane);
+    root.setCenter(boardPane);
 
     setupPlayerTokens();
 
+    Platform.runLater(this::updateGridPaneSize);
+
+    HBox controlSection = new HBox(20);
+    controlSection.setAlignment(Pos.CENTER);
+    controlSection.setSpacing(20);
+    controlSection.setPadding(new Insets(15, 0, 5, 0));
+
     Button saveButton = new Button("Save Game");
-    saveButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px");
+    saveButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
     saveButton.setOnAction(event -> saveGame());
 
-    HBox rollDiceBox = new HBox (10);
-    rollDiceBox.setAlignment(Pos.CENTER);
+    VBox diceControlContainer = new VBox(10);
+    diceControlContainer.setAlignment(Pos.CENTER);
 
-    Label rollDiceLabel = new Label("Roll Dice:");
-    rollDiceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold");
-
-    rollButton = new Button();
-    rollButton.setOnAction(event -> rollDice());
-
-    Image rollDieImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/die/RollDie.png")));
-    ImageView rollDieImageView = new ImageView(rollDieImage);
-    rollDieImageView.setFitWidth(50);
-    rollDieImageView.setFitHeight(50);
-    rollDieImageView.setPreserveRatio(true);
-
-    rollButton.setGraphic(rollDieImageView);
-    rollButton.setStyle("-fx-background-color: transparent; -fx-padding: 5px;");
-
-    rollDiceBox.getChildren().addAll(rollDiceLabel, rollButton);
-
-    HBox diceBox = new HBox(10);
+    HBox diceBox = new HBox(15);
     diceBox.setAlignment(Pos.CENTER);
 
     diceView1 = new ImageView();
@@ -224,11 +226,54 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     diceBox.getChildren().addAll(diceView1, diceView2);
 
-    mainLayout.getChildren().addAll(statusLabel, boardPane, saveButton, diceBox, rollDiceBox);
+    HBox rollDiceBox = new HBox (10);
+    rollDiceBox.setAlignment(Pos.CENTER);
 
-    Scene scene = new Scene(mainLayout, 800, 800);
+    Label rollDiceLabel = new Label("Roll Dice:");
+    rollDiceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+    rollButton = new Button();
+    rollButton.setOnAction(event -> rollDice());
+
+    Image rollDieImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/die/RollDie.png")));
+    ImageView rollDieImageView = new ImageView(rollDieImage);
+    rollDieImageView.setFitWidth(60);
+    rollDieImageView.setFitHeight(60);
+    rollDieImageView.setPreserveRatio(true);
+
+    rollButton.setGraphic(rollDieImageView);
+    rollButton.setStyle("-fx-background-color: transparent; -fx-padding: 5px;");
+
+    rollDiceBox.getChildren().addAll(rollDiceLabel, rollButton);
+
+    diceControlContainer.getChildren().addAll(diceBox, rollDiceBox);
+
+    HBox bottomContainer = new HBox();
+    bottomContainer.setAlignment(Pos.CENTER);
+    bottomContainer.setSpacing(20);
+    bottomContainer.setPadding(new Insets(10));
+
+    Region spacerLeft = new Region();
+    HBox.setHgrow(spacerLeft, Priority.ALWAYS);
+
+    Region spacerRight = new Region();
+    HBox.setHgrow(spacerRight, Priority.ALWAYS);
+
+    HBox saveButtonContainer = new HBox(saveButton);
+    saveButtonContainer.setAlignment(Pos.BOTTOM_LEFT);
+    saveButtonContainer.setPadding(new Insets(0, 0, 10, 10));
+    saveButtonContainer.prefWidthProperty().bind(bottomContainer.widthProperty().multiply(0.1));
+
+    diceControlContainer.prefWidthProperty().bind(bottomContainer.widthProperty().multiply(0.9));
+
+    bottomContainer.getChildren().addAll(saveButtonContainer, diceControlContainer);
+    root.setBottom(bottomContainer);
+
+    Scene scene = new Scene(root, 800, 800);
     stage.setScene(scene);
     stage.setTitle("Ladder Game");
+    stage.setMinWidth(600);
+    stage.setMinHeight(600);
     stage.show();
 
     for (Player player : boardGame.getPlayers()) {
@@ -237,10 +282,72 @@ public class LadderGameClassicView implements BoardGameObserver {
       }
     }
 
+    root.widthProperty().addListener((observable, oldValue, newValue) -> {
+      boardWidth = newValue.doubleValue();
+      updateCellSize();
+    });
+    root.heightProperty().addListener((observable, oldValue, newValue) -> {
+      boardHeight = newValue.doubleValue();
+      updateCellSize();
+    });
+
+    Platform.runLater(this::updatePlayerPositions);
+  }
+
+  /**
+   * Updates the gridPane size to match the actual displayed size of the board image.
+   */
+  private void updateGridPaneSize() {
+    Platform.runLater(() -> {
+      ImageView boardImageView = null;
+
+      for (javafx.scene.Node node : ((StackPane) boardGridPane.getParent()).getChildren()) {
+        if (node instanceof ImageView) {
+          boardImageView = (ImageView) node;
+          break;
+        }
+      }
+
+      if (boardImageView != null) {
+        Bounds imageBounds = boardImageView.getBoundsInParent();
+        double imageWidth = imageBounds.getWidth();
+        double imageHeight = imageBounds.getHeight();
+
+        boardGridPane.setPrefSize(imageWidth, imageHeight);
+        boardGridPane.setMaxSize(imageWidth, imageHeight);
+        boardGridPane.setMinSize(imageWidth, imageHeight);
+
+        boardGridPane.setLayoutX(imageBounds.getMinX());
+        boardGridPane.setLayoutY(imageBounds.getMinY());
+
+        boardWidth = imageWidth;
+        boardHeight = imageHeight;
+
+        updateCellSize();
+        updatePlayerPositions();
+      }
+    });
+  }
+
+  /**
+   * Updates cell sizes dynamically when resizing the window.
+   */
+  private void updateCellSize() {
+    double newCellSize = Math.min(boardWidth, boardHeight) / GRID_SIZE;
+    tokenSize = newCellSize * 0.4;
+    updatePlayerPositions();
+  }
+
+  /**
+   * Updates player positions when resizing the view.
+   */
+  private void updatePlayerPositions() {
     for (int i = 0; i < boardGame.getPlayers().size(); i++) {
       Player player = boardGame.getPlayers().get(i);
       ImageView tokenView = playerTokenViews.get(player);
-      positionTokenAtTile(tokenView, player.getCurrentTile().getTileId(), i);
+      if (player.getCurrentTile() != null && tokenView != null) {
+        positionTokenAtTile(tokenView, player.getCurrentTile().getTileId(), i);
+      }
     }
   }
 
@@ -371,26 +478,64 @@ public class LadderGameClassicView implements BoardGameObserver {
     int[] fromCoords = tileIdToGridCoordinates(fromTileId);
     int[] toCoords = tileIdToGridCoordinates(toTileId);
 
-    double startX = tokenView.getTranslateX();
-    double startY = tokenView.getTranslateY();
+    StackPane fromCell = getStackPaneAt(fromCoords[0], fromCoords[1]);
+    StackPane toCell = getStackPaneAt(toCoords[0], toCoords[1]);
 
-    double deltaX = (toCoords[1] - fromCoords[1]) * CELL_SIZE;
-    double deltaY = (toCoords[0] - fromCoords[0]) * CELL_SIZE;
+    if (fromCell == null || toCell == null) {
+      System.out.println("ERROR: Could not find cells for animation from " + fromTileId + " to " + toTileId);
+      if (onFinished != null) onFinished.run();
+      return;
+    }
 
-    TranslateTransition transition = new TranslateTransition(Duration.millis(1000), tokenView);
-    transition.setFromX(startX);
-    transition.setFromY(startY);
-    transition.setToX(deltaX);
-    transition.setToY(deltaY);
+    Bounds fromBounds = fromCell.localToScene(fromCell.getBoundsInLocal());
+    Bounds toBounds = toCell.localToScene(toCell.getBoundsInLocal());
+
+    Image tokenImage = tokenView.getImage();
+    ImageView animatedToken = new ImageView(tokenImage);
+    animatedToken.setFitHeight(tokenSize);
+    animatedToken.setFitWidth(tokenSize);
+    animatedToken.setPreserveRatio(true);
+
+    StackPane overlayPane = new StackPane();
+    overlayPane.setMouseTransparent(true);
+
+    Scene scene = boardGridPane.getScene();
+    StackPane sceneRoot = new StackPane();
+    sceneRoot.getChildren().add(overlayPane);
+
+    double offsetAngle = (playerIndex * (360.0 / boardGame.getPlayers().size())) * Math.PI / 180;
+    double offsetRadius = Math.min(fromBounds.getWidth(), fromBounds.getHeight()) * 0.25;
+    double offsetX = offsetRadius * Math.cos(offsetAngle);
+    double offsetY = offsetRadius * Math.sin(offsetAngle);
+
+    double startX = fromBounds.getMinX() + (fromBounds.getWidth() / 2) + offsetX - (tokenSize / 2);
+    double startY = fromBounds.getMinY() + (fromBounds.getHeight() / 2) + offsetY - (tokenSize / 2);
+
+    double endX = toBounds.getMinX() + (toBounds.getWidth() / 2) + offsetX - (tokenSize / 2);
+    double endY = toBounds.getMinY() + (toBounds.getHeight() / 2) + offsetY - (tokenSize / 2);
+
+    animatedToken.setLayoutX(startX);
+    animatedToken.setLayoutY(startY);
+
+    Pane rootPane = (Pane) scene.getRoot();
+    rootPane.getChildren().add(animatedToken);
+
+    StackPane currentParent = (StackPane) tokenView.getParent();
+    if (currentParent != null) {
+      currentParent.getChildren().remove(tokenView);
+    }
+
+    TranslateTransition transition = new TranslateTransition(Duration.millis(800), animatedToken);
+    transition.setFromX(0);
+    transition.setFromY(0);
+    transition.setToX(endX - startX);
+    transition.setToY(endY - startY);
 
     transition.setOnFinished(event -> {
-      StackPane currentParent = (StackPane) tokenView.getParent();
-      if (currentParent != null) {
-        currentParent.getChildren().remove(tokenView);
-      }
-      tokenView.setTranslateX(0);
-      tokenView.setTranslateY(0);
+      rootPane.getChildren().remove(animatedToken);
+
       positionTokenAtTile(tokenView, toTileId, playerIndex);
+
       if (onFinished != null) onFinished.run();
     });
 
@@ -408,13 +553,17 @@ public class LadderGameClassicView implements BoardGameObserver {
     int row = coords[0];
     int col = coords[1];
 
-    float totalPlayers = boardGame.getPlayers().size();
-    double angle = (playerIndex * (360 / totalPlayers)) * Math.PI / 180;
+    Bounds gridBounds = boardGridPane.getBoundsInParent();
+    double cellWidth = gridBounds.getWidth() / GRID_SIZE;
+    double cellHeight = gridBounds.getHeight() / GRID_SIZE;
 
-    double offsetX = radius * Math.cos(angle);
-    double offsetY = radius * Math.sin(angle) + imageOffsetY;
+    tokenView.setFitHeight(tokenSize);
+    tokenView.setFitWidth(tokenSize);
 
-    boardGridPane.getChildren().remove(tokenView);
+    double offsetAngle = (playerIndex * (360.0 / boardGame.getPlayers().size())) * Math.PI / 180;
+    double offsetRadius = Math.min(cellWidth, cellHeight) * 0.25;
+    double offsetX = offsetRadius * Math.cos(offsetAngle);
+    double offsetY = offsetRadius * Math.sin(offsetAngle);
 
     StackPane currentParent = (StackPane) tokenView.getParent();
     if (currentParent != null) {
@@ -484,6 +633,16 @@ public class LadderGameClassicView implements BoardGameObserver {
       new BoardGameApplication().start(new Stage());
     });
 
-    mainLayout.getChildren().add(playAgainButton);
+    BorderPane root = (BorderPane) stage.getScene().getRoot();
+
+    VBox topSection = (VBox) root.getTop();
+    if (topSection != null) {
+      topSection.getChildren().add(playAgainButton);
+    } else {
+      topSection = new VBox(10);
+      topSection.setAlignment(Pos.CENTER);
+      topSection.getChildren().addAll(statusLabel, playAgainButton);
+      root.setTop(topSection);
+    }
   }
 }
