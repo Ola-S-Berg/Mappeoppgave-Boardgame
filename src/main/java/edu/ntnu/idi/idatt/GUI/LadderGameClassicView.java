@@ -27,12 +27,7 @@ import java.util.Map;
  * View for the "Ladder Game Classic" game.
  * Displays the game board, handles dice rolling, and shows player movement.
  * TODO:
- * Display die images when rolling.
- * Add tile information.
  * Make GUI look and flow better in general.
- * Remove unnecessary code.
- * Create GUI and code for saving and loading the board and players from files.
- * Fix a bug with wait action.
  */
 public class LadderGameClassicView implements BoardGameObserver {
 
@@ -195,9 +190,25 @@ public class LadderGameClassicView implements BoardGameObserver {
     saveButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px");
     saveButton.setOnAction(event -> saveGame());
 
-    rollButton = new Button("Roll Die");
-    rollButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px");
+    HBox rollDiceBox = new HBox (10);
+    rollDiceBox.setAlignment(Pos.CENTER);
+
+    Label rollDiceLabel = new Label("Roll Dice:");
+    rollDiceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold");
+
+    rollButton = new Button();
     rollButton.setOnAction(event -> rollDice());
+
+    Image rollDieImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/die/RollDie.png")));
+    ImageView rollDieImageView = new ImageView(rollDieImage);
+    rollDieImageView.setFitWidth(50);
+    rollDieImageView.setFitHeight(50);
+    rollDieImageView.setPreserveRatio(true);
+
+    rollButton.setGraphic(rollDieImageView);
+    rollButton.setStyle("-fx-background-color: transparent; -fx-padding: 5px;");
+
+    rollDiceBox.getChildren().addAll(rollDiceLabel, rollButton);
 
     HBox diceBox = new HBox(10);
     diceBox.setAlignment(Pos.CENTER);
@@ -213,7 +224,7 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     diceBox.getChildren().addAll(diceView1, diceView2);
 
-    mainLayout.getChildren().addAll(statusLabel, boardPane, saveButton, diceBox, rollButton);
+    mainLayout.getChildren().addAll(statusLabel, boardPane, saveButton, diceBox, rollDiceBox);
 
     Scene scene = new Scene(mainLayout, 800, 800);
     stage.setScene(scene);
@@ -267,6 +278,12 @@ public class LadderGameClassicView implements BoardGameObserver {
     }
   }
 
+  /**
+   * Helper method for rollDice.
+   * Updates the die images when displaying a rolled dice.
+   * @param dice1 The image of the first dice rolled.
+   * @param dice2 The image of the second dice rolled.
+   */
   private void updateDieImages(int dice1, int dice2) {
     String path1 = "/images/die/Dice" + dice1 + ".png";
     String path2 = "/images/die/Dice" + dice2 + ".png";
@@ -413,7 +430,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Gets the StackPane at specific row and column.
+   * Gets the StackPane at a specific row and column.
    * Helper method for @positionTokenAtTile.
    * @param row The row index.
    * @param col The column index.
