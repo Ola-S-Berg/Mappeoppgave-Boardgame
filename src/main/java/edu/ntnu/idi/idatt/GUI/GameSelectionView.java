@@ -25,12 +25,12 @@ import javafx.stage.Stage;
  * Allows players to choose which game to play.
  */
 public class GameSelectionView {
-  private BoardGameApplication application;
+  private final BoardGameApplication application;
   private Scene scene;
 
   /**
    * Constructor that creates the game selection view.
-   * @param application
+   * @param application The application to create.
    */
   public GameSelectionView(BoardGameApplication application) {
     this.application = application;
@@ -64,7 +64,6 @@ public class GameSelectionView {
 
     scene = new Scene(layout, 800, 800);
   }
-
 
   /**
    * Displays a popup for selecting a variant of the ladder game or loading a previously saved game.
@@ -143,7 +142,7 @@ public class GameSelectionView {
    */
   private void loadSavedGame(String saveName) {
     try {
-      BoardGame loadedGame = new BoardFileHandler().readFromFile("src/main/resources/Saves/" + saveName + ".json").get(0);
+      BoardGame loadedGame = new BoardFileHandler().readFromFile("src/main/resources/Saves/" + saveName + ".json").getFirst();
       List<Player> players = new PlayerFileHandler().readFromFile("src/main/resources/Saves/" + saveName + "_players.csv");
 
       if (loadedGame.getDice() == null) {
@@ -181,10 +180,6 @@ public class GameSelectionView {
       String displayName;
 
       switch (gameVariation) {
-        case "ladderGame":
-        case "Classic Ladder Game":
-          displayName = "Classic Ladder Game";
-          break;
         case "Classic Ladder Game Advanced":
         case "ladderGameAdvanced":
           displayName = "Classic Ladder Game Advanced";

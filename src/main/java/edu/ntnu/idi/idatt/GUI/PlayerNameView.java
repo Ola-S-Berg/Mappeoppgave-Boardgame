@@ -13,10 +13,10 @@ import javafx.scene.layout.VBox;
  * Collects names for each player individually.
  */
 public class PlayerNameView {
-  private BoardGameApplication application;
-  private String selectedGame;
-  private int playerCount;
-  private String[] playerNames;
+  private final BoardGameApplication application;
+  private final String selectedGame;
+  private final int playerCount;
+  private final String[] playerNames;
   private int currentPlayerIndex;
   private Scene scene;
 

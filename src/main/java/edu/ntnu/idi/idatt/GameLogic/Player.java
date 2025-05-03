@@ -7,12 +7,12 @@ import java.util.Map;
  * Class representing a player in the game
  */
 public class Player {
-  private String name;
+  private final String name;
   private Tile currentTile;
   private BoardGame game;
-  private String token;
+  private final String token;
   private boolean waitTurn = false;
-  private Map<String, String> properties = new HashMap<>();
+  private final Map<String, String> properties = new HashMap<>();
 
 
   /**
@@ -55,7 +55,7 @@ public class Player {
   /**
    * Moves the player a certain amount of tile based on pips rolled from dice.
    * Notifies BoardGame about movement and game win.
-   * @param steps The amount of steps the player moves.
+   * @param steps The number of steps the player moves.
    */
   public void move (int steps) {
     if (waitTurn) {
@@ -108,8 +108,8 @@ public class Player {
   }
 
   /**
-   * Checks if the player will skip their next turn.
-   * @return True if the player will skip their next turn.
+   * Checks if the player skips their next turn.
+   * @return True if the player skips their next turn.
    */
   public boolean willWaitTurn() {
     return waitTurn;

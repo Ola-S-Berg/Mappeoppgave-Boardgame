@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.GUI;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
+import java.util.Objects;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,10 +16,10 @@ import javafx.scene.layout.VBox;
  * Allows each player to select a unique token.
  */
 public class TokenSelectionView {
-  private BoardGameApplication application;
+  private final BoardGameApplication application;
   private String selectedGame; //Used later when more games are added
-  private String[] playerNames;
-  private String [] playerTokens;
+  private final String[] playerNames;
+  private final String [] playerTokens;
   private int currentPlayerIndex;
   private Scene scene;
 
@@ -79,7 +80,8 @@ public class TokenSelectionView {
 
     for (int i = 0; i < TOKEN_PATHS.length; i++) {
       try {
-        Image tokenImage = new Image(getClass().getResourceAsStream(TOKEN_PATHS[i]));
+        Image tokenImage = new Image(
+            Objects.requireNonNull(getClass().getResourceAsStream(TOKEN_PATHS[i])));
         ImageView tokenImageView = new ImageView(tokenImage);
         tokenImageView.setFitHeight(80);
         tokenImageView.setFitWidth(80);
@@ -88,12 +90,11 @@ public class TokenSelectionView {
         Button tokenButton = new Button();
         tokenButton.setGraphic(tokenImageView);
         tokenButton.setStyle("-fx-background-color: transparent;");
+        assert tokenButtons != null;
         tokenButtons[i] = tokenButton;
 
         final int tokenIndex = i;
-        tokenButton.setOnAction(event -> {
-          selectToken(TOKEN_PATHS[tokenIndex]);
-        });
+        tokenButton.setOnAction(event -> selectToken(TOKEN_PATHS[tokenIndex]));
 
         tokenGrid.add(tokenButton, TOKEN_POSITIONS[i][0], TOKEN_POSITIONS[i][1]);
 
@@ -118,7 +119,7 @@ public class TokenSelectionView {
     if (currentPlayerIndex < playerNames.length) {
       //Updates view for the current player.
       VBox layout = (VBox) scene.getRoot();
-      Label titleLabel = (Label) layout.getChildren().get(0);
+      Label titleLabel = (Label) layout.getChildren().getFirst();
       titleLabel.setText(playerNames[currentPlayerIndex] + ", Select Your Token");
 
       //Iterates between selected tokens and disables previously selected tokens.
