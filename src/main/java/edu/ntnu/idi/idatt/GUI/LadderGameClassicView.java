@@ -29,8 +29,6 @@ import java.util.Map;
 /**
  * View for the "Ladder Game Classic" game.
  * Displays the game board, handles dice rolling, and shows player movement.
- * TODO:
- * Fix the statusLabel to more accurately display the status of the game.
  */
 public class LadderGameClassicView implements BoardGameObserver {
 
@@ -38,6 +36,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   private final BoardGame boardGame;
   private GridPane boardGridPane;
   private Label statusLabel;
+  private Label actionLabel;
   private Button rollButton;
   private ImageView diceView1;
   private ImageView diceView2;
@@ -82,11 +81,15 @@ public class LadderGameClassicView implements BoardGameObserver {
       if (tokenView != null) {
         int playerIndex = boardGame.getPlayers().indexOf(player);
 
-        positionTokenAtTile(tokenView, toTileId, playerIndex);
+        if (diceValue > 0) {
+          statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from " + fromTileId + " to " + toTileId);
+        } else {
+          statusLabel.setText(player.getName() + " moved from " + fromTileId + " to " + toTileId + " due to an action");
+        }
 
-        animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
-            statusLabel.setText(player.getName() + " moved from " + fromTileId +
-            " to " + toTileId + " (dice roll: " + diceValue + ")"));
+        if (player != boardGame.getPlayers().get(currentPlayerIndex)) {
+          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, null);
+        }
       }
     });
   }
@@ -110,7 +113,8 @@ public class LadderGameClassicView implements BoardGameObserver {
   @Override
   public void onPlayerSkipTurn(Player player) {
     Platform.runLater(() -> {
-      statusLabel.setText(player.getName() + " Must skip their turn");
+      actionLabel.setText(player.getName() + " must skip their turn");
+      actionLabel.setVisible(true);
       rollButton.setDisable(true);
       new Thread(() -> {
         try {
@@ -118,7 +122,10 @@ public class LadderGameClassicView implements BoardGameObserver {
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-        Platform.runLater(() -> rollButton.setDisable(false));
+        Platform.runLater(() -> {
+          rollButton.setDisable(false);
+          actionLabel.setVisible(false);
+        });
       }).start();
     });
   }
@@ -157,14 +164,18 @@ public class LadderGameClassicView implements BoardGameObserver {
     BorderPane root = new BorderPane();
     root.setPadding(new Insets(10));
 
-    statusLabel = new Label(
-        "Game Started! " + boardGame.getPlayers().getFirst().getName() + "'s Turn To Roll");
-    statusLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;");
-
     VBox topSection = new VBox(10);
     topSection.setAlignment(Pos.CENTER);
     topSection.setPadding(new Insets(0, 0, 10, 0));
-    topSection.getChildren().addAll(statusLabel);
+
+    statusLabel = new Label("Game Started! " + boardGame.getPlayers().getFirst().getName() + "'s Turn To Roll");
+    statusLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+    actionLabel = new Label("");
+    actionLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #CC0000;");
+    actionLabel.setVisible(false);
+
+    topSection.getChildren().addAll(statusLabel, actionLabel);
     root.setTop(topSection);
 
     StackPane boardPane = new StackPane();
@@ -384,7 +395,6 @@ public class LadderGameClassicView implements BoardGameObserver {
       tokenView.setPreserveRatio(true);
 
       playerTokenViews.put(player, tokenView);
-
     }
   }
 
@@ -411,8 +421,10 @@ public class LadderGameClassicView implements BoardGameObserver {
    */
   private void rollDice() {
     rollButton.setDisable(true);
+    actionLabel.setVisible(false);
 
     Player currentPlayer = boardGame.getPlayers().get(currentPlayerIndex);
+    statusLabel.setText(currentPlayer.getName() + " is rolling the dice...");
 
     if (currentPlayer.willWaitTurn()) {
       boardGame.notifyPlayerSkipTurn(currentPlayer);
@@ -448,37 +460,64 @@ public class LadderGameClassicView implements BoardGameObserver {
         }
       }
 
-      TileAction action = destinationTile.getAction();
-      if (action != null) {
-        destinationTile.landPlayer(currentPlayer);
-        destinationTile = currentPlayer.getCurrentTile();
-      }
-
-      final int toTileId = destinationTile.getTileId();
-      final boolean reachedWinningTile = toTileId == 90;
-
-      Tile finalDestinationTile = destinationTile;
+      final int rollDestinationTileId = destinationTile.getTileId();
+      final Tile finalDestinationTile = destinationTile;
 
       Platform.runLater(() -> {
+
         currentPlayer.placeOnTile(finalDestinationTile);
+        boardGame.notifyPlayerMove(currentPlayer, fromTileId, rollDestinationTileId, diceValue);
 
-        boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValue);
+        ImageView tokenView = playerTokenViews.get(currentPlayer);
+        if (tokenView != null) {
+          animateTokenMovement(tokenView, fromTileId, rollDestinationTileId, currentPlayerIndex, () -> {
+            TileAction action = finalDestinationTile.getAction();
+            if (action != null) {
+              final int preActionTileId = rollDestinationTileId;
 
-        if (reachedWinningTile) {
-          boardGame.notifyGameWon(currentPlayer);
-        } else {
-          currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
-          Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
-          boardGame.notifyCurrentPlayerChanged(nextPlayer);
+              action.perform(currentPlayer);
 
-          new Thread(() -> {
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
+              final int postActionTileId = currentPlayer.getCurrentTile().getTileId();
+
+              String actionType = action.getClass().getSimpleName();
+              switch (actionType) {
+                case "LadderAction":
+                  actionLabel.setText(currentPlayer.getName() + " landed on a ladder");
+                  break;
+                case "BackToStartAction":
+                  actionLabel.setText(currentPlayer.getName() + " must go back to start");
+                  break;
+                case "WaitAction":
+                  actionLabel.setText(currentPlayer.getName() + " must wait a turn");
+                  break;
+                default:
+                  actionLabel.setText(currentPlayer.getName() + " landed on a tile action");
+              }
+              actionLabel.setVisible(true);
+
+              if (postActionTileId != preActionTileId) {
+                boardGame.notifyPlayerMove(currentPlayer, preActionTileId, postActionTileId, 0);
+
+                new Thread(() -> {
+                  try {
+                    Thread.sleep(500);
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+
+                  Platform.runLater(() -> {
+                    animateTokenMovement(tokenView, preActionTileId, postActionTileId, currentPlayerIndex, () -> {
+                      checkWinAndPrepareNextTurn(currentPlayer);
+                    });
+                  });
+                }).start();
+              } else {
+                checkWinAndPrepareNextTurn(currentPlayer);
+              }
+            } else {
+              checkWinAndPrepareNextTurn(currentPlayer);
             }
-            Platform.runLater(() -> rollButton.setDisable(false));
-          }).start();
+          });
         }
       });
 
@@ -486,6 +525,30 @@ public class LadderGameClassicView implements BoardGameObserver {
       final int finalDice2 = dice2;
       Platform.runLater(() -> updateDieImages(finalDice1, finalDice2));
     }).start();
+  }
+
+  /**
+   * Helper method to check if a player has won and prepare for the next turn.
+   * @param currentPlayer The current player.
+   */
+  private void checkWinAndPrepareNextTurn(Player currentPlayer) {
+    if (currentPlayer.getCurrentTile().getTileId() == 90) {
+      boardGame.notifyGameWon(currentPlayer);
+    } else {
+      new Thread(() -> {
+        try {
+          Thread.sleep(2000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        Platform.runLater(() -> {
+          currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
+          Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
+          boardGame.notifyCurrentPlayerChanged(nextPlayer);
+          rollButton.setDisable(false);
+        });
+      }).start();
+    }
   }
 
   /**
@@ -651,6 +714,8 @@ public class LadderGameClassicView implements BoardGameObserver {
    */
   private void endGame(Player winner) {
     statusLabel.setText("Game Over! " + winner.getName() + " is the winner!");
+    actionLabel.setText(winner.getName() + " reached the final square!");
+    actionLabel.setVisible(true);
     rollButton.setDisable(true);
 
     Button playAgainButton = new Button("Play Again");
@@ -668,7 +733,7 @@ public class LadderGameClassicView implements BoardGameObserver {
     } else {
       topSection = new VBox(10);
       topSection.setAlignment(Pos.CENTER);
-      topSection.getChildren().addAll(statusLabel, playAgainButton);
+      topSection.getChildren().addAll(statusLabel, actionLabel, playAgainButton);
       root.setTop(topSection);
     }
   }
