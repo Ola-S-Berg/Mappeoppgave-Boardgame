@@ -1,13 +1,8 @@
 package edu.ntnu.idi.idatt.GUI;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
-import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
-
-import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
-import edu.ntnu.idi.idatt.GameLogic.Player;
-import edu.ntnu.idi.idatt.GameLogic.Tile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +22,7 @@ import javafx.stage.Stage;
 public class GameSelectionView {
   private final BoardGameApplication application;
   private Scene scene;
+  private static final String SAVE_FILES_DIRECTORY = "src/main/resources/Saves";
 
   /**
    * Constructor that creates the game selection view.
@@ -83,13 +79,12 @@ public class GameSelectionView {
     label.setStyle("-fx-font-size: 18px");
     popupLayout.getChildren().add(label);
 
-    List<String> variations = BoardGameFactory.getAvailableBoardGames();
+    List<String> variations = BoardGameFactory.getAvailableVariants();
 
     for (String variation : variations) {
       Button variationButton = new Button(variation);
       variationButton.setOnAction(event -> {
         popup.close();
-        BoardGame selectedGame = BoardGameFactory.createBoardGame(variation);
         application.showPlayerCountView(variation);
       });
       popupLayout.getChildren().add(variationButton);
@@ -100,31 +95,35 @@ public class GameSelectionView {
     loadLabel.setStyle("-fx-font-size: 24px");
     popupLayout.getChildren().add(loadLabel);
 
-    File savesDir = new File("src/main/resources/Saves");
+    File savesDir = new File(SAVE_FILES_DIRECTORY);
     if (!savesDir.exists()) savesDir.mkdirs();
 
-    File[] saveFiles = savesDir.listFiles((dir, name) -> name.endsWith("_players.csv"));
-    if (saveFiles != null) {
-      for (File file : saveFiles) {
-        String saveName = file.getName().replace("_players.csv", "");
+    File[] playerSaveFiles = savesDir.listFiles((dir, name) -> name.endsWith("_players.csv"));
 
-        Button loadButton = new Button("Load: " + saveName);
-        loadButton.setOnAction(e -> {
-          popup.close();
-          loadSavedGame(saveName);
-        });
+    if (playerSaveFiles != null) {
+      for (File playerFile : playerSaveFiles) {
+        String saveName = playerFile.getName().replace("_players.csv", "");
 
-        Button deleteButton = new Button("Delete: " + saveName);
-        deleteButton.setOnAction(e -> {
-          new File("src/main/resources/Saves/" + saveName + ".json").delete();
-          file.delete();
-          popup.close();
-          showLadderVariationsPopup(); // refresh list
-        });
+        File boardFile = new File(SAVE_FILES_DIRECTORY + "/" + saveName + "_board.json");
+        if (boardFile.exists()) {
+          Button loadButton = new Button("Load: " + saveName);
+          loadButton.setOnAction(e -> {
+            popup.close();
+            loadGame(saveName);
+          });
 
-        HBox saveButtons = new HBox(10, loadButton, deleteButton);
-        saveButtons.setAlignment(Pos.CENTER);
-        popupLayout.getChildren().add(saveButtons);
+          Button deleteButton = new Button("Delete: " + saveName);
+          deleteButton.setOnAction(e -> {
+            boardFile.delete();
+            playerFile.delete();
+            popup.close();
+            showLadderVariationsPopup();
+          });
+
+          HBox saveButtons = new HBox(10, loadButton, deleteButton);
+          saveButtons.setAlignment(Pos.CENTER);
+          popupLayout.getChildren().add(saveButtons);
+        }
       }
     }
 
@@ -134,64 +133,21 @@ public class GameSelectionView {
   }
 
   /**
-   * Loads a saved game from the specified save file, restores player positions, and initializes
-   * the game with its saved state. If applicable, sets the players on the correct tiles and
-   * configures the game display.
+   * Loads a saved game and initializes the appropriate game view based on the variant of the game.
+   * If the saved game cannot be loaded due to an error, it logs an error message to the console.
    *
-   * @param saveName The name of the save file (without extension) to load the game from.
+   * @param saveName The name of the saved game file to load.
    */
-  private void loadSavedGame(String saveName) {
+  private void loadGame(String saveName) {
     try {
-      BoardGame loadedGame = new BoardFileHandler().readFromFile("src/main/resources/Saves/" + saveName + ".json").getFirst();
-      List<Player> players = new PlayerFileHandler().readFromFile("src/main/resources/Saves/" + saveName + "_players.csv");
-
-      if (loadedGame.getDice() == null) {
-        loadedGame.createDice();
-      }
-
-      for (Player player : players) {
-        player.setGame(loadedGame);
-
-        String savedTileIdStr = player.getProperty("savedTileId");
-        if (savedTileIdStr != null && !savedTileIdStr.trim().isEmpty()) {
-          try {
-            int tileId = Integer.parseInt(savedTileIdStr.trim());
-            Tile tile = loadedGame.getBoard().getTile(tileId);
-            if (tile != null) {
-              player.placeOnTile(tile);
-              System.out.println("Placed " + player.getName() + " on tile " + tileId);
-            } else {
-              System.out.println("Tile " + tileId + " not found, placing " + player.getName() + " on tile 1");
-              player.placeOnTile(loadedGame.getBoard().getTile(1));
-            }
-          } catch (NumberFormatException e) {
-            System.out.println("Invalid tile ID format: " + savedTileIdStr + ", placing " + player.getName() + " on tile 1");
-            player.placeOnTile(loadedGame.getBoard().getTile(1));
-          }
-        } else {
-          System.out.println("No saved tile ID for " + player.getName() + ", placing on tile 1");
-          player.placeOnTile(loadedGame.getBoard().getTile(1));
-        }
-
-        loadedGame.addPlayer(player);
-      }
+      BoardGame loadedGame = BoardGameFactory.loadSavedGame(saveName);
 
       String gameVariation = loadedGame.getVariantName();
-      String displayName;
-
-      switch (gameVariation) {
-        case "Classic Ladder Game Advanced":
-        case "ladderGameAdvanced":
-          displayName = "Classic Ladder Game Advanced";
-          break;
-        case "Classic Ladder Game Extreme":
-        case "ladderGameExtreme":
-          displayName = "Classic Ladder Game Extreme";
-          break;
-        default:
-          displayName = "Classic Ladder Game";
-          break;
-      }
+      String displayName = switch (gameVariation) {
+        case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
+        case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
+        default -> "Ladder Game Classic";
+      };
 
       new LadderGameClassicView(loadedGame, application.getPrimaryStage(), displayName);
     } catch (IOException e) {

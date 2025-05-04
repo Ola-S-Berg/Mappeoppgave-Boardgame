@@ -7,6 +7,7 @@ import edu.ntnu.idi.idatt.GUI.PlayerNameView;
 import edu.ntnu.idi.idatt.GUI.TokenSelectionView;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
+import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -29,9 +30,7 @@ public class BoardGameApplication extends Application {
   public void start(Stage primaryStage) {
 
     this.primaryStage = primaryStage;
-    this.boardGame = new BoardGame();
-    boardGame.createBoard();
-    boardGame.createDice();
+    this.boardGame = BoardGameFactory.createLadderGameClassic();
 
     primaryStage.setTitle("Board Game");
 
@@ -89,9 +88,7 @@ public class BoardGameApplication extends Application {
    */
   public void startGame(String[] playerNames, String[] playerTokens) {
     boardGame = new BoardGame();
-    boardGame.setVariantName(getVariantNameFromGameType(selectedGame));
-    boardGame.createBoard();
-    boardGame.createDice();
+    boardGame = BoardGameFactory.createBoardGame(selectedGame);
 
     for (int i = 0; i < playerNames.length; i++) {
       Player player = new Player(playerNames[i], playerTokens[i], boardGame);
@@ -99,21 +96,6 @@ public class BoardGameApplication extends Application {
     }
 
     LadderGameClassicView ladderGameClassicView = new LadderGameClassicView(boardGame, primaryStage, selectedGame);
-  }
-
-  /**
-   * Determines the variant name of a game based on the selected game type.
-   *
-   * @param selectedGame The name of the selected game type.
-   * @return The variant name corresponding to the selected game type. Defaults to "ladderGame1" if the input is unrecognized.
-   */
-  private String getVariantNameFromGameType(String selectedGame) {
-    return switch (selectedGame) {
-      case "Classic Ladder Game" -> "ladderGame";
-      case "Classic Ladder Game Advanced" -> "ladderGameAdvanced";
-      case "Classic Ladder Game Extreme" -> "ladderGameExtreme";
-      default -> "ladderGame1";  // Default variant, if not recognized.
-    };
   }
 
   /**
