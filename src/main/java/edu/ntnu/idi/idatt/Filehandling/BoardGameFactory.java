@@ -1,7 +1,9 @@
 package edu.ntnu.idi.idatt.Filehandling;
 
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
+import edu.ntnu.idi.idatt.GameLogic.Player;
 
+import edu.ntnu.idi.idatt.GameLogic.Tile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +22,7 @@ public class BoardGameFactory {
    * Creates a classic ladder game.
    * @return A configured board game.
    */
-  public static BoardGame createClassicLadderGame() {
+  public static BoardGame createLadderGameClassic() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("ladderGame");
     boardGame.createBoard();
@@ -33,7 +35,7 @@ public class BoardGameFactory {
    * Creates a second version of the classic ladder game with mixed tile actions.
    * @return A configured board game.
    */
-  public static BoardGame createClassicLadderGameAdvanced() {
+  public static BoardGame createLadderGameAdvanced() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("ladderGameAdvanced");
     boardGame.createBoard();
@@ -46,7 +48,7 @@ public class BoardGameFactory {
    * Creates a third version of the classic ladder game with mixed tile actions.
    * @return A configured board game.
    */
-  public static BoardGame createClassicLadderGameExtreme() {
+  public static BoardGame createLadderGameExtreme() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("ladderGameExtreme");
     boardGame.createBoard();
@@ -77,10 +79,10 @@ public class BoardGameFactory {
    */
   public static BoardGame createBoardGame(String boardName) {
     return switch (boardName) {
-      case "Ladder Game Classic" -> createClassicLadderGame();
-      case "Ladder Game Advanced" -> createClassicLadderGameAdvanced();
-      case "Ladder Game Extreme" -> createClassicLadderGameExtreme();
-      default -> createClassicLadderGame(); // Default to classic game
+      case "Ladder Game Classic" -> createLadderGameClassic();
+      case "Ladder Game Advanced" -> createLadderGameAdvanced();
+      case "Ladder Game Extreme" -> createLadderGameExtreme();
+      default -> createLadderGameClassic(); // Default to classic game
     };
   }
 
@@ -91,9 +93,59 @@ public class BoardGameFactory {
    * @throws IOException If an error occurs during file writing.
    */
   public static void saveBoardGame(BoardGame boardGame, String boardName) throws IOException {
-    String filename = getSaveFilePath(boardName);
+    String filename = getBoardSaveFilePath(boardName);
     BoardFileHandler fileHandler = new BoardFileHandler();
     fileHandler.writeToFile(filename, List.of(boardGame));
+  }
+
+
+  /**
+   * Loads a saved game from specified save files. This method reads the board
+   * configuration and player data from the corresponding save files, restores
+   * the game state, initializes any missing components, and positions players
+   * on the appropriate tiles.
+   *
+   * @param saveName The name of the save file to load the game from, excluding file extensions.
+   * @return The loaded BoardGame instance with restored state and player positions.
+   * @throws IOException If an error occurs while reading the save files.
+   */
+  public static BoardGame loadSavedGame(String saveName) throws IOException {
+    String boardFilename = getBoardSaveFilePath(saveName);
+    String playerFilename = getPlayerSaveFilePath(saveName);
+
+    BoardFileHandler fileHandler = new BoardFileHandler();
+    BoardGame loadedGame = fileHandler.readFromFile(boardFilename).getFirst();
+
+    if (loadedGame.getDice() == null) {
+      loadedGame.createDice();
+    }
+
+    PlayerFileHandler playerFileHandler = new PlayerFileHandler();
+    List<Player> players = playerFileHandler.readFromFile(playerFilename);
+
+    for (Player player : players) {
+      player.setGame(loadedGame);
+
+      String savedTileIdStr = player.getProperty("savedTileId");
+      if (savedTileIdStr != null && !savedTileIdStr.trim().isEmpty()) {
+        try {
+          int tileId = Integer.parseInt(savedTileIdStr.trim());
+          Tile tile = loadedGame.getBoard().getTile(tileId);
+          if (tile != null) {
+            player.placeOnTile(tile);
+          } else {
+            player.placeOnTile(loadedGame.getBoard().getTile(1));
+          }
+        } catch (NumberFormatException e) {
+          player.placeOnTile(loadedGame.getBoard().getTile(1));
+        }
+      } else {
+        player.placeOnTile(loadedGame.getBoard().getTile(1));
+      }
+
+      loadedGame.addPlayer(player);
+    }
+    return loadedGame;
   }
 
   /**
@@ -118,8 +170,21 @@ public class BoardGameFactory {
    * @return The full path to the save file, as a string.
    * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.
    */
-  private static String getSaveFilePath(String saveName) throws IOException {
+  private static String getBoardSaveFilePath(String saveName) throws IOException {
     Path savesDir = ensureSavesDirectory();
-    return savesDir.resolve(saveName + ".json").toString();
+    return savesDir.resolve(saveName + "_board.json").toString();
+  }
+
+  /**
+   * Resolves and returns the full file path for a player save file, using the specified save name.
+   * Ensures that the directory for saving files exists before constructing the file path.
+   *
+   * @param saveName The name of the save file (without extension).
+   * @return The full path to the player save file, as a string.
+   * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.
+   */
+  private static String getPlayerSaveFilePath(String saveName) throws IOException {
+    Path savesDir = ensureSavesDirectory();
+    return savesDir.resolve(saveName + "_players.csv").toString();
   }
 }
