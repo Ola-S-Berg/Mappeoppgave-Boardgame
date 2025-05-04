@@ -734,8 +734,29 @@ public class LadderGameClassicView implements BoardGameObserver {
     Button playAgainButton = new Button("Play Again");
     playAgainButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px;");
     playAgainButton.setOnAction(event -> {
+      BoardGame newGame = BoardGameFactory.createBoardGame(gameVariation);
+
+      String[] playerNames = new String[boardGame.getPlayers().size()];
+      String[] playerTokens = new String[boardGame.getPlayers().size()];
+
+      for (int i = 0; i < boardGame.getPlayers().size(); i++) {
+        Player player = boardGame.getPlayers().get(i);
+        playerNames[i] = player.getName();
+        playerTokens[i] = player.getToken();
+      }
+
       stage.close();
-      new BoardGameApplication().start(new Stage());
+
+      Stage newStage = new Stage();
+      BoardGameApplication application = new BoardGameApplication();
+      application.start(newStage);
+
+      for (int i = 0; i < boardGame.getPlayers().size(); i++) {
+        Player player = new Player (playerNames[i], playerTokens[i], newGame);
+        newGame.addPlayer(player);
+      }
+
+      new  LadderGameClassicView(newGame, newStage, gameVariation);
     });
 
     BorderPane root = (BorderPane) stage.getScene().getRoot();
