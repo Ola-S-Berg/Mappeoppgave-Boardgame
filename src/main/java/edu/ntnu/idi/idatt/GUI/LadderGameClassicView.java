@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
@@ -218,9 +219,21 @@ public class LadderGameClassicView implements BoardGameObserver {
     controlSection.setSpacing(20);
     controlSection.setPadding(new Insets(15, 0, 5, 0));
 
+    VBox buttonsContainer = new VBox(10);
+    buttonsContainer.setAlignment(Pos.BOTTOM_LEFT);
+    buttonsContainer.setPadding(new Insets(0, 0, 10, 10));
+
     Button saveButton = new Button("Save Game");
+    saveButton.setMinWidth(120);
     saveButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
     saveButton.setOnAction(event -> saveGame());
+
+    Button quitButton = new Button("Quit to Menu");
+    quitButton.setMinWidth(120);
+    quitButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
+    quitButton.setOnAction(event -> quitToMenu());
+
+    buttonsContainer.getChildren().addAll(saveButton, quitButton);
 
     VBox diceControlContainer = new VBox(10);
     diceControlContainer.setAlignment(Pos.CENTER);
@@ -272,14 +285,9 @@ public class LadderGameClassicView implements BoardGameObserver {
     Region spacerRight = new Region();
     HBox.setHgrow(spacerRight, Priority.ALWAYS);
 
-    HBox saveButtonContainer = new HBox(saveButton);
-    saveButtonContainer.setAlignment(Pos.BOTTOM_LEFT);
-    saveButtonContainer.setPadding(new Insets(0, 0, 10, 10));
-    saveButtonContainer.prefWidthProperty().bind(bottomContainer.widthProperty().multiply(0.1));
-
     diceControlContainer.prefWidthProperty().bind(bottomContainer.widthProperty().multiply(0.9));
 
-    bottomContainer.getChildren().addAll(saveButtonContainer, diceControlContainer);
+    bottomContainer.getChildren().addAll(buttonsContainer, diceControlContainer);
     root.setBottom(bottomContainer);
 
     Scene scene = new Scene(root, 800, 800);
@@ -366,6 +374,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
+   * Handles the action when the "Save Game" button is clicked.
    * Saves the current state of the game to a file.
    */
   private void saveGame() {
@@ -378,6 +387,46 @@ public class LadderGameClassicView implements BoardGameObserver {
       statusLabel.setText("Failed to save game.");
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Handles the action when the "Quit to Menu" button is clicked.
+   * Closes the current game stage and opens the game selection screen.
+   */
+  private void quitToMenu() {
+    Stage dialogStage = new Stage();
+    dialogStage.initModality(Modality.APPLICATION_MODAL);
+    dialogStage.initOwner(stage);
+    dialogStage.setTitle("Confirm Quit");
+
+    VBox dialogVbox = new VBox(20);
+    dialogVbox.setPadding(new Insets(20));
+    dialogVbox.setAlignment(Pos.CENTER);
+
+    Label confirmLabel = new Label("Are you sure you want to quit? \nUnsaved data will be lost.");
+    confirmLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+
+    HBox buttonBox = new HBox(20);
+    buttonBox.setAlignment(Pos.CENTER);
+
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    cancelButton.setOnAction(event -> dialogStage.close());
+
+    Button confirmButton = new Button("Quit");
+    confirmButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
+    confirmButton.setOnAction(event -> {
+      dialogStage.close();
+      stage.close();
+      new BoardGameApplication().start(new Stage());
+    });
+
+    buttonBox.getChildren().addAll(cancelButton, confirmButton);
+    dialogVbox.getChildren().addAll(confirmLabel, buttonBox);
+
+    Scene dialogScene = new Scene(dialogVbox, 350, 150);
+    dialogStage.setScene(dialogScene);
+    dialogStage.show();
   }
 
   /**
@@ -473,7 +522,6 @@ public class LadderGameClassicView implements BoardGameObserver {
           animateTokenMovement(tokenView, fromTileId, rollDestinationTileId, currentPlayerIndex, () -> {
             TileAction action = finalDestinationTile.getAction();
             if (action != null) {
-              final int preActionTileId = rollDestinationTileId;
 
               action.perform(currentPlayer);
 
@@ -495,8 +543,8 @@ public class LadderGameClassicView implements BoardGameObserver {
               }
               actionLabel.setVisible(true);
 
-              if (postActionTileId != preActionTileId) {
-                boardGame.notifyPlayerMove(currentPlayer, preActionTileId, postActionTileId, 0);
+              if (postActionTileId != rollDestinationTileId) {
+                boardGame.notifyPlayerMove(currentPlayer, rollDestinationTileId, postActionTileId, 0);
 
                 new Thread(() -> {
                   try {
@@ -505,11 +553,7 @@ public class LadderGameClassicView implements BoardGameObserver {
                     e.printStackTrace();
                   }
 
-                  Platform.runLater(() -> {
-                    animateTokenMovement(tokenView, preActionTileId, postActionTileId, currentPlayerIndex, () -> {
-                      checkWinAndPrepareNextTurn(currentPlayer);
-                    });
-                  });
+                  Platform.runLater(() -> animateTokenMovement(tokenView, rollDestinationTileId, postActionTileId, currentPlayerIndex, () -> checkWinAndPrepareNextTurn(currentPlayer)));
                 }).start();
               } else {
                 checkWinAndPrepareNextTurn(currentPlayer);
