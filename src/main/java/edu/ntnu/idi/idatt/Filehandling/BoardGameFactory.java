@@ -64,9 +64,9 @@ public class BoardGameFactory {
   public static List<String> getAvailableBoardGames() {
     List<String> boardNames = new ArrayList<>();
 
-    boardNames.add("Classic Ladder Game");
-    boardNames.add("Classic Ladder Game Advanced");
-    boardNames.add("Classic Ladder Game Extreme");
+    boardNames.add("Ladder Game Classic");
+    boardNames.add("Ladder Game Advanced");
+    boardNames.add("Ladder Game Extreme");
 
     try {
       Path gamesDir = ensureGamesDirectory();
@@ -90,11 +90,11 @@ public class BoardGameFactory {
    * @return A configured board game.
    */
   public static BoardGame createBoardGame(String boardName) {
-    if (boardName.equals("Classic Ladder Game")) {
+    if (boardName.equals("Ladder Game Classic")) {
       return createClassicLadderGame();
-    } else if (boardName.equals("Classic Ladder Game Advanced")) {
+    } else if (boardName.equals("Ladder Game Advanced")) {
       return createClassicLadderGameAdvanced();
-    } else if (boardName.equals("Classic Ladder Game Extreme")) {
+    } else if (boardName.equals("Ladder Game Extreme")) {
       return createClassicLadderGameExtreme();
     } else {
 

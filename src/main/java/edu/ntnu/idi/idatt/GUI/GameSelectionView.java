@@ -3,7 +3,6 @@ package edu.ntnu.idi.idatt.GUI;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
-
 import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
@@ -180,16 +179,16 @@ public class GameSelectionView {
       String displayName;
 
       switch (gameVariation) {
-        case "Classic Ladder Game Advanced":
+        case "Ladder Game Advanced":
         case "ladderGameAdvanced":
-          displayName = "Classic Ladder Game Advanced";
+          displayName = "Ladder Game Advanced";
           break;
-        case "Classic Ladder Game Extreme":
+        case "Ladder Game Extreme":
         case "ladderGameExtreme":
-          displayName = "Classic Ladder Game Extreme";
+          displayName = "Ladder Game Extreme";
           break;
         default:
-          displayName = "Classic Ladder Game";
+          displayName = "Ladder Game Classic";
           break;
       }
 
