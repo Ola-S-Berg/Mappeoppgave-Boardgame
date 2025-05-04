@@ -50,7 +50,6 @@ public class LadderGameClassicView implements BoardGameObserver {
   private double boardWidth;
   private double boardHeight;
 
-
   /**
    * Constructor that initializes the game view.
    * @param boardGame The game logic.
@@ -63,7 +62,6 @@ public class LadderGameClassicView implements BoardGameObserver {
     this.gameVariation = gameVariation;
 
     boardGame.addObserver(this);
-
     setupGameView();
   }
 
@@ -106,8 +104,7 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Handles the action when a player must skip their turn. Updates the game status
-   * to reflect the player's skipped turn and disables the roll button temporarily.
+   * Handles the action when a player must skip their turn.
    *
    * @param player The player who is skipping their turn.
    */
@@ -133,8 +130,6 @@ public class LadderGameClassicView implements BoardGameObserver {
 
   /**
    * Updates the view when the current player changes.
-   * Displays a status message indicating the current player's turn
-   * and updates the index of the current player in the game.
    *
    * @param player The player who is currently taking their turn.
    */
@@ -159,7 +154,9 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Sets up the game view with board image, player tokens, and controls.
+   * Initializes and sets up the game's main view, including the layout, UI components,
+   * and event handlers. This method defines the structure of the game UI such as the
+   * board, dice, player tokens, and control buttons.
    */
   private void setupGameView() {
     BorderPane root = new BorderPane();
@@ -212,17 +209,6 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     setupPlayerTokens();
 
-    Platform.runLater(this::updateGridPaneSize);
-
-    HBox controlSection = new HBox(20);
-    controlSection.setAlignment(Pos.CENTER);
-    controlSection.setSpacing(20);
-    controlSection.setPadding(new Insets(15, 0, 5, 0));
-
-    VBox buttonsContainer = new VBox(10);
-    buttonsContainer.setAlignment(Pos.BOTTOM_LEFT);
-    buttonsContainer.setPadding(new Insets(0, 0, 10, 10));
-
     Button saveButton = new Button("Save Game");
     saveButton.setMinWidth(120);
     saveButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
@@ -233,14 +219,6 @@ public class LadderGameClassicView implements BoardGameObserver {
     quitButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
     quitButton.setOnAction(event -> quitToMenu());
 
-    buttonsContainer.getChildren().addAll(saveButton, quitButton);
-
-    VBox diceControlContainer = new VBox(10);
-    diceControlContainer.setAlignment(Pos.CENTER);
-
-    HBox diceBox = new HBox(15);
-    diceBox.setAlignment(Pos.CENTER);
-
     diceView1 = new ImageView();
     diceView2 = new ImageView();
     diceView1.setFitWidth(50);
@@ -250,10 +228,9 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     updateDieImages(1, 1);
 
+    HBox diceBox = new HBox(15);
+    diceBox.setAlignment(Pos.CENTER);
     diceBox.getChildren().addAll(diceView1, diceView2);
-
-    HBox rollDiceBox = new HBox (10);
-    rollDiceBox.setAlignment(Pos.CENTER);
 
     Label rollDiceLabel = new Label("Roll Dice:");
     rollDiceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
@@ -270,25 +247,23 @@ public class LadderGameClassicView implements BoardGameObserver {
     rollButton.setGraphic(rollDieImageView);
     rollButton.setStyle("-fx-background-color: transparent; -fx-padding: 5px;");
 
-    rollDiceBox.getChildren().addAll(rollDiceLabel, rollButton);
+    HBox diceControlLayout = new HBox(15);
+    diceControlLayout.setAlignment(Pos.CENTER);
+    diceControlLayout.getChildren().addAll(rollDiceLabel, rollButton);
 
-    diceControlContainer.getChildren().addAll(diceBox, rollDiceBox);
+    VBox diceControlContainer = new VBox(10);
+    diceControlContainer.setAlignment(Pos.CENTER);
+    diceControlContainer.getChildren().addAll(diceBox, diceControlLayout);
 
-    HBox bottomContainer = new HBox();
-    bottomContainer.setAlignment(Pos.CENTER);
-    bottomContainer.setSpacing(20);
-    bottomContainer.setPadding(new Insets(10));
+    HBox buttonBox = new HBox(15);
+    buttonBox.setAlignment(Pos.CENTER_LEFT);
+    buttonBox.getChildren().addAll(saveButton, quitButton);
 
-    Region spacerLeft = new Region();
-    HBox.setHgrow(spacerLeft, Priority.ALWAYS);
-
-    Region spacerRight = new Region();
-    HBox.setHgrow(spacerRight, Priority.ALWAYS);
-
-    diceControlContainer.prefWidthProperty().bind(bottomContainer.widthProperty().multiply(0.9));
-
-    bottomContainer.getChildren().addAll(buttonsContainer, diceControlContainer);
-    root.setBottom(bottomContainer);
+    BorderPane bottomLayout = new BorderPane();
+    bottomLayout.setLeft(buttonBox);
+    bottomLayout.setCenter(diceControlContainer);
+    bottomLayout.setPadding(new Insets(10));
+    root.setBottom(bottomLayout);
 
     Scene scene = new Scene(root, 800, 800);
     stage.setScene(scene);
@@ -312,7 +287,7 @@ public class LadderGameClassicView implements BoardGameObserver {
       updateCellSize();
     });
 
-    Platform.runLater(this::updatePlayerPositions);
+    Platform.runLater(this::updateGridPaneSize);
   }
 
   /**
@@ -354,9 +329,7 @@ public class LadderGameClassicView implements BoardGameObserver {
    * Updates cell sizes dynamically when resizing the window.
    */
   private void updateCellSize() {
-    double cellWidth = boardWidth / gridCols;
-    double cellHeight = boardHeight / gridRows;
-    tokenSize = Math.min(cellWidth, cellHeight) * 0.4;
+    tokenSize = Math.min(boardWidth / gridCols, boardHeight / gridRows) * 0.4;
     updatePlayerPositions();
   }
 
@@ -375,7 +348,6 @@ public class LadderGameClassicView implements BoardGameObserver {
 
   /**
    * Handles the action when the "Save Game" button is clicked.
-   * Saves the current state of the game to a file.
    */
   private void saveGame() {
     try {
@@ -391,7 +363,6 @@ public class LadderGameClassicView implements BoardGameObserver {
 
   /**
    * Handles the action when the "Quit to Menu" button is clicked.
-   * Closes the current game stage and opens the game selection screen.
    */
   private void quitToMenu() {
     Stage dialogStage = new Stage();
@@ -406,9 +377,6 @@ public class LadderGameClassicView implements BoardGameObserver {
     Label confirmLabel = new Label("Are you sure you want to quit? \nUnsaved data will be lost.");
     confirmLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
 
-    HBox buttonBox = new HBox(20);
-    buttonBox.setAlignment(Pos.CENTER);
-
     Button cancelButton = new Button("Cancel");
     cancelButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
     cancelButton.setOnAction(event -> dialogStage.close());
@@ -421,7 +389,10 @@ public class LadderGameClassicView implements BoardGameObserver {
       new BoardGameApplication().start(new Stage());
     });
 
+    HBox buttonBox = new HBox(20);
+    buttonBox.setAlignment(Pos.CENTER);
     buttonBox.getChildren().addAll(cancelButton, confirmButton);
+
     dialogVbox.getChildren().addAll(confirmLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVbox, 350, 150);
@@ -430,7 +401,10 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Sets up player tokens on the board.
+   * Initializes and assigns visual tokens to all players in the game.
+   * This method clears any previously stored player tokens before setup.
+   * For each player in the game, it retrieves the corresponding token image,
+   * resizes it according to the predefined token size, and maps it to the player.
    */
   private void setupPlayerTokens() {
     playerTokenViews.clear();
@@ -439,8 +413,8 @@ public class LadderGameClassicView implements BoardGameObserver {
       Image tokenImage = new Image(
           Objects.requireNonNull(getClass().getResourceAsStream(player.getToken())));
       ImageView tokenView = new ImageView(tokenImage);
-      tokenView.setFitHeight(30);
-      tokenView.setFitWidth(30);
+      tokenView.setFitHeight(tokenSize);
+      tokenView.setFitWidth(tokenSize);
       tokenView.setPreserveRatio(true);
 
       playerTokenViews.put(player, tokenView);
@@ -448,25 +422,29 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Helper method for rollDice.
-   * Updates the die images when displaying a rolled dice.
-   * @param dice1 The image of the first dice rolled.
-   * @param dice2 The image of the second dice rolled.
+   * Updates the images displayed for the two dice based on the given dice values.
+   *
+   * @param dice1 The value of the first die (expected range: 1-6).
+   * @param dice2 The value of the second die (expected range: 1-6).
    */
   private void updateDieImages(int dice1, int dice2) {
     String path1 = "/images/die/Dice" + dice1 + ".png";
     String path2 = "/images/die/Dice" + dice2 + ".png";
 
-    Image diceImage1 = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path1)));
-    Image diceImage2 = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path2)));
-
-    diceView1.setImage(diceImage1);
-    diceView2.setImage(diceImage2);
+    diceView1.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path1))));
+    diceView2.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path2))));
   }
 
+
   /**
-   * Manages the player's dice roll during the game, updates the game state,
-   * and handles gameplay logic for movement, skipping turns, and checking victory conditions.
+   * Handles the logic for rolling the dice and managing the player's turn in the game.
+   * It checks if the current player must skip their turn and handles this scenario. If not,
+   * it rolls two die, calculates the movement based on the total dice value, and updates the
+   * player's position on the board accordingly.
+   * Also triggers animations for the player's token movement and executes any
+   * tile-specific actions if the player lands on a special tile. After completing the turn
+   * actions, it prepares for the next player's turn or checks if the current player has won
+   * the game.
    */
   private void rollDice() {
     rollButton.setDisable(true);
@@ -513,6 +491,7 @@ public class LadderGameClassicView implements BoardGameObserver {
       final Tile finalDestinationTile = destinationTile;
 
       Platform.runLater(() -> {
+        updateDieImages(dice1, dice2);
 
         currentPlayer.placeOnTile(finalDestinationTile);
         boardGame.notifyPlayerMove(currentPlayer, fromTileId, rollDestinationTileId, diceValue);
@@ -522,24 +501,15 @@ public class LadderGameClassicView implements BoardGameObserver {
           animateTokenMovement(tokenView, fromTileId, rollDestinationTileId, currentPlayerIndex, () -> {
             TileAction action = finalDestinationTile.getAction();
             if (action != null) {
-
               action.perform(currentPlayer);
-
               final int postActionTileId = currentPlayer.getCurrentTile().getTileId();
 
               String actionType = action.getClass().getSimpleName();
               switch (actionType) {
-                case "LadderAction":
-                  actionLabel.setText(currentPlayer.getName() + " landed on a ladder");
-                  break;
-                case "BackToStartAction":
-                  actionLabel.setText(currentPlayer.getName() + " must go back to start");
-                  break;
-                case "WaitAction":
-                  actionLabel.setText(currentPlayer.getName() + " must wait a turn");
-                  break;
-                default:
-                  actionLabel.setText(currentPlayer.getName() + " landed on a tile action");
+                case "LadderAction" -> actionLabel.setText(currentPlayer.getName() + " landed on a ladder");
+                case "BackToStartAction" -> actionLabel.setText(currentPlayer.getName() + " must go back to start");
+                case "WaitAction" -> actionLabel.setText(currentPlayer.getName() + " must wait a turn");
+                default -> actionLabel.setText(currentPlayer.getName() + " landed on a tile action");
               }
               actionLabel.setVisible(true);
 
@@ -564,16 +534,16 @@ public class LadderGameClassicView implements BoardGameObserver {
           });
         }
       });
-
-      final int finalDice1 = dice1;
-      final int finalDice2 = dice2;
-      Platform.runLater(() -> updateDieImages(finalDice1, finalDice2));
     }).start();
   }
 
   /**
-   * Helper method to check if a player has won and prepare for the next turn.
-   * @param currentPlayer The current player.
+   * Checks if the current player has won the game by reaching the last tile (tile ID 90).
+   * If the player has won, it notifies the game logic of the win. Otherwise, it prepares
+   * for the next player's turn by scheduling a delay, updating the current player index,
+   * and enabling the roll button for the next player.
+   *
+   * @param currentPlayer The player whose turn is being checked for a win or prepared for the next turn.
    */
   private void checkWinAndPrepareNextTurn(Player currentPlayer) {
     if (currentPlayer.getCurrentTile().getTileId() == 90) {
@@ -596,12 +566,15 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Animates token movement from old position to new position.
-   * @param tokenView The token image view to animate.
-   * @param fromTileId Starting tile ID.
-   * @param toTileId Ending tile ID.
-   * @param playerIndex The player's index (for offset positioning).
-   * @param onFinished Runnable to execute after animation completes.
+   * Animates the movement of a player's token from one tile to another on the game board.
+   * The animation includes translating the token image across the screen and updating
+   * its position once the animation is complete.
+   *
+   * @param tokenView The ImageView representing the player's token to be animated.
+   * @param fromTileId The ID of the tile the token is moving from.
+   * @param toTileId The ID of the tile the token is moving to.
+   * @param playerIndex The index of the player whose token is being animated.
+   * @param onFinished A callback Runnable that is executed after the animation completes, or immediately if the animation cannot be performed.
    */
   private void animateTokenMovement(ImageView tokenView, int fromTileId, int toTileId, int playerIndex, Runnable onFinished) {
     if (fromTileId == toTileId) {
@@ -630,13 +603,6 @@ public class LadderGameClassicView implements BoardGameObserver {
     animatedToken.setFitWidth(tokenSize);
     animatedToken.setPreserveRatio(true);
 
-    StackPane overlayPane = new StackPane();
-    overlayPane.setMouseTransparent(true);
-
-    Scene scene = boardGridPane.getScene();
-    StackPane sceneRoot = new StackPane();
-    sceneRoot.getChildren().add(overlayPane);
-
     double offsetAngle = (playerIndex * (360.0 / boardGame.getPlayers().size())) * Math.PI / 180;
     double offsetRadius = Math.min(fromBounds.getWidth(), fromBounds.getHeight()) * 0.25;
     double offsetX = offsetRadius * Math.cos(offsetAngle);
@@ -651,7 +617,7 @@ public class LadderGameClassicView implements BoardGameObserver {
     animatedToken.setLayoutX(startX);
     animatedToken.setLayoutY(startY);
 
-    Pane rootPane = (Pane) scene.getRoot();
+    Pane rootPane = (Pane) stage.getScene().getRoot();
     rootPane.getChildren().add(animatedToken);
 
     StackPane currentParent = (StackPane) tokenView.getParent();
@@ -667,9 +633,7 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     transition.setOnFinished(event -> {
       rootPane.getChildren().remove(animatedToken);
-
       positionTokenAtTile(tokenView, toTileId, playerIndex);
-
       if (onFinished != null) onFinished.run();
     });
 
@@ -677,35 +641,34 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Positions a token at the specified tile location.
-   * @param tokenView The token image view.
-   * @param tileId The tile ID.
-   * @param playerIndex The player's index.
+   * Positions a player's token on a specific tile on the game board.
+   * Adjusts the token's position within the tile based on the player's index
+   * to ensure proper spacing when multiple tokens occupy the same tile.
+   *
+   * @param tokenView The ImageView representing the player's token.
+   * @param tileId The ID of the tile where the token should be placed.
+   * @param playerIndex The index of the player whose token is being positioned.
    */
   private void positionTokenAtTile(ImageView tokenView, int tileId, int playerIndex) {
     int[] coords = tileIdToGridCoordinates(tileId);
     int row = coords[0];
     int col = coords[1];
 
-    Bounds gridBounds = boardGridPane.getBoundsInParent();
-    double cellWidth = gridBounds.getWidth() / gridCols;
-    double cellHeight = gridBounds.getHeight() / gridRows;
-
-    tokenView.setFitHeight(tokenSize);
-    tokenView.setFitWidth(tokenSize);
-
-    double offsetAngle = (playerIndex * (360.0 / boardGame.getPlayers().size())) * Math.PI / 180;
-    double offsetRadius = Math.min(cellWidth, cellHeight) * 0.25;
-    double offsetX = offsetRadius * Math.cos(offsetAngle);
-    double offsetY = offsetRadius * Math.sin(offsetAngle);
-
-    StackPane currentParent = (StackPane) tokenView.getParent();
-    if (currentParent != null) {
-      currentParent.getChildren().remove(tokenView);
-    }
-
     StackPane cell = getStackPaneAt(row, col);
     if (cell != null) {
+      StackPane currentParent = (StackPane) tokenView.getParent();
+      if (currentParent != null) {
+        currentParent.getChildren().remove(tokenView);
+      }
+
+      tokenView.setFitHeight(tokenSize);
+      tokenView.setFitWidth(tokenSize);
+
+      double offsetAngle = (playerIndex * (360.0 / boardGame.getPlayers().size())) * Math.PI / 180;
+      double offsetRadius = Math.min(cell.getWidth(), cell.getHeight()) * 0.25;
+      double offsetX = offsetRadius * Math.cos(offsetAngle);
+      double offsetY = offsetRadius * Math.sin(offsetAngle);
+
       StackPane.setAlignment(tokenView, Pos.CENTER);
       StackPane.setMargin(tokenView, new Insets(offsetY, 0, 0, offsetX));
       cell.getChildren().add(tokenView);
@@ -713,11 +676,12 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Gets the StackPane at a specific row and column.
-   * Helper method for @positionTokenAtTile.
-   * @param row The row index.
-   * @param col The column index.
-   * @return The StackPane at that position, or null if not found.
+   * Retrieves the StackPane located at the specified row and column in the GridPane.
+   * If no StackPane exists at the specified coordinates, the method returns null.
+   *
+   * @param row The row index of the desired StackPane.
+   * @param col The column index of the desired StackPane.
+   * @return The StackPane located at the given row and column, or null if no StackPane is found.
    */
   private StackPane getStackPaneAt(int row, int col) {
     for (javafx.scene.Node node : boardGridPane.getChildren()) {
@@ -731,15 +695,17 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Converts a tile ID to grid coordinates.
-   * @param tileId The tile ID.
-   * @return Array with coordinates.
+   * Converts a tile ID to its corresponding grid coordinates on the game board.
+   * The method ensures that the tile ID falls within a valid range and calculates
+   * the row and column indices based on the game board layout.
+   *
+   * @param tileId The ID of the tile to be converted. Expected range: 1-90.
+   * @return An integer array containing the grid coordinates where
+   *         the first element is the row index and the second element is the column index.
    */
   private int[] tileIdToGridCoordinates(int tileId) {
     tileId = Math.max(1, Math.min(90, tileId));
-
     int adjustedId = tileId - 1;
-
     int row = gridRows - 1 - (adjustedId / 10);
     int col;
 
@@ -753,8 +719,11 @@ public class LadderGameClassicView implements BoardGameObserver {
   }
 
   /**
-   * Ends the game and displays the winner.
-   * @param winner The winning player.
+   * Ends the game and displays the winner's information. This method updates the game's user interface
+   * to show the winning player's details, disables further input from the user, and provides an option
+   * to restart the game.
+   *
+   * @param winner The player who has won the game.
    */
   private void endGame(Player winner) {
     statusLabel.setText("Game Over! " + winner.getName() + " is the winner!");
@@ -770,15 +739,7 @@ public class LadderGameClassicView implements BoardGameObserver {
     });
 
     BorderPane root = (BorderPane) stage.getScene().getRoot();
-
     VBox topSection = (VBox) root.getTop();
-    if (topSection != null) {
-      topSection.getChildren().add(playAgainButton);
-    } else {
-      topSection = new VBox(10);
-      topSection.setAlignment(Pos.CENTER);
-      topSection.getChildren().addAll(statusLabel, actionLabel, playAgainButton);
-      root.setTop(topSection);
-    }
+    topSection.getChildren().add(playAgainButton);
   }
 }

@@ -155,14 +155,5 @@ public class Player {
   public String getProperty(String key) {
     return properties.get(key);
   }
-
-  /**
-   * Checks if a property exists.
-   * @param key The property key.
-   * @return True if the property exists.
-   */
-  public boolean hasProperty(String key) {
-    return properties.containsKey(key);
-  }
 }
 

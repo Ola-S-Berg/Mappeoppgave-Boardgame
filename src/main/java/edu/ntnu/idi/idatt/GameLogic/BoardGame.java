@@ -1,7 +1,6 @@
 package edu.ntnu.idi.idatt.GameLogic;
 
 import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -13,12 +12,11 @@ public class BoardGame {
   private Player currentPlayer;
   private final List<Player> players = new ArrayList<>();
   private Dice dice;
-  private final BoardFileHandler fileHandler;
   private String variantName;
   private final List<BoardGameObserver> observers = new ArrayList<>();
 
   public BoardGame() {
-    fileHandler = new BoardFileHandler();
+    BoardFileHandler fileHandler = new BoardFileHandler();
   }
 
   /**
@@ -104,17 +102,14 @@ public class BoardGame {
   public void createBoard() {
     board = new Board();
 
-    //Adds 90 tiles
     for (int i = 1; i <= 90; i++) {
       board.addTile(new Tile(i));
     }
 
-    //Creates a 9x10 board and gives each tile a unique tile number (ID).
     for (int i = 1; i <= 9; i++) {
       for (int j = 1; j <= 10; j++) {
-        int currentId = (i - 1) * 10 + j; //Equation that finds the tile number of the tile created.
+        int currentId = (i - 1) * 10 + j;
 
-        //If statement that finds if the next tile is 90, if not sets the next tile to ID to the current tile ID +1.
         int nextId;
         if (i == 9 && j == 10) {
           nextId = -1;
@@ -122,7 +117,6 @@ public class BoardGame {
           nextId = currentId + 1;
         }
 
-        //Links the tiles in order if the tile reached is not 90.
         if (nextId != -1) {
           Tile currentTile = board.getTile(currentId);
           Tile nextTile = board.getTile(nextId);

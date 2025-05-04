@@ -88,7 +88,6 @@ public class GameSelectionView {
       Button variationButton = new Button(variation);
       variationButton.setOnAction(event -> {
         popup.close();
-        BoardGame selectedGame = BoardGameFactory.createBoardGame(variation);
         application.showPlayerCountView(variation);
       });
       popupLayout.getChildren().add(variationButton);
@@ -176,21 +175,11 @@ public class GameSelectionView {
       }
 
       String gameVariation = loadedGame.getVariantName();
-      String displayName;
-
-      switch (gameVariation) {
-        case "Ladder Game Advanced":
-        case "ladderGameAdvanced":
-          displayName = "Ladder Game Advanced";
-          break;
-        case "Ladder Game Extreme":
-        case "ladderGameExtreme":
-          displayName = "Ladder Game Extreme";
-          break;
-        default:
-          displayName = "Ladder Game Classic";
-          break;
-      }
+      String displayName = switch (gameVariation) {
+        case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
+        case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
+        default -> "Ladder Game Classic";
+      };
 
       new LadderGameClassicView(loadedGame, application.getPrimaryStage(), displayName);
     } catch (IOException e) {

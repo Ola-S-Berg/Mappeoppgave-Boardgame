@@ -7,7 +7,7 @@ import edu.ntnu.idi.idatt.Actions.TileAction;
  */
 public class Tile {
   private Tile nextTile;
-  private int tileId;
+  private final int tileId;
   private TileAction action;
 
   public Tile(int tileId) {
