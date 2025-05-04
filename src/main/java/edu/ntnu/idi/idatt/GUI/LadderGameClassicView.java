@@ -28,7 +28,6 @@ import java.util.Map;
  * View for the "Ladder Game Classic" game.
  * Displays the game board, handles dice rolling, and shows player movement.
  * TODO:
- * Fix bug with GridPane where tokens get misaligned the further up they get.
  * Fix the statusLabel to more accurately display the status of the game.
  */
 public class LadderGameClassicView implements BoardGameObserver {
@@ -43,7 +42,8 @@ public class LadderGameClassicView implements BoardGameObserver {
   private final Map<Player, ImageView> playerTokenViews;
   private int currentPlayerIndex = 0;
   private final String gameVariation;
-  private static final int GRID_SIZE = 10;
+  private static final int gridRows = 9;
+  private static final int gridCols = 10;
   private double tokenSize = 30;
   private double boardWidth;
   private double boardHeight;
@@ -184,11 +184,11 @@ public class LadderGameClassicView implements BoardGameObserver {
     boardImageView.fitWidthProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
     boardImageView.fitHeightProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
 
-    for (int row = 0; row < GRID_SIZE; row++) {
-      for (int col = 0; col < GRID_SIZE; col++) {
+    for (int row = 0; row < gridRows; row++) {
+      for (int col = 0; col < gridCols; col++) {
         StackPane cell = new StackPane();
-        cell.prefWidthProperty().bind(boardGridPane.widthProperty().divide(GRID_SIZE));
-        cell.prefHeightProperty().bind(boardGridPane.heightProperty().divide(GRID_SIZE));
+        cell.prefWidthProperty().bind(boardGridPane.widthProperty().divide(gridCols));
+        cell.prefHeightProperty().bind(boardGridPane.heightProperty().divide(gridRows));
         boardGridPane.add(cell, col, row);
       }
     }
@@ -333,8 +333,9 @@ public class LadderGameClassicView implements BoardGameObserver {
    * Updates cell sizes dynamically when resizing the window.
    */
   private void updateCellSize() {
-    double newCellSize = Math.min(boardWidth, boardHeight) / GRID_SIZE;
-    tokenSize = newCellSize * 0.4;
+    double cellWidth = boardWidth / gridCols;
+    double cellHeight = boardHeight / gridRows;
+    tokenSize = Math.min(cellWidth, cellHeight) * 0.4;
     updatePlayerPositions();
   }
 
@@ -554,8 +555,8 @@ public class LadderGameClassicView implements BoardGameObserver {
     int col = coords[1];
 
     Bounds gridBounds = boardGridPane.getBoundsInParent();
-    double cellWidth = gridBounds.getWidth() / GRID_SIZE;
-    double cellHeight = gridBounds.getHeight() / GRID_SIZE;
+    double cellWidth = gridBounds.getWidth() / gridCols;
+    double cellHeight = gridBounds.getHeight() / gridRows;
 
     tokenView.setFitHeight(tokenSize);
     tokenView.setFitWidth(tokenSize);
@@ -606,10 +607,10 @@ public class LadderGameClassicView implements BoardGameObserver {
 
     int adjustedId = tileId - 1;
 
-    int row = 9 - (adjustedId / 10);
+    int row = gridRows - 1 - (adjustedId / 10);
     int col;
 
-    if ((9 - row) % 2 == 0) {
+    if ((gridRows - 1 - row) % 2 == 0) {
       col = adjustedId % 10;
     } else {
       col = 9 - (adjustedId % 10);
