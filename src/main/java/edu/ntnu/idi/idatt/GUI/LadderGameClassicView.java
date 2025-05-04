@@ -1,11 +1,13 @@
 package edu.ntnu.idi.idatt.GUI;
 
+import edu.ntnu.idi.idatt.Actions.TileAction;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.GameLogic.BoardGameObserver;
+import edu.ntnu.idi.idatt.GameLogic.Tile;
 import java.io.IOException;
 import java.util.Objects;
 import javafx.application.Platform;
@@ -96,7 +98,7 @@ public class LadderGameClassicView implements BoardGameObserver {
    */
   @Override
   public void onGameWon(Player player) {
-    endGame(player);
+    Platform.runLater(() -> endGame(player));
   }
 
   /**
@@ -437,14 +439,34 @@ public class LadderGameClassicView implements BoardGameObserver {
       int dice2 = boardGame.getDice().roll();
       int diceValue = dice1 + dice2;
 
-      currentPlayer.move(diceValue);
+      int fromTileId = currentPlayer.getCurrentTile().getTileId();
 
-      final int finalDice1 = dice1;
-      final int finalDice2 = dice2;
+      Tile destinationTile = currentPlayer.getCurrentTile();
+      for (int i = 0; i < diceValue; i++) {
+        if (destinationTile.getNextTile() != null) {
+          destinationTile = destinationTile.getNextTile();
+        }
+      }
+
+      TileAction action = destinationTile.getAction();
+      if (action != null) {
+        destinationTile.landPlayer(currentPlayer);
+        destinationTile = currentPlayer.getCurrentTile();
+      }
+
+      final int toTileId = destinationTile.getTileId();
+      final boolean reachedWinningTile = toTileId == 90;
+
+      Tile finalDestinationTile = destinationTile;
 
       Platform.runLater(() -> {
-        updateDieImages(finalDice1, finalDice2);
-        if (currentPlayer.getCurrentTile().getTileId() != 90) {
+        currentPlayer.placeOnTile(finalDestinationTile);
+
+        boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValue);
+
+        if (reachedWinningTile) {
+          boardGame.notifyGameWon(currentPlayer);
+        } else {
           currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
           Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
           boardGame.notifyCurrentPlayerChanged(nextPlayer);
@@ -459,6 +481,10 @@ public class LadderGameClassicView implements BoardGameObserver {
           }).start();
         }
       });
+
+      final int finalDice1 = dice1;
+      final int finalDice2 = dice2;
+      Platform.runLater(() -> updateDieImages(finalDice1, finalDice2));
     }).start();
   }
 
