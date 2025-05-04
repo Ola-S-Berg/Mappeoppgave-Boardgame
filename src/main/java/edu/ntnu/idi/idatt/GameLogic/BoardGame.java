@@ -220,58 +220,22 @@ public class BoardGame {
   }
 
   /**
-   * Saves the current state of the game board to a file. The board is serialized
-   * and written to the specified file.
-   *
-   * @param filename The name of the file to which the board should be saved.
+   * Accessor method that gets the dice.
+   * @return The dice.
    */
-  public void saveBoard(String filename) {
-    try {
-      fileHandler.writeToFile(filename, List.of(this));
-      System.out.println("Board saved to file: " + filename);
-    } catch (IOException e) {
-      System.err.println("Error saving board to file: " + filename);
-    }
+  public Dice getDice() {
+
+    return dice;
   }
 
   /**
-   * Loads the board configuration from a specified file. The method reads the file, parses the
-   * content, and updates the game board and variant name based on the file's data. If the file
-   * cannot be read or is empty, no changes are made to the current state, and an error is logged.
-   *
-   * @param filename The name of the file containing the board configuration to be loaded.
+   * Accessor method that gets the current player.
+   * @return The current player.
    */
-  public void loadBoard(String filename) {
-    try {
-      List<BoardGame> loadedBoards = fileHandler.readFromFile(filename);
-      if (!loadedBoards.isEmpty()) {
-        BoardGame loadedGame = loadedBoards.get(0);
-        this.variantName = loadedGame.getVariantName();
-        this.board = loadedGame.getBoard();
-        System.out.println("Board loaded from file: " + filename);
-      }
-    } catch (IOException e) {
-      System.err.println("Error loading board from file: " + filename);
-    }
+  public List<Player> getPlayers() {
+
+    return players;
   }
-
-/**
- * Accessor method that gets the dice.
- * @return The dice.
- */
-public Dice getDice() {
-
-  return dice;
-}
-
-/**
- * Accessor method that gets the current player.
- * @return The current player.
- */
-public List<Player> getPlayers() {
-
-  return players;
-}
 
   /**
    * Accessor method that gets the board.

@@ -82,7 +82,7 @@ public class GameSelectionView {
     label.setStyle("-fx-font-size: 18px");
     popupLayout.getChildren().add(label);
 
-    List<String> variations = BoardGameFactory.getAvailableBoardGames();
+    List<String> variations = BoardGameFactory.getAvailableVariants();
 
     for (String variation : variations) {
       Button variationButton = new Button(variation);

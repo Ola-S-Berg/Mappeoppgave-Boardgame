@@ -113,11 +113,6 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
       int id = tileJson.get("id").getAsInt();
       Tile tile = boardGame.getBoard().getTile(id);
 
-      if (tileJson.has("nextTile")) {
-        int nextTileId = tileJson.get("nextTile").getAsInt();
-        tile.setNextTile(boardGame.getBoard().getTile(nextTileId));
-      }
-
       if (tileJson.has("actionType")) {
         String actionType = tileJson.get("actionType").getAsString();
 

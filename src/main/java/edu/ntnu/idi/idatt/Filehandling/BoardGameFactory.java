@@ -8,14 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Factory class for creating different variants of board games.
- * Can create predefined game types or load games from files.
+ * Can create predefined game types or load games from saved files.
  */
 public class BoardGameFactory {
-  private static final String GAME_FILES_DIRECTORY = "src/main/resources/Games";
   private static final String SAVE_FILES_DIRECTORY = "src/main/resources/Saves";
 
   /**
@@ -58,59 +56,32 @@ public class BoardGameFactory {
   }
 
   /**
-   * Gets a list of available board game files.
-   * @return List of board game file names.
+   * Gets a list of available board game variants.
+   * @return List of predefined game variants.
    */
-  public static List<String> getAvailableBoardGames() {
+  public static List<String> getAvailableVariants() {
     List<String> boardNames = new ArrayList<>();
 
     boardNames.add("Ladder Game Classic");
     boardNames.add("Ladder Game Advanced");
     boardNames.add("Ladder Game Extreme");
 
-    try {
-      Path gamesDir = ensureGamesDirectory();
-      List<String> fileBoards = Files.list(gamesDir)
-          .filter(path -> path.toString().endsWith(".json"))
-          .map(path -> path.getFileName().toString().replace(".json", ""))
-          .collect(Collectors.toList());
-
-      boardNames.addAll(fileBoards);
-    } catch (IOException e) {
-      System.err.println("Error reading game files: " + e.getMessage());
-    }
-
     return boardNames;
   }
 
   /**
-   * Creates a board game from a file or predefined type.
+   * Creates a board game from a predefined type.
    *
-   * @param boardName The name of the board to create.
+   * @param boardName The name of the board variant to create.
    * @return A configured board game.
    */
   public static BoardGame createBoardGame(String boardName) {
-    if (boardName.equals("Ladder Game Classic")) {
-      return createClassicLadderGame();
-    } else if (boardName.equals("Ladder Game Advanced")) {
-      return createClassicLadderGameAdvanced();
-    } else if (boardName.equals("Ladder Game Extreme")) {
-      return createClassicLadderGameExtreme();
-    } else {
-
-      try {
-        String filename = getGameFilePath(boardName);
-        BoardFileHandler fileHandler = new BoardFileHandler();
-        List<BoardGame> games = fileHandler.readFromFile(filename);
-        if (!games.isEmpty()) {
-          return games.get(0);
-        }
-      } catch (IOException e) {
-        System.err.println("Error loading game from file: " + e.getMessage());
-      }
-    }
-
-    return createClassicLadderGame();
+    return switch (boardName) {
+      case "Ladder Game Classic" -> createClassicLadderGame();
+      case "Ladder Game Advanced" -> createClassicLadderGameAdvanced();
+      case "Ladder Game Extreme" -> createClassicLadderGameExtreme();
+      default -> createClassicLadderGame(); // Default to classic game
+    };
   }
 
   /**
@@ -126,19 +97,6 @@ public class BoardGameFactory {
   }
 
   /**
-   * Ensures the "Games" directory exists and returns its path.
-   * @return Path to the "Games" directory.
-   * @throws IOException If directory creation fails.
-   */
-  private static Path ensureGamesDirectory() throws IOException {
-    Path gamesDir = Paths.get(GAME_FILES_DIRECTORY);
-    if (!Files.exists(gamesDir)) {
-      Files.createDirectories(gamesDir);
-    }
-    return gamesDir;
-  }
-
-  /**
    * Ensures that the directory for saving files exists. If the directory does not exist, it creates it.
    *
    * @return The path to the "saves" directory.
@@ -150,16 +108,6 @@ public class BoardGameFactory {
       Files.createDirectories(savesDir);
     }
     return savesDir;
-  }
-
-  /**
-   * Gets the full file path for a game board file.
-   * @param boardName The name of the board.
-   * @return The full file path.
-   */
-  private static String getGameFilePath(String boardName) throws IOException {
-    Path gamesDir = ensureGamesDirectory();
-    return gamesDir.resolve(boardName + ".json").toString();
   }
 
   /**
