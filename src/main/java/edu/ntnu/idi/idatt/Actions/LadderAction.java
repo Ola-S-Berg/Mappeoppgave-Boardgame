@@ -7,8 +7,8 @@ import edu.ntnu.idi.idatt.GameLogic.Tile;
  * Class representing the action of landing on a ladder.
  */
 public class LadderAction implements TileAction {
-  private int destinationTileId;
-  private String direction;
+  private final int destinationTileId;
+  private final String direction;
 
   /**
    * The constructor for LadderAction.

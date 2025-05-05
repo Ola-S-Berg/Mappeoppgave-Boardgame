@@ -58,7 +58,7 @@ public class PlayerNameView {
         currentPlayerIndex++;
 
         if (currentPlayerIndex < playerCount) {
-          updateView(layout, titleLabel, nameField);
+          updateView(titleLabel, nameField);
         } else {
           application.showTokenSelectionView(selectedGame, playerNames);
         }
@@ -72,11 +72,11 @@ public class PlayerNameView {
 
   /**
    * Updates the view for the next player.
-   * @param layout The layout container.
+   *
    * @param titleLabel The title label to update.
    * @param nameField The name field to clear.
    */
-  private void updateView(VBox layout, Label titleLabel, TextField nameField) {
+  private void updateView(Label titleLabel, TextField nameField) {
     titleLabel.setText("Player " + (currentPlayerIndex + 1) + ": Enter Name");
     nameField.clear();
   }

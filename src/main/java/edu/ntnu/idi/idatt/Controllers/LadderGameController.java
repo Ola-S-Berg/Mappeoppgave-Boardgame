@@ -11,6 +11,8 @@ import edu.ntnu.idi.idatt.GUI.LadderGameView;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
@@ -24,6 +26,8 @@ public class LadderGameController {
   private final String gameVariation;
   private int currentPlayerIndex = 0;
   private final Stage stage;
+  private static final Logger LOGGER = Logger.getLogger(LadderGameController.class.getName());
+
 
   /**
    * Constructor for the controller.
@@ -129,7 +133,8 @@ public class LadderGameController {
             }
           });
         } catch (InterruptedException e) {
-          e.printStackTrace();
+          LOGGER.log(Level.WARNING, "Thread was interrupted during game action delay", e);
+          Thread.currentThread().interrupt();
         }
       }).start();
     } else {
@@ -140,7 +145,8 @@ public class LadderGameController {
           try {
             Thread.sleep(2000);
           } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Thread was interrupted during game action delay", e);
+            Thread.currentThread().interrupt();
           }
           Platform.runLater(this::advanceToNextPlayer);
         }).start();
@@ -189,7 +195,7 @@ public class LadderGameController {
           boardGame.getPlayers());
       return true;
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.SEVERE, "Failed to save game", e);
       return false;
     }
   }
@@ -241,24 +247,6 @@ public class LadderGameController {
    */
   public String getGameVariation() {
     return gameVariation;
-  }
-
-  /**
-   * Returns the board game.
-   *
-   * @return The board game.
-   */
-  public BoardGame getBoardGame() {
-    return boardGame;
-  }
-
-  /**
-   * Returns the stage.
-   *
-   * @return The JavaFX stage.
-   */
-  public Stage getStage() {
-    return stage;
   }
 
   /**

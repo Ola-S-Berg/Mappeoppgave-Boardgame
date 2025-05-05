@@ -2,6 +2,8 @@ package edu.ntnu.idi.idatt.GUI;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,11 +19,12 @@ import javafx.scene.layout.VBox;
  */
 public class TokenSelectionView {
   private final BoardGameApplication application;
-  private String selectedGame; //Used later when more games are added
   private final String[] playerNames;
   private final String [] playerTokens;
   private int currentPlayerIndex;
   private Scene scene;
+  private static final Logger LOGGER = Logger.getLogger(TokenSelectionView.class.getName());
+
 
   private final String[] TOKEN_PATHS = {
       "/Images/Tokens/BlueToken.png",
@@ -52,7 +55,7 @@ public class TokenSelectionView {
    */
   public TokenSelectionView(BoardGameApplication application, String selectedGame, String[] playerNames) {
     this.application = application;
-    this.selectedGame = selectedGame;
+    //Used later when more games are added
     this.playerNames = playerNames;
     this.playerTokens = new String[playerNames.length];
     this.currentPlayerIndex = 0;
@@ -99,8 +102,7 @@ public class TokenSelectionView {
         tokenGrid.add(tokenButton, TOKEN_POSITIONS[i][0], TOKEN_POSITIONS[i][1]);
 
       } catch (Exception e) {
-        System.err.println("Error loading token image: " + TOKEN_PATHS[i]);
-        e.printStackTrace();
+        LOGGER.log(Level.SEVERE, "Error loading token image: " + TOKEN_PATHS[i] ,e);
       }
     }
 

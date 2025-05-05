@@ -5,6 +5,8 @@ import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import edu.ntnu.idi.idatt.GameLogic.BoardGameObserver;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -45,7 +47,9 @@ public class LadderGameView implements BoardGameObserver {
   private double boardHeight;
   private final LadderGameController controller;
   private final Map<Player, Boolean> animationsInProgress = new HashMap<>();
-  
+  private static final Logger LOGGER = Logger.getLogger(LadderGameView.class.getName());
+
+
   /**
    * Constructor that initializes the game view with a controller.
    *
@@ -92,9 +96,8 @@ public class LadderGameView implements BoardGameObserver {
 
         if (fromTileId != toTileId) {
           animationsInProgress.put(player, true);
-          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
-            animationsInProgress.put(player, false);
-          });
+          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
+              animationsInProgress.put(player, false));
         }
       }
     });
@@ -125,7 +128,7 @@ public class LadderGameView implements BoardGameObserver {
         try {
           Thread.sleep(2000);
         } catch (InterruptedException e) {
-          e.printStackTrace();
+          LOGGER.log(Level.SEVERE, "Failed to sleep thread", e);
         }
         Platform.runLater(() -> {
           rollButton.setDisable(false);
@@ -142,9 +145,7 @@ public class LadderGameView implements BoardGameObserver {
    */
   @Override
   public void onCurrentPlayerChanged(Player player) {
-    Platform.runLater(() -> {
-      statusLabel.setText("It is " + player.getName() + "'s turn");
-    });
+    Platform.runLater(() -> statusLabel.setText("It is " + player.getName() + "'s turn"));
   }
 
   /**
@@ -411,15 +412,6 @@ public class LadderGameView implements BoardGameObserver {
   }
 
   /**
-   * Returns the stage.
-   *
-   * @return The JavaFX stage.
-   */
-  public Stage getStage() {
-    return stage;
-  }
-
-  /**
    * Initializes and assigns visual tokens to all players in the game.
    * This method clears any previously stored player tokens before setup.
    * For each player in the game, it retrieves the corresponding token image,
@@ -544,15 +536,6 @@ public class LadderGameView implements BoardGameObserver {
     });
   }
 
-  /**
-   * Positions a player's token on a specific tile on the game board.
-   * Adjusts the token's position within the tile based on the player's index
-   * to ensure proper spacing when multiple tokens occupy the same tile.
-   *
-   * @param tokenView The ImageView representing the player's token.
-   * @param tileId The ID of the tile where the token should be placed.
-   * @param playerIndex The index of the player whose token is being positioned.
-   */
   /**
    * Positions a player's token on a specific tile on the game board.
    * This method now delegates the calculation of player positioning to the controller.

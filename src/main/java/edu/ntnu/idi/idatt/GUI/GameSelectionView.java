@@ -97,7 +97,12 @@ public class GameSelectionView {
     popupLayout.getChildren().add(loadLabel);
 
     File savesDir = new File(SAVE_FILES_DIRECTORY);
-    if (!savesDir.exists()) savesDir.mkdirs();
+    if (!savesDir.exists()) {
+      boolean dirCreated = savesDir.mkdirs();
+      if (!dirCreated) {
+        System.err.println("Failed to create save directory: " + savesDir.getAbsolutePath());
+      }
+    }
 
     File[] playerSaveFiles = savesDir.listFiles((dir, name) -> name.endsWith("_players.csv"));
 
@@ -115,8 +120,12 @@ public class GameSelectionView {
 
           Button deleteButton = new Button("Delete: " + saveName);
           deleteButton.setOnAction(e -> {
-            boardFile.delete();
-            playerFile.delete();
+            boolean boardFileDeleted = boardFile.delete();
+            boolean playerFileDeleted = playerFile.delete();
+            if (!boardFileDeleted || !playerFileDeleted) {
+              System.err.println("Failed to delete save files");
+              return;
+            }
             popup.close();
             showLadderVariationsPopup();
           });

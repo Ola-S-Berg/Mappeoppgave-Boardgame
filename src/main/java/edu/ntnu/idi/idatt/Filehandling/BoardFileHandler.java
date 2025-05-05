@@ -26,7 +26,7 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
 
   /**
    * Serializes a BoardGame object into a JSON representation, including the board's tiles
-   * and their properties such as tile ID, the next tile in the sequence and their actions.
+   * and their properties such as tile ID, the next tile in the sequence, and their actions.
    *
    * @param boardGame the BoardGame object to be serialized; it contains the board and its tiles
    * @return a JsonObject representing the serialized board game, including the board name, description,
@@ -45,8 +45,7 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
       tileJson.addProperty("id", tile.getTileId());
 
       if (tile.getNextTile() != null) {
-        if (tile.getAction() instanceof LadderAction) {
-          LadderAction ladderAction = (LadderAction) tile.getAction();
+        if (tile.getAction() instanceof LadderAction ladderAction) {
           tileJson.addProperty("actionType", "ladder");
           tileJson.addProperty("destination", ladderAction.getDestinationTileId());
           tileJson.addProperty("direction", ladderAction.getDirection());
@@ -79,7 +78,7 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
       throw new IllegalArgumentException("Cannot write empty board list to file.");
     }
 
-    JsonObject boardJson = serializeBoard(boards.get(0));
+    JsonObject boardJson = serializeBoard(boards.getFirst());
     try (Writer writer = new FileWriter(filename)) {
       gson.toJson(boardJson, writer);
     }
