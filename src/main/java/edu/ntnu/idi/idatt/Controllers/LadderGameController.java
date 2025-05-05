@@ -93,10 +93,10 @@ public class LadderGameController {
 
     boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValue);
 
-    handlePlayerMove(currentPlayer, fromTileId, toTileId, diceValue);
+    handlePlayerMove(currentPlayer);
   }
 
-  private void handlePlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
+  private void handlePlayerMove(Player player) {
     Tile currentTile = player.getCurrentTile();
     TileAction action = currentTile.getAction();
 
