@@ -141,6 +141,10 @@ public class TokenSelectionView {
     }
   }
 
+  /**
+   * Returns the scene for this view.
+   * @return The scene.
+   */
   public Scene getScene() {
     return scene;
   }
