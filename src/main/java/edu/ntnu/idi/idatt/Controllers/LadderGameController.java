@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  * Controller for the Ladder Game that handles game logic and coordinates
  * between the model (BoardGame) and view (LadderGameClassicView).
  */
-public class LadderGameController {
+public class LadderGameController implements GameController {
   private final BoardGame boardGame;
   private final LadderGameView view;
   private final String gameVariation;
@@ -35,7 +35,7 @@ public class LadderGameController {
    * @param stage The JavaFX stage.
    * @param gameVariation The variation of the ladder game.
    */
-  public LadderGameController(BoardGame boardGame, Stage stage, String gameVariation) {
+  public LadderGameController (BoardGame boardGame, Stage stage, String gameVariation) {
     this.boardGame = boardGame;
     this.stage = stage;
     this.gameVariation = gameVariation;
