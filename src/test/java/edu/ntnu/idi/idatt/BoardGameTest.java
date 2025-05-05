@@ -36,9 +36,9 @@ class BoardGameTest {
   }
 
   @Test
-  void createBoard_Positive() {
+  void createLadderGameBoard_Positive() {
    
-    boardGame.createBoard();
+    boardGame.createLadderGameBoard();
     
     
     assertNotNull(boardGame.getBoard(), "Board should be initialized.");
@@ -46,7 +46,7 @@ class BoardGameTest {
   }
 
   @Test
-  void createBoard_Negative_BeforeInitialization() {
+  void createLadderGameBoard_Negative_BeforeInitialization() {
     
     
     
@@ -69,7 +69,7 @@ class BoardGameTest {
   @Test
   void playGame_Positive() {
     
-    boardGame.createBoard();
+    boardGame.createLadderGameBoard();
     boardGame.createDice();
     
     Player player1 = new Player("Alice", "Blue" ,boardGame);

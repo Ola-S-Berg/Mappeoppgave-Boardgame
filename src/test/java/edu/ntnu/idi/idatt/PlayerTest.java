@@ -17,7 +17,7 @@ class PlayerTest {
     @BeforeEach
     void setUp() {
         game = new BoardGame();
-        game.createBoard();
+        game.createLadderGameBoard();
         player = new Player("Markus", "Blue", game);
     }
 

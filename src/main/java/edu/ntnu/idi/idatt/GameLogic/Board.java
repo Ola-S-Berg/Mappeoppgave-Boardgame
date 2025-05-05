@@ -144,4 +144,3 @@ public class Board {
     board.getTile(81).setAction(new BackToStartAction());
   }
 }
-

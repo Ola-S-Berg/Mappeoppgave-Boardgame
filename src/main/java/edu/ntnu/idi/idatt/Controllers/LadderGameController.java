@@ -24,7 +24,6 @@ public class LadderGameController {
   private final BoardGame boardGame;
   private final LadderGameView view;
   private final String gameVariation;
-  private int currentPlayerIndex = 0;
   private final Stage stage;
   private static final Logger LOGGER = Logger.getLogger(LadderGameController.class.getName());
 
@@ -43,20 +42,7 @@ public class LadderGameController {
 
     this.view = new LadderGameView(boardGame, stage, this);
 
-    initializePlayers();
-
-    boardGame.notifyCurrentPlayerChanged(getCurrentPlayer());
-  }
-
-  /**
-   * Initialize all players on the starting tile if they're not already on a tile.
-   */
-  private void initializePlayers() {
-    for (Player player : boardGame.getPlayers()) {
-      if (player.getCurrentTile() == null) {
-        player.placeOnTile(boardGame.getBoard().getTile(1));
-      }
-    }
+    boardGame.initializeGame();
   }
 
   /**
@@ -65,7 +51,7 @@ public class LadderGameController {
    * @return The current player.
    */
   public Player getCurrentPlayer() {
-    return boardGame.getPlayers().get(currentPlayerIndex);
+    return boardGame.getCurrentPlayer();
   }
 
   /**
@@ -84,19 +70,16 @@ public class LadderGameController {
       return;
     }
 
-    int dice1 = boardGame.getDice().roll();
-    int dice2 = boardGame.getDice().roll();
-    int diceValue = dice1 + dice2;
-
-    view.updateDiceDisplay(dice1, dice2);
+    int[] diceValues = boardGame.rollDice();
+    view.updateDiceDisplay(diceValues[0], diceValues[1]);
 
     int fromTileId = currentPlayer.getCurrentTile().getTileId();
-    Tile destinationTile = calculateDestinationTile(currentPlayer, diceValue);
+    Tile destinationTile = calculateDestinationTile(currentPlayer, diceValues[diceValues.length - 1]);
     int toTileId = destinationTile.getTileId();
 
     currentPlayer.placeOnTile(destinationTile);
 
-    boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValue);
+    boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValues[diceValues.length - 1]);
 
     handlePlayerMove(currentPlayer);
   }
@@ -176,16 +159,15 @@ public class LadderGameController {
    * Advances the game to the next player's turn.
    */
   private void advanceToNextPlayer() {
-    currentPlayerIndex = (currentPlayerIndex + 1) % boardGame.getPlayers().size();
-    Player nextPlayer = boardGame.getPlayers().get(currentPlayerIndex);
-    boardGame.notifyCurrentPlayerChanged(nextPlayer);
+    boardGame.advanceToNextPlayer();
+
     view.prepareForNextTurn();
   }
 
   /**
    * Saves the current game state.
    *
-   * @return true if save was successful, false otherwise
+   * @return true if save was successful, false otherwise.
    */
   public boolean saveGame() {
     try {
@@ -251,7 +233,6 @@ public class LadderGameController {
 
   /**
    * Converts a tile ID to its corresponding grid coordinates on the game board.
-   * This method has been moved from the view to the controller to follow MVC principles.
    *
    * @param tileId The ID of the tile to be converted. Expected range: 1-90.
    * @return An integer array containing the grid coordinates where
@@ -280,7 +261,6 @@ public class LadderGameController {
 
   /**
    * Calculates the offset position for a player token based on its index.
-   * This is now a controller method since it involves calculation logic.
    *
    * @param playerIndex The index of the player.
    * @param totalPlayers The total number of players in the game.

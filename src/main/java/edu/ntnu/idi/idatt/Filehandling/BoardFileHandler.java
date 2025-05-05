@@ -99,7 +99,7 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
     JsonObject boardJson = JsonParser.parseString(json).getAsJsonObject();
 
     BoardGame boardGame = new BoardGame();
-    boardGame.createBoard();
+    boardGame.createLadderGameBoard();
 
     if (boardJson.has("variantName")) {
       String variantName = boardJson.get("variantName").getAsString();

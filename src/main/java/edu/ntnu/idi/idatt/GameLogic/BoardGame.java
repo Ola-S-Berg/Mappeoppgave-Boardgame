@@ -8,15 +8,21 @@ import java.util.ArrayList;
  * The class that handles information about the game.
  */
 public class BoardGame {
+
   private Board board;
   private Player currentPlayer;
   private final List<Player> players = new ArrayList<>();
   private Dice dice;
   private String variantName;
   private final List<BoardGameObserver> observers = new ArrayList<>();
+  private final BoardFileHandler fileHandler;
+  private int currentPlayerIndex;
+  private boolean gameOver;
 
   public BoardGame() {
-    BoardFileHandler fileHandler = new BoardFileHandler();
+    this.fileHandler = new BoardFileHandler();
+    this.currentPlayerIndex = 0;
+    this.gameOver = false;
   }
 
   /**
@@ -35,7 +41,7 @@ public class BoardGame {
    * Removes an observer from the list of registered observers.
    * @param observer The observer to remove.
    */
-  public void removeObserver (BoardGameObserver observer) {
+  public void removeObserver(BoardGameObserver observer) {
     observers.remove(observer);
   }
 
@@ -94,12 +100,12 @@ public class BoardGame {
 }
 
   /**
-   * Creates an instance of the Board.
+   * Creates an instance of the Ladder Game Board.
    * Adds 90 tiles, with unique identifiers ranging from 1 to 90.
    * Links the tiles in sequential order, with exceptions for the last tile.
    * Configures the board's tile actions based on the game variant, if specified.
    */
-  public void createBoard() {
+  public void createLadderGameBoard() {
     board = new Board();
 
     for (int i = 1; i <= 90; i++) {
@@ -165,52 +171,160 @@ public class BoardGame {
   }
 
   /**
-   * Iterates through players and managing game rounds until a winner is determined. Handles player
-   * movements, skipping turns, and notifications to observers for updates
-   * such as player moves, turn changes, and game completion.
+   * Initializes the game by setting up the initial game state and preparing players.
+   * This includes defining the starting player, placing all players on the first tile,
+   * and notifying observers about the current player.
    */
-  public void play () {
-    int roundNumber = 1;
+  public void initializeGame() {
+    currentPlayerIndex = 0;
+    gameOver = false;
+
+    if (!players.isEmpty()) {
+      currentPlayer = players.get(currentPlayerIndex);
+    }
 
     for (Player player : players) {
       player.placeOnTile(board.getTile(1));
     }
 
+    if (currentPlayer != null) {
+      notifyCurrentPlayerChanged(currentPlayer);
+    }
+  }
+
+  /**
+   * Processes the current player's turn in the game. If the game is over, it ends the turn immediately.
+   * If the current player is set to skip their turn, it notifies observers, resets the skip state,
+   * and ends the turn. Otherwise, the current player rolls the dice, calculates their movement,
+   * and updates their position accordingly. Observers are notified of the player's movement.
+   *
+   * @return The number of steps moved during the turn. Returns 0 if the game is over or the player skips their turn.
+   */
+  public int processTurn() {
+    if (gameOver) {
+      return 0;
+    }
+
+    if (currentPlayer.willWaitTurn()) {
+      System.out.println(currentPlayer.getName() + " will skip their turn");
+      notifyPlayerSkipTurn(currentPlayer);
+      currentPlayer.setWaitTurn(false);
+      return 0;
+    }
+
+    int steps = dice.roll();
+    int fromTileId = currentPlayer.getCurrentTile().getTileId();
+    System.out.println(currentPlayer.getName() + " rolled " + steps);
+
+    return movePlayer(currentPlayer, steps, fromTileId);
+  }
+
+  /**
+   * Moves the specified player a given number of steps on the game board, starting from a specified tile.
+   * Notifies observers about the move and checks for game completion.
+   *
+   * @param player The player to be moved.
+   * @param steps The number of steps the player will move.
+   * @param fromTileId The ID of the tile the player is moving from.
+   * @return The number of steps moved by the player.
+   */
+  public int movePlayer(Player player, int steps, int fromTileId) {
+    player.move(steps);
+    int toTileId = player.getCurrentTile().getTileId();
+
+    notifyPlayerMove(player, fromTileId, toTileId, steps);
+
+    System.out.println(player.getName() + " is now on tile " + toTileId);
+
+    if (getWinner() != null) {
+      gameOver = true;
+      notifyGameWon(getWinner());
+    }
+
+    return steps;
+  }
+
+  public int[] rollDice() {
+    int[] results;
+    if (dice.getNumberOfDice() == 1) {
+      int value = dice.roll();
+      results = new int[] {value, value};
+    } else {
+      results = new int[dice.getNumberOfDice() + 1];
+      int total = 0;
+      for (int i = 0; i < dice.getNumberOfDice(); i++) {
+        int roll = dice.roll();
+        results[i] = roll;
+        total += roll;
+      }
+      results[results.length - 1] = total;
+    }
+    return results;
+  }
+
+  /**
+   * Advances the game to the next player's turn. If the game is over or there are no players,
+   * the method returns null. Otherwise, it updates the current player to the next player
+   * in the sequence and notifies observers about the change if applicable.
+   *
+   * @return The new current player after advancing. Returns null if the game is over or there are no players.
+   */
+  public Player advanceToNextPlayer() {
+    if (players.isEmpty() || gameOver) {
+      return null;
+    }
+
+    Player previousPlayer = currentPlayer;
+    currentPlayerIndex =(currentPlayerIndex + 1) % players.size();
+    currentPlayer = players.get(currentPlayerIndex);
+
+    if (previousPlayer != currentPlayer) {
+      notifyCurrentPlayerChanged(currentPlayer);
+    }
+
+    return currentPlayer;
+  }
+
+  /**
+   * Play-method that runs a game automatically. Kept for backwards compatibility with tests.
+   * Initializes the game, processes turns, and advances players until a winner is found.
+   */
+  public void play() {
+    int roundNumber = 1;
+
+    initializeGame();
+
     while (getWinner() == null) {
       System.out.println("Round " + roundNumber);
 
-      for (Player player : players) {
-        Player previousPlayer = currentPlayer;
-        currentPlayer = player;
+      for (int i = 0; i < players.size() && !gameOver; i++) {
+        processTurn();
 
-        if (previousPlayer != currentPlayer) {
-          notifyCurrentPlayerChanged(currentPlayer);
-        }
-
-        if (player.willWaitTurn()) {
-          System.out.println(player.getName() + " will skip their turn");
-          notifyPlayerSkipTurn(player);
-          player.setWaitTurn(false);
-          continue;
-        }
-
-        int steps = dice.roll();
-        int fromTileId = player.getCurrentTile().getTileId();
-        System.out.println(currentPlayer.getName() + " rolled " + steps);
-        player.move(steps);
-        int toTileId = player.getCurrentTile().getTileId();
-
-        notifyPlayerMove(player, fromTileId, toTileId, steps);
-
-        System.out.println(player.getName() + " is now on tile " + player.getCurrentTile().getTileId());
-
-        if (getWinner() != null) {
-          notifyGameWon(getWinner());
-          break;
+        if (!gameOver) {
+          advanceToNextPlayer();
         }
       }
+
       roundNumber++;
     }
+  }
+
+  /**
+   * Retrieves the current player in the game.
+   *
+   * @return The Player object representing the current player.
+   */
+  public Player getCurrentPlayer() {
+    return currentPlayer;
+  }
+
+  /**
+   * Checks whether the game is over.
+   *
+   * @return true if the game has ended, false otherwise.
+   */
+  public boolean isGameOver() {
+    return gameOver;
   }
 
   /**

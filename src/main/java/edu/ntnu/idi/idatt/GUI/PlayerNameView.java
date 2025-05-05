@@ -88,5 +88,4 @@ public class PlayerNameView {
   public Scene getScene() {
     return scene;
   }
-
 }

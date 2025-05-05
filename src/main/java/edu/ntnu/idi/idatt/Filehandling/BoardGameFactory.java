@@ -25,7 +25,7 @@ public class BoardGameFactory {
   public static BoardGame createLadderGameClassic() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("ladderGame");
-    boardGame.createBoard();
+    boardGame.createLadderGameBoard();
     boardGame.createDice();
 
     return boardGame;
@@ -38,7 +38,7 @@ public class BoardGameFactory {
   public static BoardGame createLadderGameAdvanced() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("ladderGameAdvanced");
-    boardGame.createBoard();
+    boardGame.createLadderGameBoard();
     boardGame.createDice();
 
     return boardGame;
@@ -51,7 +51,7 @@ public class BoardGameFactory {
   public static BoardGame createLadderGameExtreme() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("ladderGameExtreme");
-    boardGame.createBoard();
+    boardGame.createLadderGameBoard();
     boardGame.createDice();
 
     return boardGame;
