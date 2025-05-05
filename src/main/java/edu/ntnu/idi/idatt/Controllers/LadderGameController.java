@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.Controllers;
 import edu.ntnu.idi.idatt.Actions.TileAction;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
+import edu.ntnu.idi.idatt.GUI.DialogService;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import edu.ntnu.idi.idatt.GameLogic.Player;
 import edu.ntnu.idi.idatt.GameLogic.Tile;
@@ -195,10 +196,13 @@ public class LadderGameController {
 
   /**
    * Quits the current game and returns to the main menu.
+   * Shows a confirmation dialog before quitting.
    */
   public void quitToMenu() {
-    stage.close();
-    new BoardGameApplication().start(new Stage());
+    DialogService.showQuitConfirmationDialog(stage, () -> {
+      stage.close();
+      new BoardGameApplication().start(new Stage());
+    });
   }
 
   /**
