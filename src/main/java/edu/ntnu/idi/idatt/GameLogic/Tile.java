@@ -15,15 +15,11 @@ public class Tile {
   }
 
   /**
-   * Checks which tile the player has landed on and performs an action if available.
+   * Checks which tile the player has landed on.
    * @param player The player that lands.
    */
   public void landPlayer(Player player) {
     System.out.println(player.getName() + " lands at " + tileId);
-
-    if (action != null) {
-      action.perform(player);
-    }
   }
 
   /**

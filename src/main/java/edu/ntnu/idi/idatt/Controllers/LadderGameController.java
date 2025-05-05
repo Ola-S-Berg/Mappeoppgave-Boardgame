@@ -101,32 +101,52 @@ public class LadderGameController {
     TileAction action = currentTile.getAction();
 
     if (action != null) {
-      int beforeActionId = currentTile.getTileId();
-
       String actionType = action.getClass().getSimpleName();
       view.showActionMessage(player, actionType);
 
-      action.perform(player);
-      int afterActionId = player.getCurrentTile().getTileId();
-
-      if (afterActionId != beforeActionId) {
-        boardGame.notifyPlayerMove(player, beforeActionId, afterActionId, 0);
-      }
-    }
-
-    if (player.getCurrentTile().getTileId() == 90) {
-      boardGame.notifyGameWon(player);
-    } else {
       new Thread(() -> {
         try {
-          Thread.sleep(2000);
+          Thread.sleep(1000);
+
+          Platform.runLater(() -> {
+            int fromTileId = player.getCurrentTile().getTileId();
+            action.perform(player);
+            int toTileId = player.getCurrentTile().getTileId();
+
+            if (fromTileId != toTileId) {
+              boardGame.notifyPlayerMove(player, fromTileId, toTileId, 0);
+            }
+          });
+
+          Thread.sleep(1000);
+
+          Platform.runLater(() -> {
+            if (player.getCurrentTile().getTileId() == 90) {
+              boardGame.notifyGameWon(player);
+            } else {
+              advanceToNextPlayer();
+            }
+          });
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-        Platform.runLater(this::advanceToNextPlayer);
       }).start();
+    } else {
+      if (player.getCurrentTile().getTileId() == 90) {
+        boardGame.notifyGameWon(player);
+      } else {
+        new Thread(() -> {
+          try {
+            Thread.sleep(2000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          Platform.runLater(this::advanceToNextPlayer);
+        }).start();
+      }
     }
   }
+
 
   /**
    * Calculates the destination tile based on dice value.

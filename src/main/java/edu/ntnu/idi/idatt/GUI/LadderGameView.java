@@ -44,7 +44,8 @@ public class LadderGameView implements BoardGameObserver {
   private double boardWidth;
   private double boardHeight;
   private final LadderGameController controller;
-
+  private final Map<Player, Boolean> animationsInProgress = new HashMap<>();
+  
   /**
    * Constructor that initializes the game view with a controller.
    *
@@ -78,16 +79,22 @@ public class LadderGameView implements BoardGameObserver {
       if (tokenView != null) {
         int playerIndex = boardGame.getPlayers().indexOf(player);
 
-        // Only update status text for regular dice-based moves
         if (diceValue > 0) {
           statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from " + fromTileId + " to " + toTileId);
-          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, null);
-        }
-        // If diceValue is 0, it's an action move which is handled by animateActionMove instead
-        else if (fromTileId != toTileId) {
-          // Don't animate here - this is a notification from the model
-          // about an action move that's already being animated via animateActionMove
+        } else if (fromTileId != toTileId) {
           statusLabel.setText(player.getName() + " moved from " + fromTileId + " to " + toTileId + " due to an action");
+        }
+
+        Boolean inProgress = animationsInProgress.get(player);
+        if (inProgress != null && inProgress) {
+          return;
+        }
+
+        if (fromTileId != toTileId) {
+          animationsInProgress.put(player, true);
+          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
+            animationsInProgress.put(player, false);
+          });
         }
       }
     });
