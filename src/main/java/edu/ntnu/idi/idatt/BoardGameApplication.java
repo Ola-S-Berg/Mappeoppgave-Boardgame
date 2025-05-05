@@ -1,7 +1,8 @@
 package edu.ntnu.idi.idatt;
 
+import edu.ntnu.idi.idatt.Controllers.LadderGameController;
 import edu.ntnu.idi.idatt.GUI.GameSelectionView;
-import edu.ntnu.idi.idatt.GUI.LadderGameClassicView;
+import edu.ntnu.idi.idatt.GUI.LadderGameView;
 import edu.ntnu.idi.idatt.GUI.PlayerCountView;
 import edu.ntnu.idi.idatt.GUI.PlayerNameView;
 import edu.ntnu.idi.idatt.GUI.TokenSelectionView;
@@ -87,7 +88,6 @@ public class BoardGameApplication extends Application {
    * @param playerTokens Array of player token paths.
    */
   public void startGame(String[] playerNames, String[] playerTokens) {
-    boardGame = new BoardGame();
     boardGame = BoardGameFactory.createBoardGame(selectedGame);
 
     for (int i = 0; i < playerNames.length; i++) {
@@ -95,7 +95,7 @@ public class BoardGameApplication extends Application {
       boardGame.addPlayer(player);
     }
 
-    LadderGameClassicView ladderGameClassicView = new LadderGameClassicView(boardGame, primaryStage, selectedGame);
+    new LadderGameController(boardGame, primaryStage, selectedGame);
   }
 
   /**

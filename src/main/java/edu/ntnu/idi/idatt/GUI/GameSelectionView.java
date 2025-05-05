@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.GUI;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
+import edu.ntnu.idi.idatt.Controllers.LadderGameController;
 import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.GameLogic.BoardGame;
 import java.io.File;
@@ -149,7 +150,7 @@ public class GameSelectionView {
         default -> "Ladder Game Classic";
       };
 
-      new LadderGameClassicView(loadedGame, application.getPrimaryStage(), displayName);
+      new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
     } catch (IOException e) {
       System.err.println("Failed to load save: " + e.getMessage());
     }

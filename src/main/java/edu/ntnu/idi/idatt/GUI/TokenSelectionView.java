@@ -117,12 +117,10 @@ public class TokenSelectionView {
     currentPlayerIndex++;
 
     if (currentPlayerIndex < playerNames.length) {
-      //Updates view for the current player.
       VBox layout = (VBox) scene.getRoot();
       Label titleLabel = (Label) layout.getChildren().getFirst();
       titleLabel.setText(playerNames[currentPlayerIndex] + ", Select Your Token");
 
-      //Iterates between selected tokens and disables previously selected tokens.
       for (int i = 0; i < TOKEN_PATHS.length; i++) {
         if (i < tokenButtons.length) {
           Button tokenButton = tokenButtons[i];
