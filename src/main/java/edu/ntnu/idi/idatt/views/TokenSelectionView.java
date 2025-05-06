@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.GUI;
+package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
 import java.util.Objects;
@@ -27,11 +27,11 @@ public class TokenSelectionView {
 
 
   private final String[] TOKEN_PATHS = {
-      "/Images/Tokens/BlueToken.png",
-      "/Images/Tokens/LightBlueToken.png",
-      "/Images/Tokens/RedToken.png",
-      "/Images/Tokens/GreenToken.png",
-      "/Images/Tokens/PinkToken.png"
+      "/Images/tokens/BlueToken.png",
+      "/Images/tokens/LightBlueToken.png",
+      "/Images/tokens/RedToken.png",
+      "/Images/tokens/GreenToken.png",
+      "/Images/tokens/PinkToken.png"
   };
 
   /**

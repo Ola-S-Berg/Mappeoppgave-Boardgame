@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.Actions;
+package edu.ntnu.idi.idatt.actions;
 
-import edu.ntnu.idi.idatt.GameLogic.Player;
-import edu.ntnu.idi.idatt.GameLogic.Tile;
+import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.Tile;
 
 /**
  * Class representing action when landing on a move back to start tile.

@@ -1,14 +1,14 @@
 package edu.ntnu.idi.idatt;
 
-import edu.ntnu.idi.idatt.Controllers.LadderGameController;
-import edu.ntnu.idi.idatt.GUI.GameSelectionView;
-import edu.ntnu.idi.idatt.GUI.LadderGameView;
-import edu.ntnu.idi.idatt.GUI.PlayerCountView;
-import edu.ntnu.idi.idatt.GUI.PlayerNameView;
-import edu.ntnu.idi.idatt.GUI.TokenSelectionView;
-import edu.ntnu.idi.idatt.GameLogic.BoardGame;
-import edu.ntnu.idi.idatt.GameLogic.Player;
-import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.controllers.LadderGameController;
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.views.GameSelectionView;
+import edu.ntnu.idi.idatt.views.PlayerCountView;
+import edu.ntnu.idi.idatt.views.PlayerNameView;
+import edu.ntnu.idi.idatt.views.TokenSelectionView;
+import edu.ntnu.idi.idatt.model.BoardGame;
+import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -95,7 +95,11 @@ public class BoardGameApplication extends Application {
       boardGame.addPlayer(player);
     }
 
-    new LadderGameController(boardGame, primaryStage, selectedGame);
+    if (selectedGame.equals("Monopoly Game")) {
+      new MonopolyGameController(boardGame, primaryStage, selectedGame);
+    } else {
+      new LadderGameController(boardGame, primaryStage, selectedGame);
+    }
   }
 
   /**

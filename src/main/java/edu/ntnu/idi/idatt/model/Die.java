@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.GameLogic;
+package edu.ntnu.idi.idatt.model;
 import java.util.Random;
 
 /**

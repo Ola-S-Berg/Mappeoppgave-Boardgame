@@ -1,9 +1,10 @@
-package edu.ntnu.idi.idatt.GUI;
+package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
-import edu.ntnu.idi.idatt.Controllers.LadderGameController;
-import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
-import edu.ntnu.idi.idatt.GameLogic.BoardGame;
+import edu.ntnu.idi.idatt.controllers.LadderGameController;
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.model.BoardGame;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +20,8 @@ import javafx.stage.Stage;
 /**
  * View class for the game selection view.
  * Allows players to choose which game to play.
+ * TODO:
+ * Move loading saves for all games to game selection screen next to the option for each game.
  */
 public class GameSelectionView {
   private final BoardGameApplication application;
@@ -45,19 +48,25 @@ public class GameSelectionView {
     titleLabel.setStyle("-fx-font-size: 24px");
     layout.getChildren().add(titleLabel);
 
-    String[] games = {"Ladder Game", "WIP", "WIP"};
+    String[] games = {"Ladder Game", "Monopoly Trondheim Edition", "WIP"};
 
     for (String game : games) {
       Button gameButton = new Button(game);
       gameButton.setOnAction(event -> {
         if (game.equals("Ladder Game")) {
           showLadderVariationsPopup();
+        } else if (game.equals("Monopoly Trondheim Edition")) {
+          application.showPlayerCountView("Monopoly Game");
         } else {
           application.showPlayerCountView(game);
         }
       });
       layout.getChildren().add(gameButton);
     }
+
+    Button loadSavedGameButton = new Button("Load Saved Game");
+    loadSavedGameButton.setOnAction(event -> showLoadSavedGamePopup());
+    layout.getChildren().add(loadSavedGameButton);
 
     scene = new Scene(layout, 800, 800);
   }
@@ -83,16 +92,35 @@ public class GameSelectionView {
     List<String> variations = BoardGameFactory.getAvailableVariants();
 
     for (String variation : variations) {
-      Button variationButton = new Button(variation);
-      variationButton.setOnAction(event -> {
-        popup.close();
-        application.showPlayerCountView(variation);
-      });
-      popupLayout.getChildren().add(variationButton);
-
+      if (variation.startsWith("Ladder Game")) {
+        Button variationButton = new Button(variation);
+        variationButton.setOnAction(event -> {
+          popup.close();
+          application.showPlayerCountView(variation);
+        });
+        popupLayout.getChildren().add(variationButton);
+      }
     }
 
-    Label loadLabel = new Label("Load Saved Game");
+    Scene popupScene = new Scene(popupLayout, 500, 500);
+    popup.setScene(popupScene);
+    popup.showAndWait();
+  }
+
+  /**
+   * Displays a popup for loading saved games.
+   * This method creates a modal popup window where users can:
+   * 1. View saved game files, load a selected saved game, or delete a saved game file.
+   */
+  private void showLoadSavedGamePopup() {
+    Stage popup = new Stage();
+    popup.initModality(Modality.APPLICATION_MODAL);
+    popup.setTitle("Load Saved Game");
+
+    VBox popupLayout = new VBox(15);
+    popupLayout.setAlignment(Pos.CENTER);
+
+    Label loadLabel = new Label("Select a saved game to load");
     loadLabel.setStyle("-fx-font-size: 24px");
     popupLayout.getChildren().add(loadLabel);
 
@@ -105,13 +133,15 @@ public class GameSelectionView {
     }
 
     File[] playerSaveFiles = savesDir.listFiles((dir, name) -> name.endsWith("_players.csv"));
+    boolean hasSavedGames = false;
 
-    if (playerSaveFiles != null) {
+    if (playerSaveFiles != null && playerSaveFiles.length > 0) {
       for (File playerFile : playerSaveFiles) {
         String saveName = playerFile.getName().replace("_players.csv", "");
 
         File boardFile = new File(SAVE_FILES_DIRECTORY + "/" + saveName + "_board.json");
         if (boardFile.exists()) {
+          hasSavedGames = true;
           Button loadButton = new Button("Load: " + saveName);
           loadButton.setOnAction(e -> {
             popup.close();
@@ -127,7 +157,7 @@ public class GameSelectionView {
               return;
             }
             popup.close();
-            showLadderVariationsPopup();
+            showLoadSavedGamePopup();
           });
 
           HBox saveButtons = new HBox(10, loadButton, deleteButton);
@@ -135,6 +165,11 @@ public class GameSelectionView {
           popupLayout.getChildren().add(saveButtons);
         }
       }
+    }
+
+    if (!hasSavedGames) {
+      Label noSavesLabel = new Label("No saved games found");
+      popupLayout.getChildren().add(noSavesLabel);
     }
 
     Scene popupScene = new Scene(popupLayout, 500, 500);
@@ -151,15 +186,20 @@ public class GameSelectionView {
   private void loadGame(String saveName) {
     try {
       BoardGame loadedGame = BoardGameFactory.loadSavedGame(saveName);
-
       String gameVariation = loadedGame.getVariantName();
-      String displayName = switch (gameVariation) {
-        case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
-        case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
-        default -> "Ladder Game Classic";
-      };
 
-      new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
+      if (gameVariation.startsWith("Ladder Game")) {
+        String displayName = switch (gameVariation) {
+          case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
+          case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
+          default -> "Ladder Game Classic";
+        };
+        new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
+      } else if (gameVariation.startsWith("Monopoly Game")) {
+        new MonopolyGameController(loadedGame, application.getPrimaryStage(), "Monopoly Game");
+      } else {
+        System.err.println("Unknown game variation: " + gameVariation);
+      }
     } catch (IOException e) {
       System.err.println("Failed to load save: " + e.getMessage());
     }
@@ -172,5 +212,4 @@ public class GameSelectionView {
   public Scene getScene() {
     return scene;
   }
-
 }

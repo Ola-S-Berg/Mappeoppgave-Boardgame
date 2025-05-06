@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.GUI;
+package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
 import javafx.scene.Scene;

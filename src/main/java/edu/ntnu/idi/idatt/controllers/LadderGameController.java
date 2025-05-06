@@ -1,13 +1,13 @@
-package edu.ntnu.idi.idatt.Controllers;
+package edu.ntnu.idi.idatt.controllers;
 
-import edu.ntnu.idi.idatt.Actions.TileAction;
-import edu.ntnu.idi.idatt.Filehandling.BoardGameFactory;
-import edu.ntnu.idi.idatt.Filehandling.PlayerFileHandler;
-import edu.ntnu.idi.idatt.GUI.DialogService;
-import edu.ntnu.idi.idatt.GameLogic.BoardGame;
-import edu.ntnu.idi.idatt.GameLogic.Player;
-import edu.ntnu.idi.idatt.GameLogic.Tile;
-import edu.ntnu.idi.idatt.GUI.LadderGameView;
+import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
+import edu.ntnu.idi.idatt.views.DialogService;
+import edu.ntnu.idi.idatt.model.BoardGame;
+import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.Tile;
+import edu.ntnu.idi.idatt.views.LadderGameView;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 
 import java.io.IOException;

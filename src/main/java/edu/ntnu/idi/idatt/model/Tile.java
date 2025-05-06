@@ -1,6 +1,6 @@
-package edu.ntnu.idi.idatt.GameLogic;
+package edu.ntnu.idi.idatt.model;
 
-import edu.ntnu.idi.idatt.Actions.TileAction;
+import edu.ntnu.idi.idatt.actions.TileAction;
 
 /**
  * Class representing a tile on the game board.

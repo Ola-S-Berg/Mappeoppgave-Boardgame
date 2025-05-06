@@ -1,9 +1,9 @@
-package edu.ntnu.idi.idatt.GUI;
+package edu.ntnu.idi.idatt.views;
 
-import edu.ntnu.idi.idatt.Controllers.LadderGameController;
-import edu.ntnu.idi.idatt.GameLogic.BoardGame;
-import edu.ntnu.idi.idatt.GameLogic.Player;
-import edu.ntnu.idi.idatt.GameLogic.BoardGameObserver;
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.model.BoardGame;
+import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.BoardGameObserver;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,11 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * View for the "Ladder Game" game.
+ * View for the "Monopoly Game" game.
  * Displays the game board, handles dice rolling, and shows player movement.
- * Communicates with the controller "LadderGameController" to handle game logic.
+ * Communicates with the controller "MonopolyGameController" to handle game logic.
  */
-public class LadderGameView implements BoardGameObserver {
+public class MonopolyGameView implements BoardGameObserver {
 
   private final Stage stage;
   private final BoardGame boardGame;
@@ -40,15 +40,13 @@ public class LadderGameView implements BoardGameObserver {
   private ImageView diceView2;
   private final Map<Player, ImageView> playerTokenViews;
   private final String gameVariation;
-  private static final int gridRows = 9;
-  private static final int gridCols = 10;
+  private static final int gridSize = 11; // 11x11 for monopoly board
   private double tokenSize = 30;
   private double boardWidth;
   private double boardHeight;
-  private final LadderGameController controller;
+  private final MonopolyGameController controller;
   private final Map<Player, Boolean> animationsInProgress = new HashMap<>();
-  private static final Logger LOGGER = Logger.getLogger(LadderGameView.class.getName());
-
+  private static final Logger LOGGER = Logger.getLogger(MonopolyGameView.class.getName());
 
   /**
    * Constructor that initializes the game view with a controller.
@@ -57,7 +55,7 @@ public class LadderGameView implements BoardGameObserver {
    * @param stage The JavaFX stage to display the game on.
    * @param controller The controller that handles game logic.
    */
-  public LadderGameView(BoardGame boardGame, Stage stage, LadderGameController controller) {
+  public MonopolyGameView(BoardGame boardGame, Stage stage, MonopolyGameController controller) {
     this.boardGame = boardGame;
     this.stage = stage;
     this.playerTokenViews = new HashMap<>();
@@ -154,9 +152,9 @@ public class LadderGameView implements BoardGameObserver {
    */
   private String getBoardImagePath() {
     return switch (gameVariation) {
-      case "Ladder Game Advanced" -> "/images/Games/LadderGameAdvanced.png";
-      case "Ladder Game Extreme" -> "/images/Games/LadderGameExtreme.png";
-      default -> "/images/Games/LadderGame.png";
+      case "Monopoly Game Advanced" -> "/images/Games/MonopolyGameAdvanced.png";
+      case "Monopoly Game Extreme" -> "/images/Games/MonopolyGameExtreme.png";
+      default -> "/images/Games/MonopolyGame.png";
     };
   }
 
@@ -202,11 +200,11 @@ public class LadderGameView implements BoardGameObserver {
     boardImageView.fitWidthProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
     boardImageView.fitHeightProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
 
-    for (int row = 0; row < gridRows; row++) {
-      for (int col = 0; col < gridCols; col++) {
+    for (int row = 0; row < gridSize; row++) {
+      for (int col = 0; col < gridSize; col++) {
         StackPane cell = new StackPane();
-        cell.prefWidthProperty().bind(boardGridPane.widthProperty().divide(gridCols));
-        cell.prefHeightProperty().bind(boardGridPane.heightProperty().divide(gridRows));
+        cell.prefWidthProperty().bind(boardGridPane.widthProperty().divide(gridSize));
+        cell.prefHeightProperty().bind(boardGridPane.heightProperty().divide(gridSize));
         boardGridPane.add(cell, col, row);
       }
     }
@@ -280,7 +278,7 @@ public class LadderGameView implements BoardGameObserver {
 
     Scene scene = new Scene(root, 800, 800);
     stage.setScene(scene);
-    stage.setTitle("Ladder Game");
+    stage.setTitle("Monopoly Game");
     stage.setMinWidth(600);
     stage.setMinHeight(600);
     stage.show();
@@ -336,7 +334,7 @@ public class LadderGameView implements BoardGameObserver {
    * Updates cell sizes dynamically when resizing the window.
    */
   private void updateCellSize() {
-    tokenSize = Math.min(boardWidth / gridCols, boardHeight / gridRows) * 0.4;
+    tokenSize = Math.min(boardWidth / gridSize, boardHeight / gridSize) * 0.4;
     updatePlayerPositions();
   }
 
@@ -372,14 +370,17 @@ public class LadderGameView implements BoardGameObserver {
   public void showActionMessage(Player player, String actionType) {
     Platform.runLater(() -> {
       switch (actionType) {
-        case "LadderAction":
-          actionLabel.setText(player.getName() + " landed on a ladder");
+        case "PropertyAction":
+          actionLabel.setText(player.getName() + " landed on a property");
           break;
-        case "BackToStartAction":
-          actionLabel.setText(player.getName() + " must go back to start");
+        case "ChanceAction":
+          actionLabel.setText(player.getName() + " landed on chance");
           break;
-        case "WaitAction":
-          actionLabel.setText(player.getName() + " must wait a turn");
+        case "JailAction":
+          actionLabel.setText(player.getName() + " is going to jail");
+          break;
+        case "TaxAction":
+          actionLabel.setText(player.getName() + " must pay tax");
           break;
         default:
           actionLabel.setText(player.getName() + " landed on a tile action");
@@ -389,6 +390,11 @@ public class LadderGameView implements BoardGameObserver {
     });
   }
 
+  /**
+   * Enables or disables the roll button.
+   *
+   * @param disable True to disable the button, false to enable it.
+   */
   public void disableRollButton(boolean disable) {
     Platform.runLater(() -> {
       rollButton.setDisable(disable);
@@ -446,16 +452,15 @@ public class LadderGameView implements BoardGameObserver {
     diceView2.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path2))));
   }
 
+
   /**
    * Animates the movement of a player's token from one tile to another on the game board.
-   * The animation includes translating the token image across the screen and updating
-   * its position once the animation is complete.
    *
    * @param tokenView The ImageView representing the player's token to be animated.
    * @param fromTileId The ID of the tile the token is moving from.
    * @param toTileId The ID of the tile the token is moving to.
    * @param playerIndex The index of the player whose token is being animated.
-   * @param onFinished A callback Runnable that is executed after the animation completes, or immediately if the animation cannot be performed.
+   * @param onFinished A callback Runnable that is executed after the animation completes.
    */
   private void animateTokenMovement(ImageView tokenView, int fromTileId, int toTileId, int playerIndex, Runnable onFinished) {
     if (fromTileId == toTileId) {
@@ -599,7 +604,7 @@ public class LadderGameView implements BoardGameObserver {
    */
   private void endGame(Player winner) {
     statusLabel.setText("Game Over! " + winner.getName() + " is the winner!");
-    actionLabel.setText(winner.getName() + " reached the final square!");
+    actionLabel.setText(winner.getName() + " has won the game!");
     actionLabel.setVisible(true);
     rollButton.setDisable(true);
 

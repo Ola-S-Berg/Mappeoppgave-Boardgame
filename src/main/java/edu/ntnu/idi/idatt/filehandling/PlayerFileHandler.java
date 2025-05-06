@@ -1,6 +1,6 @@
-package edu.ntnu.idi.idatt.Filehandling;
+package edu.ntnu.idi.idatt.filehandling;
 
-import edu.ntnu.idi.idatt.GameLogic.Player;
+import edu.ntnu.idi.idatt.model.Player;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

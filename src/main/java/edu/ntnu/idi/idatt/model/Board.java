@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.GameLogic;
-import edu.ntnu.idi.idatt.Actions.BackToStartAction;
-import edu.ntnu.idi.idatt.Actions.LadderAction;
-import edu.ntnu.idi.idatt.Actions.WaitAction;
+package edu.ntnu.idi.idatt.model;
+import edu.ntnu.idi.idatt.actions.BackToStartAction;
+import edu.ntnu.idi.idatt.actions.LadderAction;
+import edu.ntnu.idi.idatt.actions.WaitAction;
 import java.util.Map;
 import java.util.HashMap;
 

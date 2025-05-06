@@ -1,6 +1,6 @@
-package edu.ntnu.idi.idatt.GameLogic;
+package edu.ntnu.idi.idatt.model;
 
-import edu.ntnu.idi.idatt.Filehandling.BoardFileHandler;
+import edu.ntnu.idi.idatt.filehandling.BoardFileHandler;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -146,7 +146,28 @@ public class BoardGame {
           System.out.println("Unknown game variant: " + variantName);
       }
     }
+  }
 
+  /**
+   * Creates a standard Monopoly game board with 40 tiles arranged in a square.
+   */
+  public void createMonopolyGameBoard() {
+    this.board = new Board();
+
+    for (int i = 1; i <= 40; i++) {
+      Tile tile = new Tile(i);
+      board.addTile(tile);
+    }
+
+    for (int i = 1; i <= 40; i++) {
+      Tile currentTile = board.getTile(i);
+
+      if (i < 40) {
+        currentTile.setNextTile(board.getTile(i + 1));
+      } else {
+        currentTile.setNextTile(board.getTile(1));
+      }
+    }
   }
 
   /**

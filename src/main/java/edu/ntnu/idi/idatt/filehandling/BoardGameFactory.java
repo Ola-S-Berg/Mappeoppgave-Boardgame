@@ -1,9 +1,10 @@
-package edu.ntnu.idi.idatt.Filehandling;
+package edu.ntnu.idi.idatt.filehandling;
 
-import edu.ntnu.idi.idatt.GameLogic.BoardGame;
-import edu.ntnu.idi.idatt.GameLogic.Player;
+import edu.ntnu.idi.idatt.model.Board;
+import edu.ntnu.idi.idatt.model.BoardGame;
+import edu.ntnu.idi.idatt.model.Player;
 
-import edu.ntnu.idi.idatt.GameLogic.Tile;
+import edu.ntnu.idi.idatt.model.Tile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,6 +58,15 @@ public class BoardGameFactory {
     return boardGame;
   }
 
+  public static BoardGame createMonopolyGame() {
+    BoardGame boardGame = new BoardGame();
+    boardGame.setVariantName("Monopoly Game");
+    boardGame.createMonopolyGameBoard();
+    boardGame.createDice();
+
+    return boardGame;
+  }
+
   /**
    * Gets a list of available board game variants.
    * @return List of predefined game variants.
@@ -82,6 +92,7 @@ public class BoardGameFactory {
       case "Ladder Game Classic" -> createLadderGameClassic();
       case "Ladder Game Advanced" -> createLadderGameAdvanced();
       case "Ladder Game Extreme" -> createLadderGameExtreme();
+      case "Monopoly Game" -> createMonopolyGame();
       default -> createLadderGameClassic(); // Default to classic game
     };
   }

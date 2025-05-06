@@ -1,15 +1,15 @@
-package edu.ntnu.idi.idatt.Filehandling;
+package edu.ntnu.idi.idatt.filehandling;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.GsonBuilder;
-import edu.ntnu.idi.idatt.Actions.BackToStartAction;
-import edu.ntnu.idi.idatt.Actions.LadderAction;
-import edu.ntnu.idi.idatt.Actions.WaitAction;
-import edu.ntnu.idi.idatt.GameLogic.BoardGame;
-import edu.ntnu.idi.idatt.GameLogic.Tile;
+import edu.ntnu.idi.idatt.actions.BackToStartAction;
+import edu.ntnu.idi.idatt.actions.LadderAction;
+import edu.ntnu.idi.idatt.actions.WaitAction;
+import edu.ntnu.idi.idatt.model.BoardGame;
+import edu.ntnu.idi.idatt.model.Tile;
 
 import com.google.gson.Gson;
 import java.nio.file.Paths;

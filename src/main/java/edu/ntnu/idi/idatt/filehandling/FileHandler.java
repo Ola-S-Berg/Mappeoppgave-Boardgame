@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.Filehandling;
+package edu.ntnu.idi.idatt.filehandling;
 import java.io.IOException;
 import java.util.List;
 

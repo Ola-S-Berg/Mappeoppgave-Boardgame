@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.ntnu.idi.idatt.GameLogic.Board;
-import edu.ntnu.idi.idatt.GameLogic.Tile;
+import edu.ntnu.idi.idatt.model.Board;
+import edu.ntnu.idi.idatt.model.Tile;
 
 class BoardTest {
 
