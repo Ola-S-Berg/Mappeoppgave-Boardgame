@@ -239,19 +239,17 @@ public class MonopolyGameController implements GameController {
     final int boardSize = 11;
     tileId = Math.max(1, Math.min(40, tileId));
 
-    int adjustedId = tileId - 1;
-
-    if (adjustedId < 11) {
-      return new int[] {boardSize - 1, boardSize - 1 - adjustedId};
+    if (tileId < 11) {
+      return new int[] {boardSize - 1 - (tileId - 1), 0};
     }
-    else if (adjustedId < 21) {
-      return new int[] {boardSize - 1 - (adjustedId - 10), 0};
+    else if (tileId < 21) {
+      return new int[] {0, tileId - 11};
     }
-    else if (adjustedId < 31) {
-      return new int[] {0, adjustedId - 20};
+    else if (tileId < 31) {
+      return new int[] {tileId - 21, boardSize - 1};
     }
     else {
-      return new int[] {adjustedId - 30, boardSize - 1};
+      return new int[] {boardSize - 1, boardSize - 1 - (tileId - 31)};
     }
   }
 
