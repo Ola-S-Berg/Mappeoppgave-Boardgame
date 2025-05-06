@@ -40,8 +40,8 @@ public class MonopolyGameView implements BoardGameObserver {
   private ImageView diceView2;
   private final Map<Player, ImageView> playerTokenViews;
   private final String gameVariation;
-  private static final int gridSize = 11; // 11x11 for monopoly board
-  private double tokenSize = 30;
+  private static final int gridSize = 11;
+  private double tokenSize = 20;
   private double boardWidth;
   private double boardHeight;
   private final MonopolyGameController controller;

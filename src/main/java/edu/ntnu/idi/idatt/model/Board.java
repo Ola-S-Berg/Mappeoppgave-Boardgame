@@ -1,7 +1,15 @@
 package edu.ntnu.idi.idatt.model;
-import edu.ntnu.idi.idatt.actions.BackToStartAction;
-import edu.ntnu.idi.idatt.actions.LadderAction;
-import edu.ntnu.idi.idatt.actions.WaitAction;
+import edu.ntnu.idi.idatt.actions.ladder_game.BackToStartAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.FreeParkingAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.GoToJailAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
+import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.PayTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
+import edu.ntnu.idi.idatt.actions.ladder_game.WaitAction;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -142,5 +150,84 @@ public class Board {
     board.getTile(56).setAction(new BackToStartAction());
     board.getTile(68).setAction(new BackToStartAction());
     board.getTile(81).setAction(new BackToStartAction());
+  }
+
+  /**
+   * Sets up actions for the Monopoly game tiles.
+   *
+   * @param board The game board to set up tiles for.
+   */
+  public static void setupTileActionsMonopolyGame(Board board) {
+    //Start tile.
+    board.getTile(1).setAction(new StartTileAction());
+
+    //Property Tiles - Blue.
+    board.getTile(2).setAction(new PropertyTileAction("Skolegata", 6000, "blue"));
+    board.getTile(4).setAction(new PropertyTileAction("Brattorgata", 6000, "blue"));
+
+    //Property Tiles - Pink.
+    board.getTile(7).setAction(new PropertyTileAction("Sverres gate", 10000, "pink"));
+    board.getTile(9).setAction(new PropertyTileAction("Tormods gate", 10000, "pink"));
+    board.getTile(10).setAction(new PropertyTileAction("Olav Kyrres gate", 12000, "pink"));
+
+    //Property Tiles - Green.
+    board.getTile(12).setAction(new PropertyTileAction("Ragnhilds gate", 14000, "green"));
+    board.getTile(14).setAction(new PropertyTileAction("St. Olavs gate", 14000, "green"));
+    board.getTile(15).setAction(new PropertyTileAction("Guttorms gate", 16000, "green"));
+
+    //Property Tiles - Gray.
+    board.getTile(17).setAction(new PropertyTileAction("Nygata", 18000, "gray"));
+    board.getTile(19).setAction(new PropertyTileAction("Bakkegata", 18000, "gray"));
+    board.getTile(20).setAction(new PropertyTileAction("Kirkegata", 20000, "gray"));
+
+    //Property Tiles - Red.
+    board.getTile(22).setAction(new PropertyTileAction("Krambugata", 22000, "red"));
+    board.getTile(24).setAction(new PropertyTileAction("Fjordgata", 22000, "red"));
+    board.getTile(25).setAction(new PropertyTileAction("Sandgata", 24000, "red"));
+
+    //Property Tiles - Yellow.
+    board.getTile(27).setAction(new PropertyTileAction("Klostergata", 26000, "yellow"));
+    board.getTile(28).setAction(new PropertyTileAction("Munkegata", 26000, "yellow"));
+    board.getTile(30).setAction(new PropertyTileAction("Bispegata", 28000, "yellow"));
+
+    //Property Tiles - Purple.
+    board.getTile(32).setAction(new PropertyTileAction("Sondre gate", 30000, "purple"));
+    board.getTile(33).setAction(new PropertyTileAction("Erling Skakkes gate", 30000, "purple"));
+    board.getTile(35).setAction(new PropertyTileAction("Kongens gate", 32000, "purple"));
+
+    //Property Tiles - Orange.
+    board.getTile(38).setAction(new PropertyTileAction("Prinsens gate", 35000, "orange"));
+    board.getTile(40).setAction(new PropertyTileAction("Dronningens gate", 40000, "orange"));
+
+    //Landmark Tiles.
+    board.getTile(6).setAction(new PropertyTileAction("Nidarosdomen", 20000, "landmark"));
+    board.getTile(16).setAction(new PropertyTileAction("Gamle Bybro", 20000, "landmark"));
+    board.getTile(26).setAction(new PropertyTileAction("Kristiansen Festning", 20000, "landmark"));
+    board.getTile(36).setAction(new PropertyTileAction("Gloshaugen", 20000, "landmark"));
+
+    //Chance Tiles.
+    board.getTile(3).setAction(new ChanceTileAction());
+    board.getTile(8).setAction(new ChanceTileAction());
+    board.getTile(13).setAction(new ChanceTileAction());
+    board.getTile(18).setAction(new ChanceTileAction());
+    board.getTile(23).setAction(new ChanceTileAction());
+    board.getTile(30).setAction(new ChanceTileAction());
+    board.getTile(34).setAction(new ChanceTileAction());
+    board.getTile(39).setAction(new ChanceTileAction());
+
+    //Tax Tile.
+    board.getTile(5).setAction(new TaxTileAction(10, 20000));
+
+    //Jail Tile.
+    board.getTile(11).setAction(new JailTileAction());
+
+    //Free Parking.
+    board.getTile(21).setAction(new FreeParkingAction());
+
+    //Go To Jail Tile.
+    board.getTile(30).setAction(new GoToJailAction(11));
+
+    //Pay Tile.
+    board.getTile(36).setAction(new PayTileAction(10000));
   }
 }

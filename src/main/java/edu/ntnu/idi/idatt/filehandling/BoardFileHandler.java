@@ -5,9 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.GsonBuilder;
-import edu.ntnu.idi.idatt.actions.BackToStartAction;
-import edu.ntnu.idi.idatt.actions.LadderAction;
-import edu.ntnu.idi.idatt.actions.WaitAction;
+import edu.ntnu.idi.idatt.actions.ladder_game.BackToStartAction;
+import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
+import edu.ntnu.idi.idatt.actions.ladder_game.WaitAction;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Tile;
 

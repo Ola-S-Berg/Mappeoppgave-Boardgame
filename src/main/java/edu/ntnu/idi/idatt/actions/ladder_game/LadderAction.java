@@ -1,5 +1,6 @@
-package edu.ntnu.idi.idatt.actions;
+package edu.ntnu.idi.idatt.actions.ladder_game;
 
+import edu.ntnu.idi.idatt.actions.TileAction;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.Tile;
 
