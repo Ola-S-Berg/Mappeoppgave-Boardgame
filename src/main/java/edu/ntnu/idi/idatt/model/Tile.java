@@ -20,6 +20,9 @@ public class Tile {
    */
   public void landPlayer(Player player) {
     System.out.println(player.getName() + " lands at " + tileId);
+    if (action != null) {
+      action.perform(player);
+    }
   }
 
   /**

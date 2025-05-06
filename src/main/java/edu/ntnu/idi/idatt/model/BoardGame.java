@@ -1,5 +1,7 @@
 package edu.ntnu.idi.idatt.model;
 
+import static edu.ntnu.idi.idatt.model.Board.setupTileActionsMonopolyGame;
+
 import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardFileHandler;
 import java.util.List;
@@ -169,6 +171,7 @@ public class BoardGame {
         currentTile.setNextTile(board.getTile(1));
       }
     }
+    setupTileActionsMonopolyGame(board);
   }
 
   /**
