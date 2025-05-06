@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.model;
 
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardFileHandler;
 import java.util.List;
 import java.util.ArrayList;
@@ -241,6 +242,57 @@ public class BoardGame {
   }
 
   /**
+   * Processes the current player's turn in the Monopoly game. If the game is over or there is no current player,
+   * the turn is skipped. The method rolls dice, moves the player based on the dice result, and handles any relevant
+   * temporary properties such as "freeParking". If the player rolls doubles, they are granted another turn.
+   *
+   * @return true if the player rolls doubles and gains another turn, false otherwise or if the game is over.
+   */
+  public boolean processMonopolyTurn() {
+    if (gameOver || currentPlayer == null) {
+      return false;
+    }
+
+    //Add logic for jail here
+
+    int[] diceValues = rollDice();
+    int total = diceValues[diceValues.length - 1];
+    boolean doublesRolled = diceValues[0] == diceValues[1];
+
+    System.out.println(currentPlayer.getName() + " rolled " + diceValues[0] + " and " +
+                       diceValues[1] + " (total: " + total + ")");
+
+    String freeParking = currentPlayer.getProperty("freeParking");
+    if (freeParking != null && freeParking.equals("true")) {
+      currentPlayer.setProperty("freeParking", "false");
+    }
+
+    int fromTileId = currentPlayer.getCurrentTile().getTileId();
+    movePlayer(currentPlayer, total, fromTileId);
+
+    if (doublesRolled) {
+      System.out.println(currentPlayer.getName() + " rolled doubles and gets another turn!");
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Handles passing Start in the Monopoly game.
+   *
+   * @param player The player who passed start.
+   * @param fromTileId The ID of the tile the player is moving from.
+   * @param toTileId The ID of the tile the player is moving to.
+   */
+  private void checkPassedStart(Player player, int fromTileId, int toTileId) {
+    if (fromTileId > toTileId && toTileId != 11) {
+      player.addMoney(20000);
+      System.out.println(player.getName() + " passed start and received 20000");
+    }
+  }
+
+  /**
    * Moves the specified player a given number of steps on the game board, starting from a specified tile.
    * Notifies observers about the move and checks for game completion.
    *
@@ -252,6 +304,10 @@ public class BoardGame {
   public int movePlayer(Player player, int steps, int fromTileId) {
     player.move(steps);
     int toTileId = player.getCurrentTile().getTileId();
+
+    if (variantName != null && variantName.equals("monopolyGame")) {
+      checkPassedStart(player, fromTileId, toTileId);
+    }
 
     notifyPlayerMove(player, fromTileId, toTileId, steps);
 
@@ -265,6 +321,14 @@ public class BoardGame {
     return steps;
   }
 
+  /**
+   * Rolls the dice and returns the results of the roll along with their total.
+   * If there is only one die, the result is duplicated. Otherwise, the results
+   * for each die roll are returned in an array, with the last element being the total of all rolls.
+   *
+   * @return An array of integers where each element represents the value rolled for each die,
+   *         and the last element represents the total of all rolls.
+   */
   public int[] rollDice() {
     int[] results;
     if (dice.getNumberOfDice() == 1) {
@@ -328,6 +392,32 @@ public class BoardGame {
 
       roundNumber++;
     }
+  }
+
+  /**
+   * Attempts to purchase a property for the specified player. If the property is already
+   * owned, the purchase cannot proceed. If the player has sufficient money, the property
+   * is added to their owned properties, and the transaction is completed successfully.
+   *
+   * @param player The player attempting to buy the property.
+   * @param propertyAction Represents the property and associated details such as cost and ownership status.
+   * @return true if the property is successfully purchased, false otherwise.
+   */
+  public boolean buyProperty(Player player, PropertyTileAction propertyAction) {
+    if (propertyAction.getOwner() != null) {
+      System.out.println("Property already owned by " + propertyAction.getOwner().getName());
+      return false;
+    }
+
+    int cost = propertyAction.getCost();
+    if (player.getMoney() >= cost) {
+      player.payMoney(cost);
+      player.addProperty(propertyAction);
+      System.out.println(player.getName() + " bought" + propertyAction.getPropertyName() + " for " + cost);
+      return true;
+    }
+
+    return false;
   }
 
   /**

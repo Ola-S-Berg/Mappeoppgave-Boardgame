@@ -1,7 +1,10 @@
 package edu.ntnu.idi.idatt.actions.monopoly_game;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.model.Board;
+import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.Tile;
 import java.util.Random;
 
 /**
@@ -11,10 +14,8 @@ public class ChanceTileAction implements TileAction {
   private static final Random random = new Random();
   private static final String[] CHANCE_ACTIONS = {
       "Move forward 3 spaces",
-      "Go back 2 spaces",
       "Collect 5000 from the bank",
       "Pay 3000 to the bank",
-      "Get out of jail free",
       "Advance to the nearest landmark",
       "Pay each player 1000",
       "Collect 1000 from each player"
@@ -39,33 +40,53 @@ public class ChanceTileAction implements TileAction {
 
   /**
    * Executes the specific chance action based on the action index.
-
    *
    * @param player The player performing the action.
    * @param actionIndex The index of the action to perform.
    */
   private void executeChanceAction(Player player, int actionIndex) {
+    BoardGame game = player.getGame();
+    Board board = game.getBoard();
 
     switch (actionIndex) {
-      case 0:
+      case 0: // Move forward 3 spaces
+        Tile destinationTile = player.getCurrentTile();
+        for (int i = 0; i < 3; i++) {
+          if (destinationTile.getNextTile() != null) {
+            destinationTile = destinationTile.getNextTile();
+          }
+        }
         System.out.println(player.getName() + " moves forward 3 spaces");
+        player.placeOnTile(destinationTile);
+        if (destinationTile.getAction() != null && !(destinationTile.getAction() instanceof ChanceTileAction)) {
+          destinationTile.getAction().perform(player);
+        }
         break;
-      case 1:
-        System.out.println(player.getName() + " moves back 2 spaces");
-        break;
-      case 2:
+      case 1: // Collect 5000 from the bank.
+        player.addMoney(5000);
         System.out.println(player.getName() + " collects 5000 from the bank");
         break;
-      case 3:
+      case 2: // Pay 3000 to the bank.
+        player.payMoney(3000);
         System.out.println(player.getName() + " pays 3000 to the bank");
         break;
-      case 4:
+      case 3: // Advance to the nearest landmark.
         System.out.println(player.getName() + " advances to the nearest landmark");
         break;
-      case 5:
+      case 4: // Pay each player 1000.
+        for (Player otherPlayer : player.getGame().getPlayers()) {
+          if (otherPlayer != player) {
+            player.payPlayer(otherPlayer, 1000);
+          }
+        }
         System.out.println(player.getName() + " pays 1000 to each player");
         break;
-      case 6:
+      case 5: // Collect 1000 from each player.
+        for (Player otherPlayer : player.getGame().getPlayers()) {
+          if (otherPlayer != player) {
+            otherPlayer.payPlayer(player, 1000);
+          }
+        }
         System.out.println(player.getName() + " collects 1000 from each player");
         break;
       default:

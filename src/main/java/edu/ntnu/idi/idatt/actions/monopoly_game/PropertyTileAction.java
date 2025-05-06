@@ -40,9 +40,11 @@ public class PropertyTileAction implements TileAction {
 
     if (owner == null) {
       System.out.println(propertyName + " is available for purchase");
+      player.getGame().buyProperty(player, this);
     } else if (owner != player) {
       int rent = calculateRent();
       System.out.println(player.getName() + " must pay " + rent + " to " + owner.getName());
+      player.payPlayer(owner, rent);
     } else {
       System.out.println(player.getName() + " owns this property");
     }

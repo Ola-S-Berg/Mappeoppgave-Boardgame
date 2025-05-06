@@ -1,6 +1,9 @@
 package edu.ntnu.idi.idatt.model;
 
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +16,8 @@ public class Player {
   private final String token;
   private boolean waitTurn = false;
   private final Map<String, String> properties = new HashMap<>();
-
+  private int money;
+  private List<PropertyTileAction> ownedProperties = new ArrayList<>();
 
   /**
    * The constructor for Player with a game instance.
@@ -21,11 +25,12 @@ public class Player {
    * @param name name The name of the player.
    * @param token The player's token.
    */
-  public Player(String name, String token, BoardGame game) {
+  public Player(String name, String token, BoardGame game, int startingMoney) {
     this.name = name;
     this.game = game;
     this.currentTile = null;
     this.token = (token != null) ? token : "Default";
+    this.money = startingMoney;
   }
 
   /**
@@ -85,6 +90,90 @@ public class Player {
     if (currentTile.getTileId() == 90) {
       game.notifyGameWon(this);
     }
+  }
+
+  /**
+   * Adds money to the player's balance.
+   *
+   * @param amount The amount of money to add.
+   */
+  public void addMoney(int amount) {
+    this.money += amount;
+    System.out.println(name + " received " + amount + ". New balance: " + money);
+  }
+
+  /**
+   * Deducts money from the player's balance.
+   *
+   * @param amount The amount of money to deduct.
+   * @return True if payment successful, false otherwise.
+   */
+  public boolean payMoney(int amount) {
+    if (money >= amount) {
+      money -= amount;
+      System.out.println(name + " paid " + amount + ". New balance: " + money);
+      return true;
+    } else {
+      System.out.println(name + " can't afford to pay " + amount + ". Current balance: " + money);
+      return false;
+    }
+  }
+
+  /**
+   * Transfers money to another player.
+   *
+   * @param recipient The player to transfer money to.
+   * @param amount The amount of money to transfer.
+   * @return True if payment successful, false otherwise.
+   */
+  public boolean payPlayer(Player recipient, int amount) {
+    if (payMoney(amount)) {
+      recipient.addMoney(amount);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Adds a property to the player's owned properties.
+   * @param property The property to add.
+   */
+  public void addProperty(PropertyTileAction property) {
+    ownedProperties.add(property);
+    property.setOwner(this);
+  }
+
+  /**
+   * Gets all properties owned by this player.
+   * @return The list of properties owned by this player.
+   */
+  public List<PropertyTileAction> getOwnedProperties() {
+    return new ArrayList<>(ownedProperties);
+  }
+
+  /**
+   * Gets the player's current money.
+   * @return The player's current money.
+   */
+  public int getMoney() {
+    return money;
+  }
+
+  /**
+   * Handles jail status for the player.
+   * @return True if the player is in jail.
+   */
+  public boolean isInJail() {
+    String inJail = getProperty("inJail");
+    return inJail != null && inJail.equals("true");
+  }
+
+  /**
+   * Releases the player from jail.
+   */
+  public void releaseFromJail() {
+    setProperty("inJail", "false");
+    System.out.println(name + " has been released from jail.");
   }
 
   /**
