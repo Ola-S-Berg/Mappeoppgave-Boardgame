@@ -53,7 +53,7 @@ public class PlayerFileHandler implements FileHandler<Player> {
       while ((line = reader.readLine()) != null) {
         String[] tokens = line.split(",");
         if (tokens.length >= 3) {
-          Player player = new Player(tokens[0].trim(), tokens[1].trim(), null);
+          Player player = new Player(tokens[0].trim(), tokens[1].trim(), null, 100000);
           player.setProperty("savedTileId", tokens[2].trim());
           players.add(player);
         }

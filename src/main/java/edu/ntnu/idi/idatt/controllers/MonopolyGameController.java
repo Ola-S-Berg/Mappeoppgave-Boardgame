@@ -210,7 +210,7 @@ public class MonopolyGameController implements GameController {
     application.start(newStage);
 
     for (int i = 0; i < playerNames.length; i++) {
-      Player player = new Player(playerNames[i], playerTokens[i], newGame);
+      Player player = new Player(playerNames[i], playerTokens[i], newGame, 100000);
       newGame.addPlayer(player);
     }
 
