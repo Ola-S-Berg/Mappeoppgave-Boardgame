@@ -71,15 +71,20 @@ public class LadderGameController implements GameController {
     }
 
     int[] diceValues = boardGame.rollDice();
-    view.updateDiceDisplay(diceValues[0], diceValues[1]);
+
+    int dice1 = (diceValues.length > 0) ? diceValues[0] : 1;
+    int dice2 = (diceValues.length > 1) ? diceValues[1] : 1;
+    view.updateDiceDisplay(dice1, dice2);
+
+    int diceTotal = (diceValues.length > 1) ? dice1 + dice2 : dice1;
 
     int fromTileId = currentPlayer.getCurrentTile().getTileId();
-    Tile destinationTile = calculateDestinationTile(currentPlayer, diceValues[diceValues.length - 1]);
+    Tile destinationTile = calculateDestinationTile(currentPlayer, diceTotal);
     int toTileId = destinationTile.getTileId();
 
     currentPlayer.placeOnTile(destinationTile);
 
-    boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValues[diceValues.length - 1]);
+    boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceTotal);
 
     handlePlayerMove(currentPlayer);
   }

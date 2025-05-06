@@ -179,7 +179,7 @@ public class BoardGame {
    */
   public void createDice() {
 
-    dice = new Dice(1);
+    dice = new Dice(2);
   }
 
   /**
@@ -325,30 +325,23 @@ public class BoardGame {
   }
 
   /**
-   * Rolls the dice and returns the results of the roll along with their total.
-   * If there is only one die, the result is duplicated. Otherwise, the results
-   * for each die roll are returned in an array, with the last element being the total of all rolls.
+   * Rolls all the dice in the game and retrieves their rolled values.
    *
-   * @return An array of integers where each element represents the value rolled for each die,
-   *         and the last element represents the total of all rolls.
+   * @return An array of integers representing the values rolled for each die.
    */
   public int[] rollDice() {
-    int[] results;
-    if (dice.getNumberOfDice() == 1) {
-      int value = dice.roll();
-      results = new int[] {value, value};
-    } else {
-      results = new int[dice.getNumberOfDice() + 1];
-      int total = 0;
-      for (int i = 0; i < dice.getNumberOfDice(); i++) {
-        int roll = dice.roll();
-        results[i] = roll;
-        total += roll;
-      }
-      results[results.length - 1] = total;
+    int numberOfDice = dice.getNumberOfDice();
+    int[] values = new int[numberOfDice];
+
+    dice.roll();
+
+    for (int i = 0; i < numberOfDice; i++) {
+      values[i] = dice.getDie(i);
     }
-    return results;
+
+    return values;
   }
+
 
   /**
    * Advances the game to the next player's turn. If the game is over or there are no players,

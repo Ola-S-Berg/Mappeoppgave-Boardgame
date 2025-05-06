@@ -15,13 +15,18 @@ public class Tile {
   }
 
   /**
-   * Checks which tile the player has landed on.
+   * Checks which tile the player has landed on. Only performs actions for Monopoly.
    * @param player The player that lands.
    */
   public void landPlayer(Player player) {
     System.out.println(player.getName() + " lands at " + tileId);
     if (action != null) {
-      action.perform(player);
+      BoardGame game = player.getGame();
+      String variantName = game != null ? game.getVariantName() : null;
+
+      if (variantName != null && variantName.equals("monopolyGame")) {
+        action.perform(player);
+      }
     }
   }
 

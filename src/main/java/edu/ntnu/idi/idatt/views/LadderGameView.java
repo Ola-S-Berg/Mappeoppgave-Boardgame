@@ -440,10 +440,18 @@ public class LadderGameView implements BoardGameObserver {
    */
   private void updateDieImages(int dice1, int dice2) {
     String path1 = "/images/die/Dice" + dice1 + ".png";
-    String path2 = "/images/die/Dice" + dice2 + ".png";
+    try {
+      diceView1.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path1))));
+    } catch (NullPointerException e) {
+      LOGGER.log(Level.WARNING, "Could not find image for first die: " + path1, e);
+    }
 
-    diceView1.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path1))));
-    diceView2.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path2))));
+    String path2 = "/images/die/Dice" + dice2 + ".png";
+    try {
+      diceView2.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(path2))));
+    } catch (NullPointerException e) {
+      LOGGER.log(Level.WARNING, "Could not find image for second die: " + path2, e);
+    }
   }
 
   /**
