@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.views.DialogService;
@@ -93,6 +94,10 @@ public class MonopolyGameController implements GameController {
       String actionType = action.getClass().getSimpleName();
       view.showActionMessage(player, actionType);
 
+      if (action instanceof PropertyTileAction) {
+        ((PropertyTileAction) action).setController(this);
+      }
+
       new Thread(() -> {
         try {
           Thread.sleep(1000);
@@ -171,10 +176,17 @@ public class MonopolyGameController implements GameController {
    * Notifies the view of the change in the player's money.
    *
    * @param player The player whose money is being updated.
-   * @param amount The new amount to update the player's money with.
    */
   public void updatePlayerMoney(Player player) {
     view.onMoneyChange(player);
+  }
+
+  /**
+   * Returns the stage instance used by this controller.
+   * @return The stage.
+   */
+  public Stage getStage() {
+    return stage;
   }
 
   /**

@@ -3,7 +3,11 @@ package edu.ntnu.idi.idatt.actions.monopoly_game;
 import edu.ntnu.idi.idatt.actions.TileAction;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.views.DialogService;
 import javafx.application.Platform;
+import javafx.stage.Stage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing action when landing on a property tile in Monopoly Game.
@@ -13,6 +17,7 @@ public class PropertyTileAction implements TileAction {
   private final int cost;
   private Player owner;
   private MonopolyGameController controller;
+  private static final Logger LOGGER = Logger.getLogger(PropertyTileAction.class.getName());
 
   /**
    * Constructor for PropertyTileAction.
@@ -41,33 +46,56 @@ public class PropertyTileAction implements TileAction {
   @Override
   public void perform(Player player) {
 
-    if (owner == null) {
-      System.out.println(player.getName() + " landed on an unowned property: " + propertyName);
-      System.out.println("Price: " + cost);
+    Platform.runLater(() -> {
+      if (owner == null) {
+        System.out.println(player.getName() + " landed on an unowned property: " + propertyName);
+        System.out.println("Price: " + cost);
 
-      if (player.payMoney(cost)) {
-        owner = player;
-        player.addProperty(this);
-
-        Platform.runLater(() -> {
+        if (player.getMoney() < cost) {
+          System.out.println(player.getName() + " doesn't have enough money to purchase " + propertyName);
           if (controller != null) {
-            controller.updatePlayerProperty(player, propertyName);
             controller.updatePlayerMoney(player);
           }
-        });
+          return;
+        }
 
-        System.out.println(player.getName() + " purchased " + propertyName + " for " + cost);
+        try {
+          Stage stage = controller.getStage();
+          DialogService.showPropertyPurchaseDialog(stage, this, () -> {
+            if (player.payMoney(cost)) {
+              owner = player;
+              player.addProperty(this);
+
+              if (controller != null) {
+                controller.updatePlayerProperty(player, propertyName);
+                controller.updatePlayerMoney(player);
+              }
+
+              System.out.println(player.getName() + " purchased " + propertyName + " for " + cost);
+            }
+            }, () -> System.out.println(player.getName() + " declined to purchase " + propertyName));
+        } catch (Exception e) {
+          LOGGER.log(Level.SEVERE, "Error showing property purchase dialog", e);
+        }
+      } else if (owner != player) {
+        int rent = calculateRent();
+        System.out.println(
+            player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
+        System.out.println("Rent: " + rent);
+
+        if (player.payPlayer(owner, rent)) {
+          if (controller != null) {
+            controller.updatePlayerMoney(player);
+            controller.updatePlayerMoney(owner);
+          }
+          System.out.println(player.getName() + " paid " + owner.getName() + " " + rent);
+        } else {
+          System.out.println(player.getName() + " cannot afford rent");
+        }
       } else {
-        System.out.println(player.getName() + " cannot afford " + propertyName);
+        System.out.println(player.getName() + " landed on their own property: " + propertyName);
       }
-    } else if (owner != player) {
-      int rent = calculateRent();
-      System.out.println(player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
-      System.out.println("Rent: " + rent);
-
-    } else {
-      System.out.println(player.getName() + " landed on their own property: " + propertyName);
-    }
+    });
   }
 
   /**
