@@ -38,8 +38,8 @@ public class PlayerCountView {
     titleLabel.setStyle("-fx-font-size: 24px");
     layout.getChildren().add(titleLabel);
 
-    for (int i = 1; i <= 5; i++) {
-      Button playerCountButton = new Button(i + " Player" + (i > 1 ? "s" : ""));
+    for (int i = 2; i <= 5; i++) {
+      Button playerCountButton = new Button(i + " Player" + (i > 2 ? "s" : ""));
       final int count = i;
       playerCountButton.setOnAction(event -> application.showPlayerNameView(selectedGame, count));
       layout.getChildren().add(playerCountButton);
