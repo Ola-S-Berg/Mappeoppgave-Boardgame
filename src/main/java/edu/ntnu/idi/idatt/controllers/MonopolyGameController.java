@@ -105,14 +105,15 @@ public class MonopolyGameController implements GameController {
             if (fromTileId != toTileId) {
               boardGame.notifyPlayerMove(player, fromTileId, toTileId, 0);
             }
+
+            view.updatePlayerMoney(player);
+            view.updatePlayerProperties(player);
+
           });
 
           Thread.sleep(1000);
 
-          Platform.runLater(() -> {
-
-            advanceToNextPlayer();
-          });
+          Platform.runLater(this::advanceToNextPlayer);
         } catch (InterruptedException e) {
           LOGGER.log(Level.WARNING, "Thread was interrupted during game action delay", e);
           Thread.currentThread().interrupt();
@@ -154,6 +155,26 @@ public class MonopolyGameController implements GameController {
   private void advanceToNextPlayer() {
     boardGame.advanceToNextPlayer();
     view.prepareForNextTurn();
+  }
+
+  /**
+   * Notifies the view that a property change has occurred for the specified player.
+   *
+   * @param player The player whose property is being updated.
+   * @param propertyName The name of the property being updated.
+   */
+  public void updatePlayerProperty(Player player, String propertyName) {
+    view.onPropertyChange(player, propertyName);
+  }
+
+  /**
+   * Notifies the view of the change in the player's money.
+   *
+   * @param player The player whose money is being updated.
+   * @param amount The new amount to update the player's money with.
+   */
+  public void updatePlayerMoney(Player player) {
+    view.onMoneyChange(player);
   }
 
   /**

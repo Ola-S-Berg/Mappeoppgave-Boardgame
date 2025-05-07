@@ -1,9 +1,12 @@
 package edu.ntnu.idi.idatt.views;
 
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.BoardGameObserver;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +17,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -45,7 +50,9 @@ public class MonopolyGameView implements BoardGameObserver {
   private double boardWidth;
   private double boardHeight;
   private final MonopolyGameController controller;
+  private VBox playerInfoPanel;
   private final Map<Player, Boolean> animationsInProgress = new HashMap<>();
+  private Map<Player, VBox> playerInfoCards = new HashMap<>();
   private static final Logger LOGGER = Logger.getLogger(MonopolyGameView.class.getName());
 
   /**
@@ -83,6 +90,7 @@ public class MonopolyGameView implements BoardGameObserver {
 
         if (diceValue > 0) {
           statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from " + fromTileId + " to " + toTileId);
+          updatePlayerMoney(player);
         } else if (fromTileId != toTileId) {
           statusLabel.setText(player.getName() + " moved from " + fromTileId + " to " + toTileId + " due to an action");
         }
@@ -143,19 +151,233 @@ public class MonopolyGameView implements BoardGameObserver {
    */
   @Override
   public void onCurrentPlayerChanged(Player player) {
-    Platform.runLater(() -> statusLabel.setText("It is " + player.getName() + "'s turn"));
+    Platform.runLater(() -> {
+        statusLabel.setText("It is " + player.getName() + "'s turn");
+        updateCurrentPlayerHighlight();
+    });
   }
 
   /**
-   * Gets the appropriate board image path based on the game variation.
-   * @return The path to the board image.
+   * Sets up the player information panel as a vertically oriented box containing details about each player.
+   * The panel includes a title and dynamically generated cards for every player in the game. Each card
+   * displays the specific player's information. The method also adds a scrollable container to ensure
+   * all player information is accessible, even if it exceeds the visible space.
+   *
+   * @return A VBox instance containing the styled and scrollable player information panel.
    */
-  private String getBoardImagePath() {
-    return switch (gameVariation) {
-      case "Monopoly Game Advanced" -> "/images/Games/MonopolyGameAdvanced.png";
-      case "Monopoly Game Extreme" -> "/images/Games/MonopolyGameExtreme.png";
-      default -> "/images/Games/MonopolyGame.png";
-    };
+  private VBox setupPlayerInfoPanel() {
+    VBox infoPanel = new VBox(10);
+    infoPanel.setPadding(new Insets(10));
+    infoPanel.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-width: 1px");
+    infoPanel.setPrefWidth(200);
+    infoPanel.setMinWidth(180);
+
+    Label titleLabel = new Label("Player Information");
+    titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+    titleLabel.setPadding(new Insets(0, 0, 10, 0));
+
+    infoPanel.getChildren().addAll(titleLabel);
+
+    for (Player player : boardGame.getPlayers()) {
+      VBox playerCard = createPlayerInfoCard(player);
+      playerInfoCards.put(player, playerCard);
+      infoPanel.getChildren().add(playerCard);
+    }
+
+    ScrollPane scrollPane = new ScrollPane(infoPanel);
+    scrollPane.setFitToWidth(true);
+    scrollPane.setStyle("-fx-background-color: transparent;");
+
+    VBox container = new VBox(scrollPane);
+    container.setPrefWidth(200);
+    container.setMinWidth(180);
+
+    return container;
+  }
+
+  /**
+   * Creates a visual information card for a player, displaying their name, money,
+   * and properties in a styled container. The card includes a collapsible section
+   * for properties and dynamically updates its components based on the player's data.
+   *
+   * @param player The Player object representing the details to be displayed in the card.
+   * @return A VBox instance styled and populated with the player's information elements.
+   */
+  private VBox createPlayerInfoCard(Player player) {
+    VBox playerCard = new VBox(5);
+    playerCard.setPadding(new Insets(8));
+    playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; " +
+        "-fx-border-width: 1px; -fx-border-radius: 5px;");
+
+    String playerColor = getPlayerColorStyle(player);
+
+    Label nameLabel = new Label(player.getName());
+    nameLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; " + playerColor);
+
+    Label moneyLabel = new Label (String.valueOf(player.getMoney()));
+    moneyLabel.setId("money-" + player.getName());
+    moneyLabel.setStyle("-fx-font-size: 13px;");
+
+    VBox propertiesBox = new VBox(3);
+    propertiesBox.setId("properties-" + player.getName());
+
+    updatePlayerProperties(propertiesBox, player);
+
+    TitledPane propertiesPane = new TitledPane("Properties", propertiesBox);
+    propertiesPane.setCollapsible(true);
+    propertiesPane.setExpanded(false);
+    propertiesPane.setStyle("-fx-font-size: 12px;");
+
+    playerCard.getChildren().addAll(nameLabel, moneyLabel, propertiesPane);
+
+    updatePlayerCardHighlight(playerCard, player);
+
+    return playerCard;
+  }
+
+  /**
+   * Determines the color style for a player's token based on their associated token image.
+   * The method maps specific token image paths to predefined color styles.
+   *
+   * @param player The Player object whose token determines the color style.
+   * @return A String representing the CSS color style for the player's token.
+   */
+  private String getPlayerColorStyle(Player player) {
+    String token = player.getToken();
+
+    if (token.contains("Red")) {
+      return "-fx-text-fill: #DE5757;";
+    } else if (token.contains("LightBlue")) {
+      return "-fx-text-fill: #17C1E8;";
+    } else if (token.contains("Blue")) {
+      return "-fx-text-fill: #002AFF;";
+    } else if (token.contains("Green")) {
+      return "-fx-text-fill: #7ACCA3;";
+    } else if (token.contains("Pink")) {
+      return "-fx-text-fill: #FC00BD;";
+    } else {
+      return "-fx-text-fill: #333333;";
+    }
+  }
+
+  /**
+   * Updates the specified VBox to display the properties owned by a given player.
+   * The properties are retrieved from the player's data and displayed as a list of labels.
+   * If the player owns no properties, a message stating this is displayed instead.
+   *
+   * @param propertiesBox The VBox container to populate with the player's property information.
+   * @param player The Player object whose properties are to be displayed in the VBox.
+   */
+  private void updatePlayerProperties(VBox propertiesBox, Player player) {
+    propertiesBox.getChildren().clear();
+
+    List<PropertyTileAction> properties = player.getOwnedProperties();
+
+    if (properties.isEmpty()) {
+      Label noPropertiesLabel = new Label("No properties owned");
+      noPropertiesLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #999999; -fx-font-size: 11px;");
+      propertiesBox.getChildren().add(noPropertiesLabel);
+    } else {
+      properties.sort((p1, p2) -> p1.getPropertyName().compareTo(p2.getPropertyName()));
+
+      for (PropertyTileAction property : properties) {
+        Label propertyLabel = new Label("• " + property.getPropertyName());
+        propertyLabel.setStyle("-fx-font-size: 11px;");
+        propertiesBox.getChildren().add(propertyLabel);
+      }
+    }
+  }
+
+  /**
+   * Updates the displayed money information for a specified player in the game's player information panel.
+   * This method locates the corresponding UI label for the player's money and updates its value to reflect
+   * the player's current monetary amount.
+   *
+   * @param player The Player object whose money information needs to be updated in the user interface.
+   */
+  public void updatePlayerMoney(Player player) {
+    Platform.runLater(() -> {
+      VBox playerCard = playerInfoCards.get(player);
+      if (playerCard != null) {
+       for (javafx.scene.Node node : playerCard.getChildren()) {
+         if (node instanceof Label && node.getId() != null && node.getId().startsWith("money-" + player.getName())) {
+           ((Label) node).setText(player.getMoney() + "");
+           break;
+         }
+       }
+      }
+    });
+  }
+
+  /**
+   * Updates the properties section of the specified player's information card in the UI.
+   * This method locates the player's card, identifies the "Properties" section
+   * within the card, and updates it with the player's latest property details.
+   *
+   * @param player The Player object whose properties are to be updated in the UI.
+   */
+  public void updatePlayerProperties(Player player) {
+    Platform.runLater(() -> {
+      VBox playerCard = playerInfoCards.get(player);
+      if (playerCard != null) {
+        for (javafx.scene.Node node : playerCard.getChildren()) {
+          if (node instanceof TitledPane && "Properties".equals(((TitledPane) node).getText())) {
+            VBox propertiesBox = (VBox) ((TitledPane) node).getContent();
+            updatePlayerProperties(propertiesBox, player);
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Updates the visual highlight of a player's card in the game interface based on whether they are the current player.
+   *
+   * @param playerCard The visual element representing the player's card
+   * @param player The player associated with the card being updated
+   */
+  private void updatePlayerCardHighlight(VBox playerCard, Player player) {
+    if (player.equals(boardGame.getCurrentPlayer())) {
+      playerCard.setStyle("-fx-background-color: #e3f2fd; -fx-border-color: #2196f3; " +
+          "-fx-border-width: 2px; -fx-border-radius: 5px;");
+    } else {
+      playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; " +
+          "-fx-border-width: 1px; -fx-border-radius: 5px;");
+    }
+  }
+
+  /**
+   * Updates the visual highlight for the current player's information card in the UI.
+   */
+  public void updateCurrentPlayerHighlight() {
+    Platform.runLater(() -> {
+      for (Map.Entry<Player, VBox> entry : playerInfoCards.entrySet()) {
+        updatePlayerCardHighlight(entry.getValue(), entry.getKey());
+      }
+    });
+  }
+
+  /**
+   * Handles property change events for a player.
+   *
+   * @param player The player whose property is being changed.
+   * @param propertyName The name of the property that has changed.
+   */
+  public void onPropertyChange(Player player, String propertyName) {
+    Platform.runLater(() -> {
+      updatePlayerMoney(player);
+      updatePlayerProperties(player);
+    });
+  }
+
+  /**
+   * Handles the event of a money change for the specified player.
+   *
+   * @param player The player whose money has changed.
+   */
+  public void onMoneyChange(Player player) {
+    updatePlayerMoney(player);
   }
 
   /**
@@ -184,11 +406,11 @@ public class MonopolyGameView implements BoardGameObserver {
     StackPane boardPane = new StackPane();
     boardPane.setPadding(new Insets(5));
     boardPane.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
-    boardPane.prefWidthProperty().bind(root.widthProperty().multiply(0.85));
+    boardPane.prefWidthProperty().bind(root.widthProperty().multiply(0.75));
     boardPane.prefHeightProperty().bind(root.heightProperty().multiply(0.85));
     boardPane.setMinSize(400, 400);
 
-    String imagePath = getBoardImagePath();
+    String imagePath = "/images/Games/MonopolyGame.png";
     Image boardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
     ImageView boardImageView = new ImageView(boardImage);
     boardImageView.fitWidthProperty().bind(boardPane.widthProperty());
@@ -211,6 +433,9 @@ public class MonopolyGameView implements BoardGameObserver {
 
     boardPane.getChildren().addAll(boardImageView, boardGridPane);
     root.setCenter(boardPane);
+
+    playerInfoPanel = setupPlayerInfoPanel();
+    root.setRight(playerInfoPanel);
 
     setupPlayerTokens();
 
@@ -276,10 +501,10 @@ public class MonopolyGameView implements BoardGameObserver {
     bottomLayout.setPadding(new Insets(10));
     root.setBottom(bottomLayout);
 
-    Scene scene = new Scene(root, 800, 800);
+    Scene scene = new Scene(root, 1000, 800);
     stage.setScene(scene);
     stage.setTitle("Monopoly Game");
-    stage.setMinWidth(600);
+    stage.setMinWidth(800);
     stage.setMinHeight(600);
     stage.show();
 
@@ -414,6 +639,7 @@ public class MonopolyGameView implements BoardGameObserver {
       rollButton.setDisable(false);
       rollButton.setOpacity(1.0);
       actionLabel.setVisible(false);
+      updateCurrentPlayerHighlight();
     });
   }
 

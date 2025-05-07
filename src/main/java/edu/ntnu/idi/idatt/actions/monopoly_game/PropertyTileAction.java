@@ -2,6 +2,8 @@ package edu.ntnu.idi.idatt.actions.monopoly_game;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
 import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import javafx.application.Platform;
 
 /**
  * Class representing action when landing on a property tile in Monopoly Game.
@@ -9,8 +11,8 @@ import edu.ntnu.idi.idatt.model.Player;
 public class PropertyTileAction implements TileAction {
   private final String propertyName;
   private final int cost;
-  private final String propertyType;
   private Player owner;
+  private MonopolyGameController controller;
 
   /**
    * Constructor for PropertyTileAction.
@@ -22,8 +24,11 @@ public class PropertyTileAction implements TileAction {
   public PropertyTileAction(String propertyName, int cost, String propertyType) {
     this.propertyName = propertyName;
     this.cost = cost;
-    this.propertyType = propertyType;
     this.owner = null;
+  }
+
+  public void setController(MonopolyGameController controller) {
+    this.controller = controller;
   }
 
   /**
@@ -35,18 +40,33 @@ public class PropertyTileAction implements TileAction {
    */
   @Override
   public void perform(Player player) {
-    System.out.println(player.getName() + " landed on " + propertyName +
-        " (" + propertyType + ") - Cost: " + cost);
 
     if (owner == null) {
-      System.out.println(propertyName + " is available for purchase");
-      player.getGame().buyProperty(player, this);
+      System.out.println(player.getName() + " landed on an unowned property: " + propertyName);
+      System.out.println("Price: " + cost);
+
+      if (player.payMoney(cost)) {
+        owner = player;
+        player.addProperty(this);
+
+        Platform.runLater(() -> {
+          if (controller != null) {
+            controller.updatePlayerProperty(player, propertyName);
+            controller.updatePlayerMoney(player);
+          }
+        });
+
+        System.out.println(player.getName() + " purchased " + propertyName + " for " + cost);
+      } else {
+        System.out.println(player.getName() + " cannot afford " + propertyName);
+      }
     } else if (owner != player) {
       int rent = calculateRent();
-      System.out.println(player.getName() + " must pay " + rent + " to " + owner.getName());
-      player.payPlayer(owner, rent);
+      System.out.println(player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
+      System.out.println("Rent: " + rent);
+
     } else {
-      System.out.println(player.getName() + " owns this property");
+      System.out.println(player.getName() + " landed on their own property: " + propertyName);
     }
   }
 
@@ -93,14 +113,5 @@ public class PropertyTileAction implements TileAction {
    */
   public int getCost() {
     return cost;
-  }
-
-  /**
-   * Gets the type of this property.
-   *
-   * @return The property type/color.
-   */
-  public String getPropertyType() {
-    return propertyType;
   }
 }
