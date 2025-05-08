@@ -15,6 +15,7 @@ public class Player {
   private BoardGame game;
   private final String token;
   private boolean waitTurn = false;
+  private boolean bankrupt = false;
   private final Map<String, String> properties = new HashMap<>();
   private int money;
   private final List<PropertyTileAction> ownedProperties = new ArrayList<>();
@@ -115,6 +116,7 @@ public class Player {
       return true;
     } else {
       System.out.println(name + " can't afford to pay " + amount + ". Current balance: " + money);
+      declareBankrupt();
       return false;
     }
   }
@@ -131,6 +133,8 @@ public class Player {
       recipient.addMoney(amount);
       return true;
     }
+
+    declareBankrupt();
     return false;
   }
 
@@ -168,6 +172,32 @@ public class Player {
   }
 
   /**
+   * Checks if the player is bankrupt.
+   *
+   * @return True if the player is bankrupt, false otherwise.
+   */
+  public boolean isBankrupt() {
+    return bankrupt;
+  }
+
+  /**
+   * Declares the player bankrupt and removes them from the game.
+   */
+  public void declareBankrupt() {
+    this.bankrupt = true;
+    System.out.println(name + " has gone bankrupt and is out of the game");
+
+    for (PropertyTileAction property : ownedProperties) {
+      property.setOwner(null);
+    }
+    ownedProperties.clear();
+
+    if (game!= null) {
+      game.playerBankrupt(this);
+    }
+  }
+
+  /**
    * Gets the current tile the player is standing on.
    * @return The current tile.
    */
@@ -175,6 +205,11 @@ public class Player {
     return currentTile;
   }
 
+  /**
+   * Gets the name of the player.
+   *
+   * @return The name of the player.
+   */
   public String getName() {
     return name;
   }
@@ -214,6 +249,11 @@ public class Player {
     return game;
   }
 
+  /**
+   * Gets the player's token.
+   *
+   * @return The token.
+   */
   public String getToken() {
     return token;
   }

@@ -16,6 +16,7 @@ import edu.ntnu.idi.idatt.views.boardgameviews.MonopolyGameView;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -165,6 +166,18 @@ public class MonopolyGameController implements BoardGameController {
         }
         Platform.runLater(this::advanceToNextPlayer);
       }).start();
+    }
+  }
+
+  public void handlePlayerBankrupt(Player player) {
+    view.onPlayerBankrupt(player);
+
+    List<Player> activePlayers = boardGame.getActivePlayers();
+    if (activePlayers.size() == 1) {
+      Player winner = activePlayers.getFirst();
+      view.showGameWonMessage(winner);
+    } else {
+      advanceToNextPlayer();
     }
   }
 

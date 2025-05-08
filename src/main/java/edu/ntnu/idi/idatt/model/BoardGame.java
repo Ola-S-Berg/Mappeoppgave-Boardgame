@@ -256,6 +256,65 @@ public class BoardGame {
   }
 
   /**
+   * Handles a player going bankrupt and being removed from the game.
+   *
+   * @param player The player who went bankrupt.
+   */
+  public void playerBankrupt(Player player) {
+    if(!players.contains(player)) {
+      return;
+    }
+
+    notifyPlayerBankrupt(player);
+
+    if (player == currentPlayer) {
+      advanceToNextPlayer();
+    }
+
+    checkGameOver();
+  }
+
+  /**
+   * Notifies all observers when a player goes bankrupt.
+   *
+   * @param player The player who went bankrupt.
+   */
+  public void notifyPlayerBankrupt(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onPlayerBankrupt(player);
+    }
+  }
+
+  /**
+   * Checks if the game is over by checking if only one player is left in the game.
+   * If so, declares that player as the winner.
+   */
+  public void checkGameOver() {
+    List<Player> activePlayers = getActivePlayers();
+
+    if (activePlayers.size() == 1) {
+      Player winner = activePlayers.getFirst();
+      gameOver = true;
+      notifyGameWon(winner);
+    }
+  }
+
+  /**
+   * Gets a list of active (non-bankrupt) players.
+   *
+   * @return List of active players.
+   */
+  public List<Player> getActivePlayers() {
+    List<Player> activePlayers = new ArrayList<>();
+    for (Player player: players) {
+      if (!player.isBankrupt()) {
+        activePlayers.add(player);
+      }
+    }
+    return activePlayers;
+  }
+
+  /**
    * Moves the specified player a given number of steps on the game board, starting from a specified
    * tile. Notifies observers about the move and checks for game completion.
    *
@@ -312,13 +371,22 @@ public class BoardGame {
     }
 
     Player previousPlayer = currentPlayer;
-    currentPlayerIndex =(currentPlayerIndex + 1) % players.size();
+
+    int nextPlayerIndex = currentPlayerIndex;
+    do {
+      nextPlayerIndex = (nextPlayerIndex + 1) % players.size();
+      if (nextPlayerIndex == currentPlayerIndex) {
+        break;
+      }
+    } while (players.get(nextPlayerIndex).isBankrupt());
+    currentPlayerIndex = nextPlayerIndex;
     currentPlayer = players.get(currentPlayerIndex);
 
     if (previousPlayer != currentPlayer) {
       notifyCurrentPlayerChanged(currentPlayer);
     }
 
+     checkGameOver();
   }
 
   /**

@@ -28,4 +28,12 @@ public interface BoardGameObserver {
    * @param player The new current player.
    */
   void onCurrentPlayerChanged(Player player);
+
+  /**
+   * Called when a player goes bankrupt.
+   *
+   * @param player The player who went bankrupt.
+   */
+  void onPlayerBankrupt(Player player);
 }
+

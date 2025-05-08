@@ -636,6 +636,19 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   }
 
   /**
+   * Called when a player goes bankrupt in the game.
+   * Delegates to the concrete view implementation.
+   *
+   * @param player The player who went bankrupt.
+   */
+  @Override
+  public void onPlayerBankrupt(Player player) {
+    if (this instanceof MonopolyGameView) {
+      this.onPlayerBankrupt(player);
+    }
+  }
+
+  /**
    * Displays a game-specific action message.
    *
    * @param player The player performing the action.

@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
@@ -417,5 +419,77 @@ public class MonopolyGameView extends AbstractBoardGameView {
    */
   public void onMoneyChange(Player player) {
     updatePlayerMoney(player);
+  }
+
+  /**
+   * Updates the UI to reflect that a player has gone bankrupt.
+   *
+   * @param player The player who went bankrupt.
+   */
+  public void onPlayerBankrupt(Player player) {
+    Platform.runLater(() -> {
+      VBox playerCard = playerInfoCards.get(player);
+      if (playerCard != null) {
+        playerCard.setStyle("-fx-background-color: #ffebee; -fx-border-color: #ef5350;" +
+            "-fx-border-width: 1px; -fx-border-radius: 5px; -fx-opacity: 0.7");
+        Label bankruptLabel = new Label("Bankrupt");
+        bankruptLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #d32f2f;");
+
+        boolean hasLabel = false;
+        for (javafx.scene.Node node : playerCard.getChildren()) {
+          if (node instanceof Label && "Bankrupt".equals(((Label) node).getText())) {
+            hasLabel = true;
+            break;
+          }
+        }
+
+        if (!hasLabel) {
+          playerCard.getChildren().add(1, bankruptLabel);
+        }
+
+        actionLabel.setText(player.getName() + " has gone bankrupt");
+        actionLabel.setVisible(true);
+
+        if (controller instanceof MonopolyGameController) {
+          ((MonopolyGameController) controller).handlePlayerBankrupt(player);
+        }
+      }
+    });
+  }
+
+  /**
+   * Displays a message indicating that a player has won the game.
+   * Shows a dialog with the winner's information and options to play again or return to the menu.
+   *
+   * @param winner The player who has won the game.
+   */
+  public void showGameWonMessage(Player winner) {
+    Platform.runLater(() -> {
+      actionLabel.setText(winner.getName() + " " + getWinMessage());
+      actionLabel.setVisible(true);
+
+      VBox winnerCard = playerInfoCards.get(winner);
+      if (winnerCard != null) {
+        winnerCard.setStyle("-fx-background-color: #e8f5e9; -fx-border-color: #4caf50; " +
+            "-fx-border-width: 2px; -fx-border-radius: 5px;");
+      }
+
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Game Over");
+      alert.setHeaderText(winner.getName() + " has won the game!");
+      alert.setContentText("Congratulations!" + winner.getName() + " has won the game!");
+
+      ButtonType restartButton = new ButtonType("Play Again");
+      ButtonType menuButton = new ButtonType("Return to Menu");
+      alert.getButtonTypes().setAll(restartButton, menuButton);
+
+      alert.showAndWait().ifPresent(response -> {
+        if (response == restartButton) {
+          controller.restartGame();
+        } else if (response == menuButton){
+          controller.quitToMenu();
+        }
+      });
+    });
   }
 }
