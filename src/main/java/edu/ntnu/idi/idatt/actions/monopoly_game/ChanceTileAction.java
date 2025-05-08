@@ -76,7 +76,36 @@ public class ChanceTileAction implements TileAction {
         System.out.println(player.getName() + " pays 3000 to the bank");
         break;
       case 3: // Advance to the nearest landmark.
-        System.out.println(player.getName() + " advances to the nearest landmark");
+        int currentPosition = player.getCurrentTile().getTileId();
+        Tile nearestLandmarkTile6 = player.getGame().getBoard().getTile(6);
+        Tile nearestLandmarkTile16 = player.getGame().getBoard().getTile(16);
+        Tile nearestLandmarkTile26 = player.getGame().getBoard().getTile(26);
+        Tile nearestLandmarkTile36 = player.getGame().getBoard().getTile(36);
+
+        Tile landmarkTile = null;
+
+        if (currentPosition == 3 || currentPosition == 8) {
+          landmarkTile = nearestLandmarkTile6;
+        } else if (currentPosition == 13 || currentPosition == 18) {
+          landmarkTile = nearestLandmarkTile16;
+        } else if (currentPosition == 23 || currentPosition == 29) {
+          landmarkTile = nearestLandmarkTile26;
+        } else if (currentPosition == 34 || currentPosition == 39) {
+          landmarkTile = nearestLandmarkTile36;
+        }
+
+        if (landmarkTile != null) {
+          System.out.println(player.getName() + " advances to the nearest landmark: " +
+              ((PropertyTileAction)landmarkTile.getAction()).getPropertyName());
+          player.placeOnTile(landmarkTile);
+
+          if (landmarkTile.getAction() != null && landmarkTile.getAction() instanceof PropertyTileAction propertyAction) {
+            propertyAction.setController(this.controller);
+            propertyAction.perform(player);
+          }
+        } else {
+          System.out.println("No landmark found");
+        }
         break;
       case 4: // Pay each player 1000.
         for (Player otherPlayer : player.getGame().getPlayers()) {
