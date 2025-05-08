@@ -30,6 +30,8 @@ public class DialogService {
     dialogStage.initOwner(ownerStage);
     dialogStage.setTitle("Confirm Quit");
 
+    handleDialogCloseRequest(dialogStage, null);
+
     VBox dialogVbox = new VBox(20);
     dialogVbox.setPadding(new Insets(20));
     dialogVbox.setAlignment(Pos.CENTER);
@@ -82,6 +84,8 @@ public class DialogService {
     dialogStage.initOwner(ownerStage);
     dialogStage.setTitle("Purchase Property");
 
+    handleDialogCloseRequest(dialogStage, onDecline);
+
     VBox dialogVBox = new VBox(15);
     dialogVBox.setPadding(new Insets(20));
     dialogVBox.setAlignment(Pos.CENTER);
@@ -108,6 +112,8 @@ public class DialogService {
       dialogStage.close();
       onDecline.run();
     });
+
+    handleDialogCloseRequest(dialogStage, onDecline);
 
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
@@ -143,6 +149,8 @@ public class DialogService {
     dialogStage.initModality(Modality.APPLICATION_MODAL);
     dialogStage.initOwner(ownerStage);
     dialogStage.setTitle("Jail Options");
+
+    handleDialogCloseRequest(dialogStage, onTryRollDoubles);
 
     VBox dialogVBox = new VBox(15);
     dialogVBox.setPadding(new Insets(20));
@@ -182,6 +190,14 @@ public class DialogService {
       payButton.setText("Not enough money to pay bail.");
     }
 
+    dialogStage.setOnCloseRequest(event -> {
+      event.consume();
+      dialogStage.close();
+      if (onTryRollDoubles != null) {
+        onTryRollDoubles.run();
+      }
+    });
+
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
     buttonBox.getChildren().addAll(rollButton, payButton);
@@ -215,6 +231,8 @@ public class DialogService {
     dialogStage.initModality(Modality.APPLICATION_MODAL);
     dialogStage.initOwner(ownerStage);
     dialogStage.setTitle("Tax Payment");
+
+    handleDialogCloseRequest(dialogStage, onFixed);
 
     VBox dialogVBox = new VBox(15);
     dialogVBox.setPadding(new Insets(20));
@@ -266,5 +284,19 @@ public class DialogService {
     Scene dialogScene = new Scene(dialogVBox, 400, 200);
     dialogStage.setScene(dialogScene);
     dialogStage.showAndWait();
+  }
+
+  /**
+   * Helper method to handle the dialog window close requests.
+   *
+   * @param dialogStage The dialog stage to handle.
+   * @param defaultAction The default action to execute if the user closes the dialog.
+   */
+  private static void handleDialogCloseRequest(Stage dialogStage, Runnable defaultAction) {
+    dialogStage.setOnCloseRequest(event -> {
+      if (defaultAction != null) {
+        defaultAction.run();
+      }
+    });
   }
 }
