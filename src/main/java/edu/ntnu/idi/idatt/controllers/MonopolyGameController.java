@@ -17,6 +17,9 @@ import edu.ntnu.idi.idatt.BoardGameApplication;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -32,9 +35,12 @@ public class MonopolyGameController implements BoardGameController {
   private final String gameVariation;
   private final Stage stage;
   private static final Logger LOGGER = Logger.getLogger(MonopolyGameController.class.getName());
+  private final ExecutorService executorService;
+  private boolean isShutDown = false;
 
   /**
    * Constructor for the controller.
+   * Creates a thread factory for daemon threads to ensure the application does not hang on shutdown.
    *
    * @param boardGame The game model.
    * @param stage The JavaFX stage.
@@ -45,9 +51,32 @@ public class MonopolyGameController implements BoardGameController {
     this.stage = stage;
     this.gameVariation = gameVariation;
 
+    ThreadFactory daemonFactory = r -> {
+      Thread t = new Thread(r);
+      t.setDaemon(true);
+      return t;
+    };
+
+    this.executorService = Executors.newCachedThreadPool(daemonFactory);
+
+    stage.setOnCloseRequest(event -> {shutdown();});
+
     this.view = new MonopolyGameView(boardGame, stage, this);
 
     boardGame.initializeGame();
+  }
+
+  /**
+   * Shutdown method to clean up resources.
+   */
+  public void shutdown() {
+    if (isShutDown) {
+      return;
+    }
+
+    isShutDown = true;
+    executorService.shutdown();
+    LOGGER.info("Shutting down MonopolyGameController");
   }
 
   /**
@@ -105,6 +134,12 @@ public class MonopolyGameController implements BoardGameController {
     handlePlayerMove(currentPlayer);
   }
 
+  /**
+   * Checks if a player is in jail.
+   *
+   * @param player The player to check.
+   * @return true if the player is in jail, false otherwise.
+   */
   private boolean isPlayerInJail(Player player) {
     return player.getProperty("inJail") != null && player.getProperty("inJail").equals("true");
   }
@@ -122,63 +157,89 @@ public class MonopolyGameController implements BoardGameController {
       String actionType = action.getClass().getSimpleName();
       view.showActionMessage(player, actionType);
 
-      if (action instanceof PropertyTileAction) {
-        ((PropertyTileAction) action).setController(this);
-      } else if (action instanceof ChanceTileAction) {
-        ((ChanceTileAction) action).setController(this);
-      } else if (action instanceof TaxTileAction) {
-        ((TaxTileAction) action).setController(this);
+      switch (action) {
+        case PropertyTileAction propertyTileAction -> propertyTileAction.setController(this);
+        case ChanceTileAction chanceTileAction -> chanceTileAction.setController(this);
+        case TaxTileAction taxTileAction -> taxTileAction.setController(this);
+        default -> {
+        }
       }
 
-      new Thread(() -> {
+      executorService.submit(() -> {
         try {
           Thread.sleep(1000);
 
+          if (isShutDown) return;
+
           Platform.runLater(() -> {
-            int fromTileId = player.getCurrentTile().getTileId();
-            action.perform(player);
-            int toTileId = player.getCurrentTile().getTileId();
+            if (isShutDown) return;
 
-            if (fromTileId != toTileId) {
-              boardGame.notifyPlayerMove(player, fromTileId, toTileId, 0);
+            try {
+              int fromTileId = player.getCurrentTile().getTileId();
+              action.perform(player);
+              int toTileId = player.getCurrentTile().getTileId();
+
+              if (fromTileId != toTileId) {
+                boardGame.notifyPlayerMove(player, fromTileId, toTileId, 0);
+              }
+
+              view.updatePlayerMoney(player);
+              view.updatePlayerProperties(player);
+            } catch (Exception e) {
+              LOGGER.log(Level.WARNING, "Error during player action", e);
             }
-
-            view.updatePlayerMoney(player);
-            view.updatePlayerProperties(player);
-
           });
 
           Thread.sleep(1000);
 
-          Platform.runLater(this::advanceToNextPlayer);
+          if (isShutDown) return;
+
+          Platform.runLater(() -> {
+            if (!isShutDown) {
+              advanceToNextPlayer();
+            }
+          });
         } catch (InterruptedException e) {
           LOGGER.log(Level.WARNING, "Thread was interrupted during game action delay", e);
           Thread.currentThread().interrupt();
         }
-      }).start();
+      });
     } else {
-      new Thread(() -> {
+      executorService.submit(() -> {
         try {
           Thread.sleep(2000);
+          if (!isShutDown) {
+            Platform.runLater(() -> {
+              if (!isShutDown) {
+                advanceToNextPlayer();
+              }
+            });
+          }
         } catch (InterruptedException e) {
           LOGGER.log(Level.WARNING, "Thread was interrupted during game action delay", e);
           Thread.currentThread().interrupt();
         }
-        Platform.runLater(this::advanceToNextPlayer);
-      }).start();
+      });
     }
   }
 
+  /**
+   * Notifies the view that a player has bankrupted.
+   *
+   * @param player The player that has bankrupted.
+   */
   public void handlePlayerBankrupt(Player player) {
     view.onPlayerBankrupt(player);
 
     List<Player> activePlayers = boardGame.getActivePlayers();
-    if (activePlayers.size() == 1) {
-      Player winner = activePlayers.getFirst();
-      view.showGameWonMessage(winner);
-    } else {
-      advanceToNextPlayer();
+    if (activePlayers.size() <= 1) {
+      if (activePlayers.size() == 1) {
+        Player winner = activePlayers.getFirst();
+        view.showGameWonMessage(winner);
+      }
+      return;
     }
+    view.onPlayerBankrupt(player);
   }
 
   /**
@@ -216,6 +277,7 @@ public class MonopolyGameController implements BoardGameController {
   public void advanceToNextPlayer() {
     boardGame.advanceToNextPlayer();
     view.prepareForNextTurn();
+    view.disableRollButton(false);
   }
 
   /**
@@ -303,7 +365,7 @@ public class MonopolyGameController implements BoardGameController {
     application.start(newStage);
 
     for (int i = 0; i < playerNames.length; i++) {
-      Player player = new Player(playerNames[i], playerTokens[i], newGame, 100000);
+      Player player = new Player(playerNames[i], playerTokens[i], newGame, 150000);
       newGame.addPlayer(player);
     }
 

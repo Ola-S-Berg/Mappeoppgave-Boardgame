@@ -10,8 +10,11 @@ import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Application that serves as the entry point for the JavaFX application.
@@ -21,6 +24,7 @@ public class BoardGameApplication extends Application {
   private Stage primaryStage;
   private BoardGame boardGame;
   private String selectedGame;
+  private static final Logger LOGGER = Logger.getLogger(BoardGameApplication.class.getName());
 
   /**
    * Initializes and starts the primary stage of the application.
@@ -35,9 +39,28 @@ public class BoardGameApplication extends Application {
 
     primaryStage.setTitle("Board Game");
 
+    primaryStage.setOnCloseRequest(e -> {
+      LOGGER.info("Application window closing");
+      Platform.exit();
+    });
+
     showGameSelectionView();
 
     primaryStage.show();
+  }
+
+  /**
+   * Clean up resources when the application is stopped.
+   */
+  @Override
+  public void stop() {
+    try {
+      LOGGER.info("Application stopping, cleaning up resources");
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error during application shutdown", e);
+    } finally {
+      Platform.exit();
+    }
   }
 
   /**
@@ -91,7 +114,7 @@ public class BoardGameApplication extends Application {
     boardGame = BoardGameFactory.createBoardGame(selectedGame);
 
     for (int i = 0; i < playerNames.length; i++) {
-      Player player = new Player(playerNames[i], playerTokens[i], boardGame, 50000);
+      Player player = new Player(playerNames[i], playerTokens[i], boardGame, 5);
       boardGame.addPlayer(player);
     }
 
