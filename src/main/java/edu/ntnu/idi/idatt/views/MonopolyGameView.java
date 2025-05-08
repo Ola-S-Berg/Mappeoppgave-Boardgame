@@ -5,7 +5,6 @@ import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.BoardGameObserver;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -44,15 +43,13 @@ public class MonopolyGameView implements BoardGameObserver {
   private ImageView diceView1;
   private ImageView diceView2;
   private final Map<Player, ImageView> playerTokenViews;
-  private final String gameVariation;
   private static final int gridSize = 11;
   private double tokenSize = 20;
   private double boardWidth;
   private double boardHeight;
   private final MonopolyGameController controller;
-  private VBox playerInfoPanel;
   private final Map<Player, Boolean> animationsInProgress = new HashMap<>();
-  private Map<Player, VBox> playerInfoCards = new HashMap<>();
+  private final Map<Player, VBox> playerInfoCards = new HashMap<>();
   private static final Logger LOGGER = Logger.getLogger(MonopolyGameView.class.getName());
 
   /**
@@ -66,7 +63,6 @@ public class MonopolyGameView implements BoardGameObserver {
     this.boardGame = boardGame;
     this.stage = stage;
     this.playerTokenViews = new HashMap<>();
-    this.gameVariation = controller.getGameVariation();
     this.controller = controller;
 
     boardGame.addObserver(this);
@@ -434,7 +430,7 @@ public class MonopolyGameView implements BoardGameObserver {
     boardPane.getChildren().addAll(boardImageView, boardGridPane);
     root.setCenter(boardPane);
 
-    playerInfoPanel = setupPlayerInfoPanel();
+    VBox playerInfoPanel = setupPlayerInfoPanel();
     root.setRight(playerInfoPanel);
 
     setupPlayerTokens();

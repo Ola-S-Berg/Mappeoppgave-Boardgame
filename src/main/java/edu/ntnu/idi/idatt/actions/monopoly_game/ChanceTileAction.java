@@ -1,8 +1,6 @@
 package edu.ntnu.idi.idatt.actions.monopoly_game;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
-import edu.ntnu.idi.idatt.model.Board;
-import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.Tile;
 import java.util.Random;
@@ -18,7 +16,7 @@ public class ChanceTileAction implements TileAction {
       "Pay 3000 to the bank",
       "Advance to the nearest landmark",
       "Pay each player 1000",
-      "Collect 1000 from each player"
+      "Collect 1000 from each player",
   };
 
   /**
@@ -45,8 +43,6 @@ public class ChanceTileAction implements TileAction {
    * @param actionIndex The index of the action to perform.
    */
   private void executeChanceAction(Player player, int actionIndex) {
-    BoardGame game = player.getGame();
-    Board board = game.getBoard();
 
     switch (actionIndex) {
       case 0: // Move forward 3 spaces

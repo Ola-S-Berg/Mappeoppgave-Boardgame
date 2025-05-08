@@ -135,7 +135,7 @@ public class GameSelectionView {
     File[] playerSaveFiles = savesDir.listFiles((dir, name) -> name.endsWith("_players.csv"));
     boolean hasSavedGames = false;
 
-    if (playerSaveFiles != null && playerSaveFiles.length > 0) {
+    if (playerSaveFiles != null) {
       for (File playerFile : playerSaveFiles) {
         String saveName = playerFile.getName().replace("_players.csv", "");
 

@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
@@ -65,7 +66,19 @@ public class MonopolyGameController implements GameController {
 
     view.disableRollButton(true);
 
-    if (currentPlayer.willWaitTurn()) {
+    if (isPlayerInJail(currentPlayer)) {
+      view.showActionMessage(currentPlayer, "InJail");
+
+      if (currentPlayer.getCurrentTile().getAction() instanceof JailTileAction jailAction) {
+        jailAction.setOwnerStage(this.stage);
+        jailAction.setController(this);
+        jailAction.perform(currentPlayer);
+      } else {
+        boardGame.notifyPlayerSkipTurn(currentPlayer);
+        advanceToNextPlayer();
+      }
+      return;
+    } else if (currentPlayer.willWaitTurn()) {
       boardGame.notifyPlayerSkipTurn(currentPlayer);
       currentPlayer.setWaitTurn(false);
       advanceToNextPlayer();
@@ -86,6 +99,10 @@ public class MonopolyGameController implements GameController {
     handlePlayerMove(currentPlayer);
   }
 
+  private boolean isPlayerInJail(Player player) {
+    return player.getProperty("inJail") != null && player.getProperty("inJail").equals("true");
+  }
+
   private void handlePlayerMove(Player player) {
     Tile currentTile = player.getCurrentTile();
     TileAction action = currentTile.getAction();
@@ -97,7 +114,6 @@ public class MonopolyGameController implements GameController {
       if (action instanceof PropertyTileAction) {
         ((PropertyTileAction) action).setController(this);
       }
-
       new Thread(() -> {
         try {
           Thread.sleep(1000);
@@ -157,7 +173,7 @@ public class MonopolyGameController implements GameController {
   /**
    * Advances the game to the next player's turn.
    */
-  private void advanceToNextPlayer() {
+  public void advanceToNextPlayer() {
     boardGame.advanceToNextPlayer();
     view.prepareForNextTurn();
   }
@@ -179,6 +195,10 @@ public class MonopolyGameController implements GameController {
    */
   public void updatePlayerMoney(Player player) {
     view.onMoneyChange(player);
+  }
+
+  public void enableRollButton(boolean disabled) {
+    view.disableRollButton(!disabled);
   }
 
   /**

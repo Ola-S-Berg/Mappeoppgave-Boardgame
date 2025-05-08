@@ -228,6 +228,6 @@ public class Board {
     board.getTile(30).setAction(new GoToJailAction(11));
 
     //Pay Tile.
-    board.getTile(36).setAction(new PayTileAction(10000));
+    board.getTile(37).setAction(new PayTileAction(10000));
   }
 }

@@ -2,7 +2,6 @@ package edu.ntnu.idi.idatt.model;
 
 import static edu.ntnu.idi.idatt.model.Board.setupTileActionsMonopolyGame;
 
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardFileHandler;
 import java.util.List;
 import java.util.ArrayList;
@@ -18,12 +17,11 @@ public class BoardGame {
   private Dice dice;
   private String variantName;
   private final List<BoardGameObserver> observers = new ArrayList<>();
-  private final BoardFileHandler fileHandler;
   private int currentPlayerIndex;
   private boolean gameOver;
 
   public BoardGame() {
-    this.fileHandler = new BoardFileHandler();
+    BoardFileHandler fileHandler = new BoardFileHandler();
     this.currentPlayerIndex = 0;
     this.gameOver = false;
   }
@@ -218,67 +216,29 @@ public class BoardGame {
   }
 
   /**
-   * Processes the current player's turn in the game. If the game is over, it ends the turn immediately.
-   * If the current player is set to skip their turn, it notifies observers, resets the skip state,
-   * and ends the turn. Otherwise, the current player rolls the dice, calculates their movement,
-   * and updates their position accordingly. Observers are notified of the player's movement.
-   *
-   * @return The number of steps moved during the turn. Returns 0 if the game is over or the player skips their turn.
+   * Processes the current player's turn in the game. If the game is over, it ends the turn
+   * immediately. If the current player is set to skip their turn, it notifies observers, resets the
+   * skip state, and ends the turn. Otherwise, the current player rolls the dice, calculates their
+   * movement, and updates their position accordingly. Observers are notified of the player's
+   * movement.
    */
-  public int processTurn() {
+  public void processTurn() {
     if (gameOver) {
-      return 0;
+      return;
     }
 
     if (currentPlayer.willWaitTurn()) {
       System.out.println(currentPlayer.getName() + " will skip their turn");
       notifyPlayerSkipTurn(currentPlayer);
       currentPlayer.setWaitTurn(false);
-      return 0;
+      return;
     }
 
     int steps = dice.roll();
     int fromTileId = currentPlayer.getCurrentTile().getTileId();
     System.out.println(currentPlayer.getName() + " rolled " + steps);
 
-    return movePlayer(currentPlayer, steps, fromTileId);
-  }
-
-  /**
-   * Processes the current player's turn in the Monopoly game. If the game is over or there is no current player,
-   * the turn is skipped. The method rolls dice, moves the player based on the dice result, and handles any relevant
-   * temporary properties such as "freeParking". If the player rolls doubles, they are granted another turn.
-   *
-   * @return true if the player rolls doubles and gains another turn, false otherwise or if the game is over.
-   */
-  public boolean processMonopolyTurn() {
-    if (gameOver || currentPlayer == null) {
-      return false;
-    }
-
-    //Add logic for jail here
-
-    int[] diceValues = rollDice();
-    int total = diceValues[diceValues.length - 1];
-    boolean doublesRolled = diceValues[0] == diceValues[1];
-
-    System.out.println(currentPlayer.getName() + " rolled " + diceValues[0] + " and " +
-                       diceValues[1] + " (total: " + total + ")");
-
-    String freeParking = currentPlayer.getProperty("freeParking");
-    if (freeParking != null && freeParking.equals("true")) {
-      currentPlayer.setProperty("freeParking", "false");
-    }
-
-    int fromTileId = currentPlayer.getCurrentTile().getTileId();
-    movePlayer(currentPlayer, total, fromTileId);
-
-    if (doublesRolled) {
-      System.out.println(currentPlayer.getName() + " rolled doubles and gets another turn!");
-      return true;
-    }
-
-    return false;
+    movePlayer(currentPlayer, steps, fromTileId);
   }
 
   /**
@@ -289,22 +249,21 @@ public class BoardGame {
    * @param toTileId The ID of the tile the player is moving to.
    */
   private void checkPassedStart(Player player, int fromTileId, int toTileId) {
-    if (fromTileId > toTileId && toTileId != 11) {
+    if (fromTileId > toTileId && toTileId != 1) {
       player.addMoney(20000);
       System.out.println(player.getName() + " passed start and received 20000");
     }
   }
 
   /**
-   * Moves the specified player a given number of steps on the game board, starting from a specified tile.
-   * Notifies observers about the move and checks for game completion.
+   * Moves the specified player a given number of steps on the game board, starting from a specified
+   * tile. Notifies observers about the move and checks for game completion.
    *
-   * @param player The player to be moved.
-   * @param steps The number of steps the player will move.
+   * @param player     The player to be moved.
+   * @param steps      The number of steps the player will move.
    * @param fromTileId The ID of the tile the player is moving from.
-   * @return The number of steps moved by the player.
    */
-  public int movePlayer(Player player, int steps, int fromTileId) {
+  public void movePlayer(Player player, int steps, int fromTileId) {
     player.move(steps);
     int toTileId = player.getCurrentTile().getTileId();
 
@@ -321,7 +280,6 @@ public class BoardGame {
       notifyGameWon(getWinner());
     }
 
-    return steps;
   }
 
   /**
@@ -344,15 +302,13 @@ public class BoardGame {
 
 
   /**
-   * Advances the game to the next player's turn. If the game is over or there are no players,
-   * the method returns null. Otherwise, it updates the current player to the next player
-   * in the sequence and notifies observers about the change if applicable.
-   *
-   * @return The new current player after advancing. Returns null if the game is over or there are no players.
+   * Advances the game to the next player's turn. If the game is over or there are no players, the
+   * method returns null. Otherwise, it updates the current player to the next player in the
+   * sequence and notifies observers about the change if applicable.
    */
-  public Player advanceToNextPlayer() {
+  public void advanceToNextPlayer() {
     if (players.isEmpty() || gameOver) {
-      return null;
+      return;
     }
 
     Player previousPlayer = currentPlayer;
@@ -363,7 +319,6 @@ public class BoardGame {
       notifyCurrentPlayerChanged(currentPlayer);
     }
 
-    return currentPlayer;
   }
 
   /**
@@ -391,47 +346,12 @@ public class BoardGame {
   }
 
   /**
-   * Attempts to purchase a property for the specified player. If the property is already
-   * owned, the purchase cannot proceed. If the player has sufficient money, the property
-   * is added to their owned properties, and the transaction is completed successfully.
-   *
-   * @param player The player attempting to buy the property.
-   * @param propertyAction Represents the property and associated details such as cost and ownership status.
-   * @return true if the property is successfully purchased, false otherwise.
-   */
-  public boolean buyProperty(Player player, PropertyTileAction propertyAction) {
-    if (propertyAction.getOwner() != null) {
-      System.out.println("Property already owned by " + propertyAction.getOwner().getName());
-      return false;
-    }
-
-    int cost = propertyAction.getCost();
-    if (player.getMoney() >= cost) {
-      player.payMoney(cost);
-      player.addProperty(propertyAction);
-      System.out.println(player.getName() + " bought" + propertyAction.getPropertyName() + " for " + cost);
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
    * Retrieves the current player in the game.
    *
    * @return The Player object representing the current player.
    */
   public Player getCurrentPlayer() {
     return currentPlayer;
-  }
-
-  /**
-   * Checks whether the game is over.
-   *
-   * @return true if the game has ended, false otherwise.
-   */
-  public boolean isGameOver() {
-    return gameOver;
   }
 
   /**

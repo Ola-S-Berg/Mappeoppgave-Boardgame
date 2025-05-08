@@ -60,9 +60,8 @@ public class DialogService {
     dialogStage.show();
   }
 
-  public static void showPropertyPurchaseDialog(Stage ownerStage,
-                                                PropertyTileAction property, Runnable onPurchase,
-                                                Runnable onDecline) {
+  public static void showPropertyPurchaseDialog(Stage ownerStage, PropertyTileAction property,
+                                                Runnable onPurchase, Runnable onDecline) {
     if (ownerStage == null) {
       if (onDecline != null) {
         onDecline.run();
@@ -107,6 +106,70 @@ public class DialogService {
     buttonBox.getChildren().addAll(declineButton, purchaseButton);
 
     dialogVBox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
+
+    Scene dialogScene = new Scene(dialogVBox, 400, 200);
+    dialogStage.setScene(dialogScene);
+    dialogStage.showAndWait();
+  }
+
+  public static void showJailOptionsDialog (Player player, Stage ownerStage, Runnable onPayBail, Runnable onTryRollDoubles) {
+    int JAIL_BAIL = 5000;
+
+    if (ownerStage == null) {
+      if (onTryRollDoubles != null) {
+        onTryRollDoubles.run();
+      }
+      return;
+    }
+
+    Stage dialogStage = new Stage();
+    dialogStage.initModality(Modality.APPLICATION_MODAL);
+    dialogStage.initOwner(ownerStage);
+    dialogStage.setTitle("Jail Options");
+
+    VBox dialogVBox = new VBox(15);
+    dialogVBox.setPadding(new Insets(20));
+    dialogVBox.setAlignment(Pos.CENTER);
+
+    Label titleLabel = new Label(player.getName() + " is in jail.");
+    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+    String jailTurnCount = player.getProperty("jailTurnCount");
+    int turnsInJail = jailTurnCount == null ? 1 : Integer.parseInt(jailTurnCount);
+    Label turnsLabel = new Label("Turn " + turnsInJail + " of 3 in jail");
+    turnsLabel.setStyle("-fx-font-size: 14px;");
+
+    Label promptLabel = new Label("Would you like to pay bail or roll doubles?");
+    promptLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
+
+    Button payButton = new Button("Pay $" + JAIL_BAIL + " Bail");
+    payButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    payButton.setOnAction(event -> {
+      dialogStage.close();
+      if (onPayBail != null) {
+        onPayBail.run();
+      }
+    });
+
+    Button rollButton = new Button("Try to Roll Doubles");
+    rollButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    rollButton.setOnAction(event -> {
+      dialogStage.close();
+      if (onTryRollDoubles != null) {
+        onTryRollDoubles.run();
+      }
+    });
+
+    if (player.getMoney() < JAIL_BAIL) {
+      payButton.setDisable(true);
+      payButton.setText("Not enough money to pay bail.");
+    }
+
+    HBox buttonBox = new HBox(20);
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.getChildren().addAll(rollButton, payButton);
+
+    dialogVBox.getChildren().addAll(titleLabel, turnsLabel, promptLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVBox, 400, 200);
     dialogStage.setScene(dialogScene);
