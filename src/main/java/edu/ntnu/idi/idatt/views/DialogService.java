@@ -87,23 +87,23 @@ public class DialogService {
     Label promptLabel = new Label("Would you like to purchase this property?");
     promptLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
 
+    Button purchaseButton = new Button("Purchase");
+    purchaseButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    purchaseButton.setOnAction(event -> {
+      dialogStage.close();
+      onPurchase.run();
+    });
+
     Button declineButton = new Button("Decline");
-    declineButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    declineButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
     declineButton.setOnAction(event -> {
       dialogStage.close();
       onDecline.run();
     });
 
-    Button purchaseButton = new Button("Purchase");
-    purchaseButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
-
-    purchaseButton.setOnAction(event -> {
-      dialogStage.close();
-      onPurchase.run();
-    });
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
-    buttonBox.getChildren().addAll(declineButton, purchaseButton);
+    buttonBox.getChildren().addAll(purchaseButton, declineButton);
 
     dialogVBox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
 
