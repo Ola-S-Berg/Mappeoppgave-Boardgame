@@ -7,7 +7,7 @@ import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.Tile;
-import edu.ntnu.idi.idatt.views.LadderGameView;
+import edu.ntnu.idi.idatt.views.boardgameviews.LadderGameView;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import javafx.stage.Stage;
  * Controller for the Ladder Game that handles game logic and coordinates
  * between the model (BoardGame) and view (LadderGameClassicView).
  */
-public class LadderGameController implements GameController {
+public class LadderGameController implements BoardGameController {
   private final BoardGame boardGame;
   private final LadderGameView view;
   private final String gameVariation;
@@ -35,7 +35,7 @@ public class LadderGameController implements GameController {
    * @param stage The JavaFX stage.
    * @param gameVariation The variation of the ladder game.
    */
-  public LadderGameController (BoardGame boardGame, Stage stage, String gameVariation) {
+  public LadderGameController(BoardGame boardGame, Stage stage, String gameVariation) {
     this.boardGame = boardGame;
     this.stage = stage;
     this.gameVariation = gameVariation;

@@ -2,7 +2,7 @@ package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.model.Player;
 
-public interface GameController {
+public interface BoardGameController {
 
   /**
    * Get the current player whose turn it is.

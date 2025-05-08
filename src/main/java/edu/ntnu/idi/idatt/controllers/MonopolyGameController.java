@@ -9,7 +9,7 @@ import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.Tile;
-import edu.ntnu.idi.idatt.views.MonopolyGameView;
+import edu.ntnu.idi.idatt.views.boardgameviews.MonopolyGameView;
 import edu.ntnu.idi.idatt.BoardGameApplication;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import javafx.stage.Stage;
  * Controller for the Monopoly Game that handles game logic and coordinates
  * between the model (BoardGame) and view (MonopolyGameView).
  */
-public class MonopolyGameController implements GameController {
+public class MonopolyGameController implements BoardGameController {
   private final BoardGame boardGame;
   private final MonopolyGameView view;
   private final String gameVariation;
