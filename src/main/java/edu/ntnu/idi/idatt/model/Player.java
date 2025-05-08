@@ -258,6 +258,10 @@ public class Player {
     return token;
   }
 
+  public int getStartingMoney() {
+    return money;
+  }
+
   /**
    * Stores a temporary property for the player.
    * @param key The property key.

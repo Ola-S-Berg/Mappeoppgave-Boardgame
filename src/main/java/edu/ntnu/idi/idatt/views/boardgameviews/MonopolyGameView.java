@@ -27,8 +27,9 @@ import java.util.Map;
 public class MonopolyGameView extends AbstractBoardGameView {
 
   private final Map<Player, VBox> playerInfoCards = new HashMap<>();
-
+  private boolean gameOverDisplayed = false;
   private static final int GRID_SIZE = 11;
+
 
   /**
    * Constructor that initializes the game view with a controller.
@@ -449,6 +450,7 @@ public class MonopolyGameView extends AbstractBoardGameView {
 
         actionLabel.setText(player.getName() + " has gone bankrupt");
         actionLabel.setVisible(true);
+        rollButton.setDisable(true);
 
         if (controller instanceof MonopolyGameController) {
           ((MonopolyGameController) controller).handlePlayerBankrupt(player);
@@ -465,6 +467,11 @@ public class MonopolyGameView extends AbstractBoardGameView {
    */
   public void showGameWonMessage(Player winner) {
     Platform.runLater(() -> {
+      if (gameOverDisplayed) {
+        return;
+      }
+      gameOverDisplayed = true;
+
       actionLabel.setText(winner.getName() + " " + getWinMessage());
       actionLabel.setVisible(true);
 
@@ -478,18 +485,6 @@ public class MonopolyGameView extends AbstractBoardGameView {
       alert.setTitle("Game Over");
       alert.setHeaderText(winner.getName() + " has won the game!");
       alert.setContentText("Congratulations!" + winner.getName() + " has won the game!");
-
-      ButtonType restartButton = new ButtonType("Play Again");
-      ButtonType menuButton = new ButtonType("Return to Menu");
-      alert.getButtonTypes().setAll(restartButton, menuButton);
-
-      alert.showAndWait().ifPresent(response -> {
-        if (response == restartButton) {
-          controller.restartGame();
-        } else if (response == menuButton){
-          controller.quitToMenu();
-        }
-      });
     });
   }
 }

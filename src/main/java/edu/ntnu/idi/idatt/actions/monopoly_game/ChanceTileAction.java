@@ -27,8 +27,6 @@ public class ChanceTileAction implements TileAction {
 
   /**
    * Performs a random chance action when a player lands on a chance tile.
-   * TODO:
-   * Actually implement the random actions.
    *
    * @param player The player that lands on the tile with this action.
    */

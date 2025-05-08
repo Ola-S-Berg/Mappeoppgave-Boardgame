@@ -267,10 +267,6 @@ public class BoardGame {
 
     notifyPlayerBankrupt(player);
 
-    if (player == currentPlayer) {
-      advanceToNextPlayer();
-    }
-
     checkGameOver();
   }
 
@@ -372,15 +368,17 @@ public class BoardGame {
 
     Player previousPlayer = currentPlayer;
 
-    int nextPlayerIndex = currentPlayerIndex;
+    int startingIndex = currentPlayerIndex;
     do {
-      nextPlayerIndex = (nextPlayerIndex + 1) % players.size();
-      if (nextPlayerIndex == currentPlayerIndex) {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      if (startingIndex == currentPlayerIndex) {
         break;
       }
-    } while (players.get(nextPlayerIndex).isBankrupt());
-    currentPlayerIndex = nextPlayerIndex;
-    currentPlayer = players.get(currentPlayerIndex);
+    } while (players.get(currentPlayerIndex).isBankrupt());
+
+    if (!players.get(currentPlayerIndex).isBankrupt()) {
+      currentPlayer = players.get(currentPlayerIndex);
+    }
 
     if (previousPlayer != currentPlayer) {
       notifyCurrentPlayerChanged(currentPlayer);
