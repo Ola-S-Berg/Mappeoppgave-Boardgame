@@ -177,6 +177,13 @@ public class MonopolyGameController implements BoardGameController {
             try {
               int fromTileId = player.getCurrentTile().getTileId();
               action.perform(player);
+
+              if (player.isBankrupt()) {
+                handlePlayerBankrupt(player);
+                boardGame.playerBankrupt(player);
+                return;
+              }
+
               int toTileId = player.getCurrentTile().getTileId();
 
               if (fromTileId != toTileId) {
@@ -237,9 +244,7 @@ public class MonopolyGameController implements BoardGameController {
         Player winner = activePlayers.getFirst();
         view.showGameWonMessage(winner);
       }
-      return;
     }
-    view.onPlayerBankrupt(player);
   }
 
   /**

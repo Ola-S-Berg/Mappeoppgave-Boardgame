@@ -450,7 +450,6 @@ public class MonopolyGameView extends AbstractBoardGameView {
 
         actionLabel.setText(player.getName() + " has gone bankrupt");
         actionLabel.setVisible(true);
-        rollButton.setDisable(true);
 
         if (controller instanceof MonopolyGameController) {
           ((MonopolyGameController) controller).handlePlayerBankrupt(player);
@@ -474,6 +473,7 @@ public class MonopolyGameView extends AbstractBoardGameView {
 
       actionLabel.setText(winner.getName() + " " + getWinMessage());
       actionLabel.setVisible(true);
+      rollButton.setDisable(true);
 
       VBox winnerCard = playerInfoCards.get(winner);
       if (winnerCard != null) {
