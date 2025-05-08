@@ -19,18 +19,6 @@ public class StartTileAction implements TileAction {
   public void perform(Player player) {
     System.out.println(player.getName() + " landed on the Start tile");
     System.out.println(player.getName() + " collects " + PASS_REWARD + " for passing start");
-  }
-
-  /**
-   * Method to be called when a player passes (but doesn't land on) the Start tile.
-   * TODO:
-   * Implement with observer to check when a player actually passes the Start tile.
-   *
-   * @param player The player passing the Start tile.
-   */
-  public void onPass(Player player) {
-    System.out.println(player.getName() + " passed the Start tile");
-    System.out.println(player.getName() + " collects " + PASS_REWARD + " for passing start");
-
+    player.addMoney(PASS_REWARD);
   }
 }

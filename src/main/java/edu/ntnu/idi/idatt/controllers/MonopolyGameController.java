@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.actions.TileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.views.DialogService;
@@ -93,6 +94,8 @@ public class MonopolyGameController implements BoardGameController {
     Tile destinationTile = calculateDestinationTile(currentPlayer, diceValues[0] + diceValues[1]);
     int toTileId = destinationTile.getTileId();
 
+    checkIfPassedStart(currentPlayer, fromTileId, toTileId);
+
     currentPlayer.placeOnTile(destinationTile);
 
     boardGame.notifyPlayerMove(currentPlayer, fromTileId, toTileId, diceValues[0] + diceValues[1]);
@@ -177,6 +180,18 @@ public class MonopolyGameController implements BoardGameController {
       }
     }
     return destinationTile;
+  }
+
+  private void checkIfPassedStart(Player player, int fromTileId, int toTileId) {
+    final int startTileId = 1;
+
+    if (fromTileId > toTileId && toTileId != startTileId) {
+      Tile startTile = boardGame.getBoard().getTile(startTileId);
+      if (startTile != null && startTile.getAction() instanceof StartTileAction startAction) {
+        startAction.perform(player);
+        view.updatePlayerMoney(player);
+      }
+    }
   }
 
   /**
