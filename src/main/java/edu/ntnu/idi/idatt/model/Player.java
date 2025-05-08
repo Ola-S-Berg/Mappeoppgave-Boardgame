@@ -17,7 +17,7 @@ public class Player {
   private boolean waitTurn = false;
   private final Map<String, String> properties = new HashMap<>();
   private int money;
-  private List<PropertyTileAction> ownedProperties = new ArrayList<>();
+  private final List<PropertyTileAction> ownedProperties = new ArrayList<>();
 
   /**
    * The constructor for Player with a game instance.
@@ -157,15 +157,6 @@ public class Player {
    */
   public int getMoney() {
     return money;
-  }
-
-  /**
-   * Handles jail status for the player.
-   * @return True if the player is in jail.
-   */
-  public boolean isInJail() {
-    String inJail = getProperty("inJail");
-    return inJail != null && inJail.equals("true");
   }
 
   /**

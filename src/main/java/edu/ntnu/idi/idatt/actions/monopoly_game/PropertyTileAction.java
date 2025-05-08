@@ -4,11 +4,9 @@ import edu.ntnu.idi.idatt.actions.TileAction;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.views.DialogService;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import java.util.logging.Level;
@@ -99,12 +97,12 @@ public class PropertyTileAction implements TileAction {
         }
       } else if (owner != player) {
         int rent = cost/10;
-        boolean ownsAllOfType = ownsAllPropertiesOfType(player, propertyType);
+        boolean ownsAllOfType = ownsAllPropertiesOfType(owner, propertyType);
 
         if (ownsAllOfType) {
           rent = cost;
           System.out.println(player.getName() + " landed on " + propertyName +
-                             " owned by " + owner.getName() + " (Monopoly bonus - rent = cost)");
+                             " owned by " + owner.getName() + " (Monopoly bonus: rent = cost)");
         } else {
           System.out.println(
               player.getName() + " landed on " + propertyName + " owned by " + owner.getName());

@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.actions.monopoly_game;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.Tile;
 import java.util.Random;
@@ -10,6 +11,7 @@ import java.util.Random;
  */
 public class ChanceTileAction implements TileAction {
   private static final Random random = new Random();
+  private MonopolyGameController controller;
   private static final String[] CHANCE_ACTIONS = {
       "Move forward 3 spaces",
       "Collect 5000 from the bank",
@@ -18,6 +20,10 @@ public class ChanceTileAction implements TileAction {
       "Pay each player 1000",
       "Collect 1000 from each player",
   };
+
+  public void setController(MonopolyGameController controller) {
+    this.controller = controller;
+  }
 
   /**
    * Performs a random chance action when a player lands on a chance tile.
@@ -55,6 +61,9 @@ public class ChanceTileAction implements TileAction {
         System.out.println(player.getName() + " moves forward 3 spaces");
         player.placeOnTile(destinationTile);
         if (destinationTile.getAction() != null && !(destinationTile.getAction() instanceof ChanceTileAction)) {
+          if (destinationTile.getAction() instanceof PropertyTileAction) {
+            ((PropertyTileAction) destinationTile.getAction()).setController(this.controller);
+          }
           destinationTile.getAction().perform(player);
         }
         break;

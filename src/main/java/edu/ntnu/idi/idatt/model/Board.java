@@ -211,7 +211,7 @@ public class Board {
     board.getTile(13).setAction(new ChanceTileAction());
     board.getTile(18).setAction(new ChanceTileAction());
     board.getTile(23).setAction(new ChanceTileAction());
-    board.getTile(30).setAction(new ChanceTileAction());
+    board.getTile(29).setAction(new ChanceTileAction());
     board.getTile(34).setAction(new ChanceTileAction());
     board.getTile(39).setAction(new ChanceTileAction());
 
@@ -225,7 +225,7 @@ public class Board {
     board.getTile(21).setAction(new FreeParkingAction());
 
     //Go To Jail Tile.
-    board.getTile(30).setAction(new GoToJailAction(11));
+    board.getTile(31).setAction(new GoToJailAction(11));
 
     //Pay Tile.
     board.getTile(37).setAction(new PayTileAction(10000));

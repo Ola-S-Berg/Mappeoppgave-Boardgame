@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
@@ -103,6 +104,11 @@ public class MonopolyGameController implements BoardGameController {
     return player.getProperty("inJail") != null && player.getProperty("inJail").equals("true");
   }
 
+  /**
+   * Handles player movement and performs actions, updating views accordingly.
+   *
+   * @param player The player that moves.
+   */
   private void handlePlayerMove(Player player) {
     Tile currentTile = player.getCurrentTile();
     TileAction action = currentTile.getAction();
@@ -113,7 +119,10 @@ public class MonopolyGameController implements BoardGameController {
 
       if (action instanceof PropertyTileAction) {
         ((PropertyTileAction) action).setController(this);
+      } else if (action instanceof ChanceTileAction) {
+        ((ChanceTileAction) action).setController(this);
       }
+
       new Thread(() -> {
         try {
           Thread.sleep(1000);
