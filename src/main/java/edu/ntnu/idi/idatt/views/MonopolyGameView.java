@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.model.BoardGameObserver;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -257,6 +258,36 @@ public class MonopolyGameView implements BoardGameObserver {
   }
 
   /**
+   * Determines the color style for a property based on their associated type.
+   *
+   * @param property The property object whose type determines the color style.
+   * @return A String representing the CSS color style for the property.
+   */
+  private String getPropertyColorType(PropertyTileAction property) {
+    String colorType = property.getPropertyType();
+
+    if (colorType.contains("blue")) {
+      return "-fx-text-fill: #379EFF;";
+    } else if (colorType.contains("pink")) {
+      return "-fx-text-fill: #FF38D4;";
+    } else if (colorType.contains("green")) {
+      return "-fx-text-fill: #39C739";
+    } else if (colorType.contains("gray")) {
+      return "-fx-text-fill: #ACACAC";
+    } else if (colorType.contains("red")) {
+      return "-fx-text-fill: #F01919";
+    } else if (colorType.contains("yellow")) {
+      return "-fx-text-fill: #FEFE10";
+    } else if (colorType.contains("purple")) {
+      return "-fx-text-fill: #5E294E";
+    } else if (colorType.contains("orange")) {
+      return "-fx-text-fill: #FF7B07";
+    } else {
+      return "-fx-text-fill: #000000";
+    }
+  }
+
+  /**
    * Updates the specified VBox to display the properties owned by a given player.
    * The properties are retrieved from the player's data and displayed as a list of labels.
    * If the player owns no properties, a message stating this is displayed instead.
@@ -274,11 +305,11 @@ public class MonopolyGameView implements BoardGameObserver {
       noPropertiesLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #999999; -fx-font-size: 11px;");
       propertiesBox.getChildren().add(noPropertiesLabel);
     } else {
-      properties.sort((p1, p2) -> p1.getPropertyName().compareTo(p2.getPropertyName()));
+      properties.sort(Comparator.comparing(PropertyTileAction::getPropertyName));
 
       for (PropertyTileAction property : properties) {
         Label propertyLabel = new Label("• " + property.getPropertyName());
-        propertyLabel.setStyle("-fx-font-size: 11px;");
+        propertyLabel.setStyle("-fx-font-size: 11px;" + getPropertyColorType(property));
         propertiesBox.getChildren().add(propertyLabel);
       }
     }
@@ -406,9 +437,7 @@ public class MonopolyGameView implements BoardGameObserver {
     boardPane.prefHeightProperty().bind(root.heightProperty().multiply(0.85));
     boardPane.setMinSize(400, 400);
 
-    String imagePath = "/images/Games/MonopolyGame.png";
-    Image boardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
-    ImageView boardImageView = new ImageView(boardImage);
+    ImageView boardImageView = new ImageView("/images/Games/MonopolyGame.png");
     boardImageView.fitWidthProperty().bind(boardPane.widthProperty());
     boardImageView.fitHeightProperty().bind(boardPane.heightProperty());
     boardImageView.setPreserveRatio(true);

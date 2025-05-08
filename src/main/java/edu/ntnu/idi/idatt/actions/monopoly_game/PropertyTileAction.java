@@ -14,6 +14,7 @@ import java.util.logging.Logger;
  */
 public class PropertyTileAction implements TileAction {
   private final String propertyName;
+  private final String propertyType;
   private final int cost;
   private Player owner;
   private MonopolyGameController controller;
@@ -28,6 +29,7 @@ public class PropertyTileAction implements TileAction {
    */
   public PropertyTileAction(String propertyName, int cost, String propertyType) {
     this.propertyName = propertyName;
+    this.propertyType = propertyType;
     this.cost = cost;
     this.owner = null;
   }
@@ -132,6 +134,14 @@ public class PropertyTileAction implements TileAction {
    */
   public String getPropertyName() {
     return propertyName;
+  }
+
+  /**
+   * Gets the property type of this property.
+   * @return The property type.
+   */
+  public String getPropertyType() {
+    return propertyType;
   }
 
   /**
