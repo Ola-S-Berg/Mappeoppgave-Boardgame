@@ -20,8 +20,6 @@ public class PayTileAction implements TileAction {
 
   /**
    * Performs the action of making the player pay a fixed amount.
-   * TODO:
-   * Actually subtract money from a player.
    *
    * @param player The player that lands on the tile with this action.
    */
@@ -29,14 +27,11 @@ public class PayTileAction implements TileAction {
   public void perform(Player player) {
     System.out.println(player.getName() + " landed on a Pay tile");
     System.out.println(player.getName() + " must pay " + amount);
-  }
 
-  /**
-   * Gets the payment amount.
-   *
-   * @return The amount to pay.
-   */
-  public int getAmount() {
-    return amount;
+    boolean paymentSuccessful = player.payMoney(amount);
+
+    if (!paymentSuccessful) {
+      System.out.println(player.getName() + " couldn't afford to pay " + amount);
+    }
   }
 }
