@@ -4,6 +4,11 @@ import edu.ntnu.idi.idatt.actions.TileAction;
 import edu.ntnu.idi.idatt.model.Player;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.views.DialogService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import java.util.logging.Level;
@@ -19,6 +24,19 @@ public class PropertyTileAction implements TileAction {
   private Player owner;
   private MonopolyGameController controller;
   private static final Logger LOGGER = Logger.getLogger(PropertyTileAction.class.getName());
+  private static final Map<String, Integer> propertyTypeCounts = new HashMap<>();
+
+  static {
+    propertyTypeCounts.put("blue", 2);
+    propertyTypeCounts.put("pink", 3);
+    propertyTypeCounts.put("green", 3);
+    propertyTypeCounts.put("gray", 3);
+    propertyTypeCounts.put("red", 3);
+    propertyTypeCounts.put("yellow", 3);
+    propertyTypeCounts.put("purple", 3);
+    propertyTypeCounts.put("orange", 2);
+    propertyTypeCounts.put("landmark", 4);
+  }
 
   /**
    * Constructor for PropertyTileAction.
@@ -41,7 +59,7 @@ public class PropertyTileAction implements TileAction {
   /**
    * Performs the action of a property tile. If the property is not owned,
    * the player can purchase it. If it is owned by another player, the player
-   * must pay rent.
+   * must pay rent. Rent is equal to property cost if a player owns all properties of a type.
    *
    * @param player The player that lands on the tile with this action.
    */
@@ -80,9 +98,18 @@ public class PropertyTileAction implements TileAction {
           LOGGER.log(Level.SEVERE, "Error showing property purchase dialog", e);
         }
       } else if (owner != player) {
-        int rent = calculateRent();
-        System.out.println(
-            player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
+        int rent = cost/10;
+        boolean ownsAllOfType = ownsAllPropertiesOfType(player, propertyType);
+
+        if (ownsAllOfType) {
+          rent = cost;
+          System.out.println(player.getName() + " landed on " + propertyName +
+                             " owned by " + owner.getName() + " (Monopoly bonus - rent = cost)");
+        } else {
+          System.out.println(
+              player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
+        }
+
         System.out.println("Rent: " + rent);
 
         if (player.payPlayer(owner, rent)) {
@@ -101,12 +128,28 @@ public class PropertyTileAction implements TileAction {
   }
 
   /**
-   * Calculates the rent for this property.
+   * Checks if a player owns all properties of a specific type.
    *
-   * @return The rent amount.
+   * @param player The player to check.
+   * @param type The property to check.
+   * @return True if the player owns all properties of the specified type, false otherwise.
    */
-  private int calculateRent() {
-    return cost / 10;
+  private boolean ownsAllPropertiesOfType(Player player, String type) {
+    if (!propertyTypeCounts.containsKey(type)) {
+      return false;
+    }
+
+    int totalPropertiesOfTpe = propertyTypeCounts.get(type);
+    int playerPropertiesOfType = 0;
+
+    List<PropertyTileAction> playerProperties = player.getOwnedProperties();
+    for (PropertyTileAction property : playerProperties) {
+      if (property.getPropertyType().equals(type)) {
+        playerPropertiesOfType++;
+      }
+    }
+
+    return playerPropertiesOfType == totalPropertiesOfTpe;
   }
 
   /**
@@ -116,15 +159,6 @@ public class PropertyTileAction implements TileAction {
    */
   public void setOwner(Player player) {
     this.owner = player;
-  }
-
-  /**
-   * Gets the owner of this property.
-   *
-   * @return The player who owns the property, or null if unowned.
-   */
-  public Player getOwner() {
-    return owner;
   }
 
   /**
