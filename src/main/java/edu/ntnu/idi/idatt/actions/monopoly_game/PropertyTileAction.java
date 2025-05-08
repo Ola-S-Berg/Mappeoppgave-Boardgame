@@ -96,28 +96,40 @@ public class PropertyTileAction implements TileAction {
           LOGGER.log(Level.SEVERE, "Error showing property purchase dialog", e);
         }
       } else if (owner != player) {
-        int rent = cost/10;
-        boolean ownsAllOfType = ownsAllPropertiesOfType(owner, propertyType);
+        String freeParking = player.getProperty("freeParking");
+        if (freeParking != null && freeParking.equals("true")) {
+          System.out.println(player.getName() + " landed on " + propertyName + " owned by " + owner.getName() + " but has Free Parking");
+          System.out.println(player.getName() + " doesn't need to pay rent this turn");
 
-        if (ownsAllOfType) {
-          rent = cost;
-          System.out.println(player.getName() + " landed on " + propertyName +
-                             " owned by " + owner.getName() + " (Monopoly bonus: rent = cost)");
-        } else {
-          System.out.println(
-              player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
-        }
+          player.setProperty("freeParking", "null");
 
-        System.out.println("Rent: " + rent);
-
-        if (player.payPlayer(owner, rent)) {
-          if (controller != null) {
+          if ( controller != null) {
             controller.updatePlayerMoney(player);
-            controller.updatePlayerMoney(owner);
           }
-          System.out.println(player.getName() + " paid " + owner.getName() + " " + rent);
         } else {
-          System.out.println(player.getName() + " cannot afford rent");
+          int rent = cost/10;
+          boolean ownsAllOfType = ownsAllPropertiesOfType(owner, propertyType);
+
+          if (ownsAllOfType) {
+            rent = cost;
+            System.out.println(player.getName() + " landed on " + propertyName +
+                " owned by " + owner.getName() + " (Monopoly bonus: rent = cost)");
+          } else {
+            System.out.println(
+                player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
+          }
+
+          System.out.println("Rent: " + rent);
+
+          if (player.payPlayer(owner, rent)) {
+            if (controller != null) {
+              controller.updatePlayerMoney(player);
+              controller.updatePlayerMoney(owner);
+            }
+            System.out.println(player.getName() + " paid " + owner.getName() + " " + rent);
+          } else {
+            System.out.println(player.getName() + " cannot afford rent");
+          }
         }
       } else {
         System.out.println(player.getName() + " landed on their own property: " + propertyName);
