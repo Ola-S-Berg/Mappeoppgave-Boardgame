@@ -5,6 +5,7 @@ import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
 import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.views.DialogService;
@@ -124,6 +125,8 @@ public class MonopolyGameController implements BoardGameController {
         ((PropertyTileAction) action).setController(this);
       } else if (action instanceof ChanceTileAction) {
         ((ChanceTileAction) action).setController(this);
+      } else if (action instanceof TaxTileAction) {
+        ((TaxTileAction) action).setController(this);
       }
 
       new Thread(() -> {

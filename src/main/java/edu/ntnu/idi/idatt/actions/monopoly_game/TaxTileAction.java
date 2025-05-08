@@ -1,7 +1,10 @@
 package edu.ntnu.idi.idatt.actions.monopoly_game;
 
 import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.views.DialogService;
+import javafx.stage.Stage;
 
 /**
  * Class representing action when landing on a tax tile in Monopoly.
@@ -9,6 +12,8 @@ import edu.ntnu.idi.idatt.model.Player;
 public class TaxTileAction implements TileAction {
   private final int percentageTax;
   private final int fixedTax;
+  private Stage ownerStage;
+  private MonopolyGameController controller;
 
   /**
    * Constructor for TaxTileAction.
@@ -21,11 +26,13 @@ public class TaxTileAction implements TileAction {
     this.fixedTax = fixedTax;
   }
 
+  public void setController(MonopolyGameController controller) {
+    this.controller = controller;
+  }
+
   /**
    * Performs the action of a tax tile. The player must pay either a percentage
    * of their money or a fixed amount, whichever is specified.
-   * TODO:
-   * Make the player actually choose.
    *
    * @param player The player that lands on the tile with this action.
    */
@@ -34,24 +41,28 @@ public class TaxTileAction implements TileAction {
     System.out.println(player.getName() + " landed on a tax tile");
     System.out.println("Options: Pay " + percentageTax + "% of money or " + fixedTax + " fixed tax");
 
-    System.out.println(player.getName() + " must pay tax");
-  }
+    if (ownerStage == null && controller != null) {
+      ownerStage = controller.getStage();
+    }
 
-  /**
-   * Gets the percentage tax rate.
-   *
-   * @return The percentage tax rate.
-   */
-  public int getPercentageTax() {
-    return percentageTax;
-  }
+    int percentageAmount = (int) (player.getMoney() * (percentageTax / 100.0));
 
-  /**
-   * Gets the fixed tax amount.
-   *
-   * @return The fixed tax amount.
-   */
-  public int getFixedTax() {
-    return fixedTax;
+    DialogService.showTaxPaymentDialog(ownerStage, percentageTax, fixedTax, player, () -> {
+      if (player.payMoney(percentageAmount)) {
+        System.out.println(player.getName() + " paid " + percentageAmount + " as " + percentageTax + "% tax");
+
+        if (controller != null) {
+          controller.updatePlayerMoney(player);
+        }
+      }
+    }, () -> {
+      if (player.payMoney(fixedTax)) {
+        System.out.println(player.getName() + " paid " + fixedTax + " as fixed tax");
+
+        if (controller != null) {
+          controller.updatePlayerMoney(player);
+        }
+      }
+    });
   }
 }

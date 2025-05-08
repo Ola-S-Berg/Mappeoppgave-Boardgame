@@ -112,7 +112,8 @@ public class DialogService {
     dialogStage.showAndWait();
   }
 
-  public static void showJailOptionsDialog (Player player, Stage ownerStage, Runnable onPayBail, Runnable onTryRollDoubles) {
+  public static void showJailOptionsDialog (Player player, Stage ownerStage,
+                                            Runnable onPayBail, Runnable onTryRollDoubles) {
     int JAIL_BAIL = 5000;
 
     if (ownerStage == null) {
@@ -170,6 +171,71 @@ public class DialogService {
     buttonBox.getChildren().addAll(rollButton, payButton);
 
     dialogVBox.getChildren().addAll(titleLabel, turnsLabel, promptLabel, buttonBox);
+
+    Scene dialogScene = new Scene(dialogVBox, 400, 200);
+    dialogStage.setScene(dialogScene);
+    dialogStage.showAndWait();
+  }
+
+  public static void showTaxPaymentDialog(Stage ownerStage, int percentageTax, int fixedTax, Player player, Runnable onPercentage, Runnable onFixed) {
+    if (ownerStage == null) {
+      if (onFixed != null) {
+        onFixed.run();
+      }
+      return;
+    }
+
+    Stage dialogStage = new Stage();
+    dialogStage.initModality(Modality.APPLICATION_MODAL);
+    dialogStage.initOwner(ownerStage);
+    dialogStage.setTitle("Tax Payment");
+
+    VBox dialogVBox = new VBox(15);
+    dialogVBox.setPadding(new Insets(20));
+    dialogVBox.setAlignment(Pos.CENTER);
+
+    Label titleLabel = new Label(player.getName() + " landed on a tax tile");
+    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+    int percentageAmount = (int) (player.getMoney() * (percentageTax / 100.0));
+
+    Label optionsLabel = new Label("Choose your payment option:");
+    optionsLabel.setStyle("-fx-font-size: 14px;");
+
+    Label percentageLabel = new Label("Pay " + percentageTax + "% of your money: $" + percentageAmount);
+    percentageLabel.setStyle("-fx-font-size: 14px;");
+
+    Label fixedLabel = new Label("Pay fixed tax: $" + fixedTax);
+    fixedLabel.setStyle("-fx-font-size: 14px;");
+
+    Button percentageButton = new Button("Pay " + percentageTax + "% ($" + percentageAmount + ")");
+    percentageButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    percentageButton.setOnAction(event -> {
+      dialogStage.close();
+      if (onPercentage != null) {
+        onPercentage.run();
+      }
+    });
+
+    Button fixedButton = new Button("Pay fixed tax ($" + fixedTax + ")");
+    fixedButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    fixedButton.setOnAction(event -> {
+      dialogStage.close();
+      if (onFixed != null) {
+        onFixed.run();
+      }
+    });
+
+    if (player.getMoney() < fixedTax) {
+      fixedButton.setDisable(true);
+      fixedButton.setText("Not enough money to pay fixed tax.");
+    }
+
+    HBox buttonBox = new HBox(20);
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.getChildren().addAll(percentageButton, fixedButton);
+
+    dialogVBox.getChildren().addAll(titleLabel, optionsLabel, percentageLabel, fixedLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVBox, 400, 200);
     dialogStage.setScene(dialogScene);
