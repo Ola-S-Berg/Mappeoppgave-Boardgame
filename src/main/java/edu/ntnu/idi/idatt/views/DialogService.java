@@ -60,6 +60,14 @@ public class DialogService {
     dialogStage.show();
   }
 
+  /**
+   * Shows a dialog for purchasing a property.
+   *
+   * @param ownerStage The stage that owns this dialog.
+   * @param property The property to purchase.
+   * @param onPurchase Runnable to execute if the user chooses to purchase the property.
+   * @param onDecline Runnable to execute if the user chooses to decline the purchase.
+   */
   public static void showPropertyPurchaseDialog(Stage ownerStage, PropertyTileAction property,
                                                 Runnable onPurchase, Runnable onDecline) {
     if (ownerStage == null) {
@@ -112,6 +120,14 @@ public class DialogService {
     dialogStage.showAndWait();
   }
 
+  /**
+   * Shows a dialog for jail options.
+   *
+   * @param player The player that is in jail.
+   * @param ownerStage The stage that owns this dialog.
+   * @param onPayBail Runnable to execute if the user chooses to pay bail.
+   * @param onTryRollDoubles Runnable to execute if the user chooses to roll for doubles.
+   */
   public static void showJailOptionsDialog (Player player, Stage ownerStage,
                                             Runnable onPayBail, Runnable onTryRollDoubles) {
     int JAIL_BAIL = 5000;
@@ -177,6 +193,16 @@ public class DialogService {
     dialogStage.showAndWait();
   }
 
+  /**
+   * Shows a dialog for tax payment options.
+   *
+   * @param ownerStage The stage that owns this dialog.
+   * @param percentageTax The percentage tax rate.
+   * @param fixedTax The fixed tax amount.
+   * @param player The player who landed on the tax tile.
+   * @param onPercentage Runnable to execute if the user chooses to pay percentage tax.
+   * @param onFixed Runnable to execute if the user chooses to pay fixed tax.
+   */
   public static void showTaxPaymentDialog(Stage ownerStage, int percentageTax, int fixedTax, Player player, Runnable onPercentage, Runnable onFixed) {
     if (ownerStage == null) {
       if (onFixed != null) {
