@@ -101,13 +101,13 @@ public class PropertyTileAction implements TileAction {
           System.out.println(player.getName() + " landed on " + propertyName + " owned by " + owner.getName() + " but has Free Parking");
           System.out.println(player.getName() + " doesn't need to pay rent this turn");
 
-          player.setProperty("freeParking", "null");
+          player.setProperty("freeParking", null);
 
-          if ( controller != null) {
+          if (controller != null) {
             controller.updatePlayerMoney(player);
           }
         } else {
-          int rent = cost/10;
+          int rent = cost*2/10;
           boolean ownsAllOfType = ownsAllPropertiesOfType(owner, propertyType);
 
           if (ownsAllOfType) {
