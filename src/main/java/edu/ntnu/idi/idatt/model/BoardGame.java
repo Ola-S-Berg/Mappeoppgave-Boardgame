@@ -19,6 +19,7 @@ public class BoardGame {
   private final List<BoardGameObserver> observers = new ArrayList<>();
   private int currentPlayerIndex;
   private boolean gameOver;
+  private boolean isLoadedGame = false;
 
   public BoardGame() {
     BoardFileHandler fileHandler = new BoardFileHandler();
@@ -193,6 +194,8 @@ public class BoardGame {
     return null;
   }
 
+  public void setIsLoadedGame(boolean isLoadedGame) { this.isLoadedGame = isLoadedGame; }
+
   /**
    * Initializes the game by setting up the initial game state and preparing players.
    * This includes defining the starting player, placing all players on the first tile,
@@ -206,8 +209,10 @@ public class BoardGame {
       currentPlayer = players.get(currentPlayerIndex);
     }
 
-    for (Player player : players) {
-      player.placeOnTile(board.getTile(1));
+    if (!isLoadedGame) {
+      for (Player player : players) {
+        player.placeOnTile(board.getTile(1));
+      }
     }
 
     if (currentPlayer != null) {

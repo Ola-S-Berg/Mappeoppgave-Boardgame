@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.filehandling;
 
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 
@@ -126,6 +127,8 @@ public class BoardGameFactory {
     BoardFileHandler fileHandler = new BoardFileHandler();
     BoardGame loadedGame = fileHandler.readFromFile(boardFilename).getFirst();
 
+    loadedGame.setIsLoadedGame(true);
+
     if (loadedGame.getDice() == null) {
       loadedGame.createDice();
     }
@@ -143,19 +146,53 @@ public class BoardGameFactory {
           Tile tile = loadedGame.getBoard().getTile(tileId);
           if (tile != null) {
             player.placeOnTile(tile);
+            System.out.println("Player " + player.getName() + " placed on tile " + tileId);
           } else {
+            System.out.println("Could not find saved tile ID" + tileId);
             player.placeOnTile(loadedGame.getBoard().getTile(1));
           }
         } catch (NumberFormatException e) {
+          System.out.println("Could not parse saved tile ID: " + savedTileIdStr);
+          e.printStackTrace();
           player.placeOnTile(loadedGame.getBoard().getTile(1));
         }
       } else {
+        System.out.println("No saved tile ID found for player " + player.getName());
         player.placeOnTile(loadedGame.getBoard().getTile(1));
+      }
+
+      String savedPropertiesStr = player.getProperty("savedProperties");
+      if (savedPropertiesStr != null && !savedPropertiesStr.trim().isEmpty()) {
+        String[] propertyNames = savedPropertiesStr.split(";");
+        for (String propertyName : propertyNames) {
+          if (!propertyName.trim().isEmpty()) {
+            addPropertyToPlayer(loadedGame, player, propertyName.trim());
+          }
+        }
       }
 
       loadedGame.addPlayer(player);
     }
+
+    loadedGame.initializeGame();
     return loadedGame;
+  }
+
+  private static void addPropertyToPlayer(BoardGame game, Player player, String propertyName) {
+    if(!game.getVariantName().contains("Monopoly")) {
+      return;
+    }
+
+    for (int i = 1 ; i <= 40 ; i++) {
+      Tile tile = game.getBoard().getTile(i);
+      if (tile != null && tile.getAction() instanceof PropertyTileAction propertyAction) {
+        if (propertyAction.getPropertyName().equals(propertyName)) {
+          player.addProperty(propertyAction);
+          propertyAction.setOwner(player);
+          break;
+        }
+      }
+    }
   }
 
   /**

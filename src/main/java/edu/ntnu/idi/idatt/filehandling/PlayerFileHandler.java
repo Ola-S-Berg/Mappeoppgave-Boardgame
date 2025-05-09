@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.filehandling;
 
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.Player;
 
 import java.io.BufferedReader;
@@ -9,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * File handler for managing player data in CSV files.
@@ -28,10 +30,18 @@ public class PlayerFileHandler implements FileHandler<Player> {
   public void writeToFile(String filename, List<Player> players) throws IOException {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
       for (Player player : players) {
-        String gameName = (player.getGame() != null) ? player.getGame().toString() : "null";
         int currentTileId =
             (player.getCurrentTile() != null) ? player.getCurrentTile().getTileId() : 1;
-        writer.write(player.getName() + ", " + player.getToken() + ", " + currentTileId);
+        String properties = player.getOwnedProperties().stream().map(
+            PropertyTileAction::getPropertyName).collect(
+            Collectors.joining(";"));
+
+        writer.write(player.getName() + ", " +
+            player.getToken() + ", " +
+            currentTileId + ", " +
+            player.getMoney() + ", " +
+            properties);
+
         writer.newLine();
       }
     }
@@ -52,10 +62,25 @@ public class PlayerFileHandler implements FileHandler<Player> {
       String line;
       while ((line = reader.readLine()) != null) {
         String[] tokens = line.split(",");
-        if (tokens.length >= 3) {
-          Player player = new Player(tokens[0].trim(), tokens[1].trim(), null, 100000);
-          player.setProperty("savedTileId", tokens[2].trim());
+        if (tokens.length >= 4) {
+          String name = tokens[0].trim();
+          String token = tokens[1].trim();
+          String tileId = tokens[2].trim();
+          int money = Integer.parseInt(tokens[3].trim());
+
+          Player player = new Player(name, token, null, money);
+          player.setProperty("savedTileId", tileId);
+
+          if (tokens.length >= 5 && !tokens[4].trim().isEmpty()) {
+            player.setProperty("savedProperties", tokens[4].trim());
+          }
+
           players.add(player);
+          System.out.println("Read player: " + name +
+              ", Token: " + token +
+              ", tileId: " + tileId +
+              ", money: " + money +
+              ", properties: " + tokens[4].trim());
         }
       }
     }
