@@ -1,6 +1,7 @@
-package edu.ntnu.idi.idatt.views;
+package edu.ntnu.idi.idatt.views.menuviews;
 
-import edu.ntnu.idi.idatt.BoardGameApplication;
+import edu.ntnu.idi.idatt.MainApp;
+import edu.ntnu.idi.idatt.views.CssUtil;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.geometry.Pos;
@@ -8,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -16,7 +18,7 @@ import javafx.stage.Stage;
  * Collects names for each player individually.
  */
 public class PlayerNameView {
-  private final BoardGameApplication application;
+  private final MainApp application;
   private final String selectedGame;
   private final int playerCount;
   private final String[] playerNames;
@@ -29,7 +31,7 @@ public class PlayerNameView {
    * @param selectedGame The game selected by the user.
    * @param playerCount The number of players.
    */
-  public PlayerNameView(BoardGameApplication application, String selectedGame, int playerCount) {
+  public PlayerNameView(MainApp application, String selectedGame, int playerCount) {
     this.application = application;
     this.selectedGame = selectedGame;
     this.playerCount = playerCount;
@@ -44,23 +46,31 @@ public class PlayerNameView {
    */
   private void createView() {
     BorderPane root = new BorderPane();
+    root.getStyleClass().add("root");
     root.setPadding(new Insets(10));
 
     VBox layout = new VBox(30);
     layout.setAlignment(Pos.CENTER);
     layout.setPadding(new Insets(10));
+    layout.getStyleClass().add("content-box");
 
     Label titleLabel = new Label("Player " + (currentPlayerIndex + 1) + ": Enter Name");
-    titleLabel.setStyle("-fx-font-size: 18px;");
+    titleLabel.getStyleClass().add("heading-medium");
 
     TextField nameField = new TextField();
     nameField.setPromptText("Enter Player Name");
     nameField.setAlignment(Pos.CENTER);
+    nameField.getStyleClass().add("text-field");
     nameField.setMinWidth(50);
     nameField.setMaxWidth(200);
     nameField.prefWidthProperty().bind(root.widthProperty().multiply(0.6));
 
+    HBox buttonLayout = new HBox(20);
+    buttonLayout.setAlignment(Pos.CENTER);
+
     Button continueButton = new Button("Continue");
+    continueButton.getStyleClass().add("button");
+    continueButton.getStyleClass().add("button-primary");
     continueButton.setOnAction(e -> {
       String playerName = nameField.getText().trim();
       if (!playerName.isEmpty()) {
@@ -75,9 +85,18 @@ public class PlayerNameView {
       }
     });
 
-    layout.getChildren().addAll(titleLabel, nameField, continueButton);
+    Button backButton = new Button("Back To Player Count Selection");
+    backButton.getStyleClass().add("button");
+    backButton.getStyleClass().add("button-secondary");
+    backButton.setOnAction(event -> application.showPlayerCountView(selectedGame));
 
-    scene = new Scene(layout, 800, 600);
+    buttonLayout.getChildren().addAll(backButton, continueButton);
+
+    layout.getChildren().addAll(titleLabel, nameField, buttonLayout);
+
+    root.setCenter(layout);
+    scene = new Scene(root, 800, 600);
+    CssUtil.applyStyleSheet(scene);
 
     Stage stage = application.getPrimaryStage();
     stage.setMinWidth(600);

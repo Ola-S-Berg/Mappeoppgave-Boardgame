@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopoly_game;
 
-import edu.ntnu.idi.idatt.actions.TileAction;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.views.DialogService;
 import java.util.HashMap;

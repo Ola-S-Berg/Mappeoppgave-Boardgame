@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt;
 
-import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

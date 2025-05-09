@@ -1,9 +1,9 @@
-package edu.ntnu.idi.idatt.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopoly_game;
 
-import edu.ntnu.idi.idatt.actions.TileAction;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
-import edu.ntnu.idi.idatt.model.Player;
-import edu.ntnu.idi.idatt.model.Tile;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.util.Random;
 
 /**

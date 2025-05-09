@@ -1,23 +1,23 @@
-package edu.ntnu.idi.idatt.filehandling;
+package edu.ntnu.idi.idatt.model.filehandling;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.GsonBuilder;
-import edu.ntnu.idi.idatt.actions.ladder_game.BackToStartAction;
-import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
-import edu.ntnu.idi.idatt.actions.ladder_game.WaitAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.FreeParkingAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.GoToJailAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.WealthTaxTileAction;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Tile;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.BackToStartAction;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.LadderAction;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.WaitAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.ChanceTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.FreeParkingAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.GoToJailAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.JailTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.StartTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.TaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.WealthTaxTileAction;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 
 import com.google.gson.Gson;
 import java.io.FileWriter;

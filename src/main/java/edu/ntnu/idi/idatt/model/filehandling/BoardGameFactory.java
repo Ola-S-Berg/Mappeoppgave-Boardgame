@@ -1,10 +1,10 @@
-package edu.ntnu.idi.idatt.filehandling;
+package edu.ntnu.idi.idatt.model.filehandling;
 
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
-import edu.ntnu.idi.idatt.model.Tile;
+import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

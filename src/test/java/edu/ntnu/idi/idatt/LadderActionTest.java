@@ -1,8 +1,9 @@
 package edu.ntnu.idi.idatt;
 
-import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
-import edu.ntnu.idi.idatt.model.*;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.LadderAction;
 
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

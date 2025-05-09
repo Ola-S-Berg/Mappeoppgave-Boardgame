@@ -1,6 +1,6 @@
-package edu.ntnu.idi.idatt.actions;
+package edu.ntnu.idi.idatt.model.actions;
 
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
  * Interface that performs a pre-defined action when a player lands on a tile.

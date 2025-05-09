@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt.controllers;
 
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 public interface BoardGameController {
 

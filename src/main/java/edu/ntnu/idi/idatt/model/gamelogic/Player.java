@@ -1,6 +1,6 @@
-package edu.ntnu.idi.idatt.model;
+package edu.ntnu.idi.idatt.model.gamelogic;
 
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

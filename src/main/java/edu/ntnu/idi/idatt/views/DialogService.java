@@ -1,8 +1,12 @@
 package edu.ntnu.idi.idatt.views;
 
-import edu.ntnu.idi.idatt.BoardGameApplication;
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.MainApp;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,11 +16,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Service class for creating and displaying dialogs across the application.
  */
 public class DialogService {
+  private static final Logger LOGGER = Logger.getLogger(DialogService.class.getName());
+
 
   /**
    * Shows a confirmation dialog for quitting to the menu.
@@ -25,6 +32,10 @@ public class DialogService {
    * @param onConfirm Runnable to execute if user confirms quitting.
    */
   public static void showQuitConfirmationDialog(Stage ownerStage, Runnable onConfirm) {
+    if (ownerStage == null) {
+      return;
+    }
+
     Stage dialogStage = new Stage();
     dialogStage.initModality(Modality.APPLICATION_MODAL);
     dialogStage.initOwner(ownerStage);
@@ -33,33 +44,54 @@ public class DialogService {
     handleDialogCloseRequest(dialogStage, null);
 
     VBox dialogVbox = new VBox(20);
+    dialogVbox.getStyleClass().add("dialog-pane");
     dialogVbox.setPadding(new Insets(20));
     dialogVbox.setAlignment(Pos.CENTER);
 
-    Label confirmLabel = new Label("Are you sure you want to quit? \nUnsaved data will be lost.");
-    confirmLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    Label confirmLabel = new Label("Are you sure you want to quit?");
+    confirmLabel.getStyleClass().add("dialog-header");
+
+    Label subLabel = new Label("Unsaved data will be lost.");
+    subLabel.getStyleClass().add("dialog-message");
 
     Button cancelButton = new Button("Cancel");
-    cancelButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
-    cancelButton.setOnAction(event -> dialogStage.close());
+    cancelButton.getStyleClass().addAll("button", "button-secondary");
+    cancelButton.setOnAction(event -> animateDialogAndClose(dialogStage));
 
     Button confirmButton = new Button("Quit");
-    confirmButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
+    confirmButton.getStyleClass().addAll("button", "button-danger");
     confirmButton.setOnAction(event -> {
-      dialogStage.close();
-      ownerStage.close();
-      new BoardGameApplication().start(new Stage());
+      animateDialogAndClose(dialogStage);
+      if (onConfirm != null) {
+        onConfirm.run();
+      } else {
+        ownerStage.close();
+        new MainApp().start(new Stage());
+      }
     });
 
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
     buttonBox.getChildren().addAll(cancelButton, confirmButton);
 
-    dialogVbox.getChildren().addAll(confirmLabel, buttonBox);
+    dialogVbox.getChildren().addAll(confirmLabel, subLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVbox, 350, 150);
+
+    try {
+      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      dialogScene.getStylesheets().add(cssPath);
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error loading CSS: " + e);
+    }
+
     dialogStage.setScene(dialogScene);
-    dialogStage.show();
+
+    try {
+      dialogStage.show();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error showing dialog: " + e);
+    }
   }
 
   /**
@@ -71,7 +103,7 @@ public class DialogService {
    * @param onDecline Runnable to execute if the user chooses to decline the purchase.
    */
   public static void showPropertyPurchaseDialog(Stage ownerStage, PropertyTileAction property,
-                                                Runnable onPurchase, Runnable onDecline) {
+      Runnable onPurchase, Runnable onDecline) {
     if (ownerStage == null) {
       if (onDecline != null) {
         onDecline.run();
@@ -87,33 +119,36 @@ public class DialogService {
     handleDialogCloseRequest(dialogStage, onDecline);
 
     VBox dialogVBox = new VBox(15);
+    dialogVBox.getStyleClass().add("dialog-pane");
     dialogVBox.setPadding(new Insets(20));
     dialogVBox.setAlignment(Pos.CENTER);
 
     Label propertyNameLabel = new Label(property.getPropertyName());
-    propertyNameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+    propertyNameLabel.getStyleClass().add("dialog-header");
 
     Label costLabel = new Label("Cost: " + property.getCost());
-    costLabel.setStyle("-fx-font-size: 14px;");
+    costLabel.getStyleClass().add("dialog-message");
 
     Label promptLabel = new Label("Would you like to purchase this property?");
-    promptLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
+    promptLabel.getStyleClass().add("dialog-message");
 
     Button purchaseButton = new Button("Purchase");
-    purchaseButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    purchaseButton.getStyleClass().addAll("button", "button-primary");
     purchaseButton.setOnAction(event -> {
-      dialogStage.close();
-      onPurchase.run();
+      animateDialogAndClose(dialogStage);
+      if (onPurchase != null) {
+        onPurchase.run();
+      }
     });
 
     Button declineButton = new Button("Decline");
-    declineButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
+    declineButton.getStyleClass().addAll("button", "button-secondary");
     declineButton.setOnAction(event -> {
-      dialogStage.close();
-      onDecline.run();
+      animateDialogAndClose(dialogStage);
+      if (onDecline != null) {
+        onDecline.run();
+      }
     });
-
-    handleDialogCloseRequest(dialogStage, onDecline);
 
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
@@ -122,8 +157,24 @@ public class DialogService {
     dialogVBox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVBox, 400, 200);
+
+    try {
+      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      dialogScene.getStylesheets().add(cssPath);
+    } catch (Exception e) {
+      System.err.println("Error loading CSS: " + e.getMessage());
+    }
+
     dialogStage.setScene(dialogScene);
-    dialogStage.showAndWait();
+
+    try {
+      dialogStage.show();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error showing property dialog: " + e);
+      if (onDecline != null) {
+        onDecline.run();
+      }
+    }
   }
 
   /**
@@ -134,8 +185,8 @@ public class DialogService {
    * @param onPayBail Runnable to execute if the user chooses to pay bail.
    * @param onTryRollDoubles Runnable to execute if the user chooses to roll for doubles.
    */
-  public static void showJailOptionsDialog (Player player, Stage ownerStage,
-                                            Runnable onPayBail, Runnable onTryRollDoubles) {
+  public static void showJailOptionsDialog(Player player, Stage ownerStage,
+      Runnable onPayBail, Runnable onTryRollDoubles) {
     int JAIL_BAIL = 5000;
 
     if (ownerStage == null) {
@@ -153,33 +204,34 @@ public class DialogService {
     handleDialogCloseRequest(dialogStage, onTryRollDoubles);
 
     VBox dialogVBox = new VBox(15);
+    dialogVBox.getStyleClass().add("dialog-pane");
     dialogVBox.setPadding(new Insets(20));
     dialogVBox.setAlignment(Pos.CENTER);
 
     Label titleLabel = new Label(player.getName() + " is in jail.");
-    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+    titleLabel.getStyleClass().add("dialog-header");
 
     String jailTurnCount = player.getProperty("jailTurnCount");
     int turnsInJail = jailTurnCount == null ? 1 : Integer.parseInt(jailTurnCount);
     Label turnsLabel = new Label("Turn " + turnsInJail + " of 3 in jail");
-    turnsLabel.setStyle("-fx-font-size: 14px;");
+    turnsLabel.getStyleClass().add("dialog-message");
 
     Label promptLabel = new Label("Would you like to pay bail or roll doubles?");
-    promptLabel.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
+    promptLabel.getStyleClass().add("dialog-message");
 
     Button payButton = new Button("Pay $" + JAIL_BAIL + " Bail");
-    payButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    payButton.getStyleClass().addAll("button", "button-primary");
     payButton.setOnAction(event -> {
-      dialogStage.close();
+      animateDialogAndClose(dialogStage);
       if (onPayBail != null) {
         onPayBail.run();
       }
     });
 
     Button rollButton = new Button("Try to Roll Doubles");
-    rollButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    rollButton.getStyleClass().addAll("button", "button-secondary");
     rollButton.setOnAction(event -> {
-      dialogStage.close();
+      animateDialogAndClose(dialogStage);
       if (onTryRollDoubles != null) {
         onTryRollDoubles.run();
       }
@@ -187,16 +239,9 @@ public class DialogService {
 
     if (player.getMoney() < JAIL_BAIL) {
       payButton.setDisable(true);
+      payButton.getStyleClass().add("button-disabled");
       payButton.setText("Not enough money to pay bail.");
     }
-
-    dialogStage.setOnCloseRequest(event -> {
-      event.consume();
-      dialogStage.close();
-      if (onTryRollDoubles != null) {
-        onTryRollDoubles.run();
-      }
-    });
 
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
@@ -205,8 +250,24 @@ public class DialogService {
     dialogVBox.getChildren().addAll(titleLabel, turnsLabel, promptLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVBox, 400, 200);
+
+    try {
+      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      dialogScene.getStylesheets().add(cssPath);
+    } catch (Exception e) {
+      System.err.println("Error loading CSS: " + e.getMessage());
+    }
+
     dialogStage.setScene(dialogScene);
-    dialogStage.showAndWait();
+
+    try {
+      dialogStage.show();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error showing jail dialog: " + e);
+      if (onTryRollDoubles != null) {
+        onTryRollDoubles.run();
+      }
+    }
   }
 
   /**
@@ -235,36 +296,37 @@ public class DialogService {
     handleDialogCloseRequest(dialogStage, onFixed);
 
     VBox dialogVBox = new VBox(15);
+    dialogVBox.getStyleClass().add("dialog-pane");
     dialogVBox.setPadding(new Insets(20));
     dialogVBox.setAlignment(Pos.CENTER);
 
     Label titleLabel = new Label(player.getName() + " landed on a tax tile");
-    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+    titleLabel.getStyleClass().add("dialog-header");
 
     int percentageAmount = (int) (player.getMoney() * (percentageTax / 100.0));
 
     Label optionsLabel = new Label("Choose your payment option:");
-    optionsLabel.setStyle("-fx-font-size: 14px;");
+    optionsLabel.getStyleClass().add("dialog-message");
 
     Label percentageLabel = new Label("Pay " + percentageTax + "% of your money: $" + percentageAmount);
-    percentageLabel.setStyle("-fx-font-size: 14px;");
+    percentageLabel.getStyleClass().add("dialog-message");
 
     Label fixedLabel = new Label("Pay fixed tax: $" + fixedTax);
-    fixedLabel.setStyle("-fx-font-size: 14px;");
+    fixedLabel.getStyleClass().add("dialog-message");
 
     Button percentageButton = new Button("Pay " + percentageTax + "% ($" + percentageAmount + ")");
-    percentageButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    percentageButton.getStyleClass().addAll("button", "button-primary");
     percentageButton.setOnAction(event -> {
-      dialogStage.close();
+      animateDialogAndClose(dialogStage);
       if (onPercentage != null) {
         onPercentage.run();
       }
     });
 
     Button fixedButton = new Button("Pay fixed tax ($" + fixedTax + ")");
-    fixedButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;");
+    fixedButton.getStyleClass().addAll("button", "button-secondary");
     fixedButton.setOnAction(event -> {
-      dialogStage.close();
+      animateDialogAndClose(dialogStage);
       if (onFixed != null) {
         onFixed.run();
       }
@@ -272,6 +334,7 @@ public class DialogService {
 
     if (player.getMoney() < fixedTax) {
       fixedButton.setDisable(true);
+      fixedButton.getStyleClass().add("button-disabled");
       fixedButton.setText("Not enough money to pay fixed tax.");
     }
 
@@ -282,8 +345,24 @@ public class DialogService {
     dialogVBox.getChildren().addAll(titleLabel, optionsLabel, percentageLabel, fixedLabel, buttonBox);
 
     Scene dialogScene = new Scene(dialogVBox, 400, 200);
+
+    try {
+      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      dialogScene.getStylesheets().add(cssPath);
+    } catch (Exception e) {
+      System.err.println("Error loading CSS: " + e.getMessage());
+    }
+
     dialogStage.setScene(dialogScene);
-    dialogStage.showAndWait();
+
+    try {
+      dialogStage.show();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error showing tax dialog: " + e);
+      if (onFixed != null) {
+        onFixed.run();
+      }
+    }
   }
 
   /**
@@ -294,9 +373,29 @@ public class DialogService {
    */
   private static void handleDialogCloseRequest(Stage dialogStage, Runnable defaultAction) {
     dialogStage.setOnCloseRequest(event -> {
+      event.consume();
+      animateDialogAndClose(dialogStage);
       if (defaultAction != null) {
         defaultAction.run();
       }
     });
+  }
+
+  /**
+   * Animates a dialog closing with a fade out effect.
+   *
+   * @param dialogStage The dialog stage to animate and close.
+   */
+  private static void animateDialogAndClose(Stage dialogStage) {
+    try {
+      FadeTransition fadeOut = new FadeTransition(Duration.millis(150), dialogStage.getScene().getRoot());
+      fadeOut.setFromValue(1);
+      fadeOut.setToValue(0);
+      fadeOut.setOnFinished(event -> dialogStage.close());
+      fadeOut.play();
+    } catch (Exception e) {
+      System.err.println("Error during fade out animation: " + e.getMessage());
+      dialogStage.close();
+    }
   }
 }

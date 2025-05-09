@@ -1,15 +1,15 @@
-package edu.ntnu.idi.idatt.model;
-import edu.ntnu.idi.idatt.actions.ladder_game.BackToStartAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.FreeParkingAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.GoToJailAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
-import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.WealthTaxTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
-import edu.ntnu.idi.idatt.actions.ladder_game.WaitAction;
+package edu.ntnu.idi.idatt.model.gamelogic;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.BackToStartAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.ChanceTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.FreeParkingAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.GoToJailAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.JailTileAction;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.LadderAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.WealthTaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.StartTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.TaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.ladder_game.WaitAction;
 import java.util.Map;
 import java.util.HashMap;
 

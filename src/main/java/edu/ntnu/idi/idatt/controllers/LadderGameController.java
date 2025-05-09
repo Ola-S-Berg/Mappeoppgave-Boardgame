@@ -1,14 +1,14 @@
 package edu.ntnu.idi.idatt.controllers;
 
-import edu.ntnu.idi.idatt.actions.TileAction;
-import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
-import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.views.DialogService;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
-import edu.ntnu.idi.idatt.model.Tile;
-import edu.ntnu.idi.idatt.views.boardgameviews.LadderGameView;
-import edu.ntnu.idi.idatt.BoardGameApplication;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.Tile;
+import edu.ntnu.idi.idatt.views.gameviews.LadderGameView;
+import edu.ntnu.idi.idatt.MainApp;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -200,7 +200,7 @@ public class LadderGameController implements BoardGameController {
   public void quitToMenu() {
     DialogService.showQuitConfirmationDialog(stage, () -> {
       stage.close();
-      new BoardGameApplication().start(new Stage());
+      new MainApp().start(new Stage());
     });
   }
 
@@ -222,7 +222,7 @@ public class LadderGameController implements BoardGameController {
     stage.close();
 
     Stage newStage = new Stage();
-    BoardGameApplication application = new BoardGameApplication();
+    MainApp application = new MainApp();
     application.start(newStage);
 
     for (int i = 0; i < playerNames.length; i++) {

@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model;
+package edu.ntnu.idi.idatt.model.gamelogic;
 import java.util.ArrayList;
 import java.util.List;
 

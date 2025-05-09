@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.actions.ladder_game;
+package edu.ntnu.idi.idatt.model.actions.ladder_game;
 
-import edu.ntnu.idi.idatt.actions.TileAction;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
  * Class representing action when landing on a wait tile.

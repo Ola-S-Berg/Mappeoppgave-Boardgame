@@ -1,8 +1,8 @@
-package edu.ntnu.idi.idatt.model;
+package edu.ntnu.idi.idatt.model.gamelogic;
 
-import static edu.ntnu.idi.idatt.model.Board.setupTileActionsMonopolyGame;
+import static edu.ntnu.idi.idatt.model.gamelogic.Board.setupTileActionsMonopolyGame;
 
-import edu.ntnu.idi.idatt.filehandling.BoardFileHandler;
+import edu.ntnu.idi.idatt.model.filehandling.BoardFileHandler;
 import java.util.List;
 import java.util.ArrayList;
 

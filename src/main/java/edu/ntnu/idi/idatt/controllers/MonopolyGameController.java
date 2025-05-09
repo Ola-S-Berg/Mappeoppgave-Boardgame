@@ -1,19 +1,19 @@
 package edu.ntnu.idi.idatt.controllers;
 
-import edu.ntnu.idi.idatt.actions.TileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
-import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
-import edu.ntnu.idi.idatt.filehandling.PlayerFileHandler;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.ChanceTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.JailTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.StartTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.TaxTileAction;
+import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.views.DialogService;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
-import edu.ntnu.idi.idatt.model.Tile;
-import edu.ntnu.idi.idatt.views.boardgameviews.MonopolyGameView;
-import edu.ntnu.idi.idatt.BoardGameApplication;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.Tile;
+import edu.ntnu.idi.idatt.views.gameviews.MonopolyGameView;
+import edu.ntnu.idi.idatt.MainApp;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,7 +59,7 @@ public class MonopolyGameController implements BoardGameController {
 
     this.executorService = Executors.newCachedThreadPool(daemonFactory);
 
-    stage.setOnCloseRequest(event -> {shutdown();});
+    stage.setOnCloseRequest(event -> shutdown());
 
     this.view = new MonopolyGameView(boardGame, stage, this);
 
@@ -352,7 +352,7 @@ public class MonopolyGameController implements BoardGameController {
   public void quitToMenu() {
     DialogService.showQuitConfirmationDialog(stage, () -> {
       stage.close();
-      new BoardGameApplication().start(new Stage());
+      new MainApp().start(new Stage());
     });
   }
 
@@ -375,7 +375,7 @@ public class MonopolyGameController implements BoardGameController {
     stage.close();
 
     Stage newStage = new Stage();
-    BoardGameApplication application = new BoardGameApplication();
+    MainApp application = new MainApp();
     application.start(newStage);
 
     for (int i = 0; i < playerNames.length; i++) {

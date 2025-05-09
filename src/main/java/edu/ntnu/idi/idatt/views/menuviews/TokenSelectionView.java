@@ -1,6 +1,7 @@
-package edu.ntnu.idi.idatt.views;
+package edu.ntnu.idi.idatt.views.menuviews;
 
-import edu.ntnu.idi.idatt.BoardGameApplication;
+import edu.ntnu.idi.idatt.MainApp;
+import edu.ntnu.idi.idatt.views.CssUtil;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,9 +22,10 @@ import javafx.stage.Stage;
  * Allows each player to select a unique token.
  */
 public class TokenSelectionView {
-  private final BoardGameApplication application;
+  private final MainApp application;
   private final String[] playerNames;
   private final String [] playerTokens;
+  private final String selectedGame;
   private int currentPlayerIndex;
   private Scene scene;
   private static final Logger LOGGER = Logger.getLogger(TokenSelectionView.class.getName());
@@ -56,8 +58,9 @@ public class TokenSelectionView {
    * @param selectedGame The game selected by the user.
    * @param playerNames Array of player names.
    */
-  public TokenSelectionView(BoardGameApplication application, String selectedGame, String[] playerNames) {
+  public TokenSelectionView(MainApp application, String selectedGame, String[] playerNames) {
     this.application = application;
+    this.selectedGame = selectedGame;
     this.playerNames = playerNames;
     this.playerTokens = new String[playerNames.length];
     this.currentPlayerIndex = 0;
@@ -70,14 +73,16 @@ public class TokenSelectionView {
    */
   private void createView() {
     BorderPane root = new BorderPane();
+    root.getStyleClass().add("root");
     root.setPadding(new Insets(10));
 
     VBox mainLayout = new VBox(30);
     mainLayout.setAlignment(Pos.CENTER);
     mainLayout.setPadding(new Insets(10));
+    mainLayout.getStyleClass().add("content-box");
 
     Label titleLabel = new Label(playerNames[currentPlayerIndex] + ", select your token");
-    titleLabel.setStyle("-fx-font-size: 20px;");
+    titleLabel.getStyleClass().add("heading-medium");
     mainLayout.getChildren().add(titleLabel);
 
     GridPane tokenGrid = new GridPane();
@@ -98,7 +103,7 @@ public class TokenSelectionView {
 
         Button tokenButton = new Button();
         tokenButton.setGraphic(tokenImageView);
-        tokenButton.setStyle("-fx-background-color: transparent;");
+        tokenButton.getStyleClass().add("token-button");
         assert tokenButtons != null;
         tokenButtons[i] = tokenButton;
 
@@ -113,7 +118,17 @@ public class TokenSelectionView {
     }
 
     mainLayout.getChildren().add(tokenGrid);
-    scene = new Scene(mainLayout, 800, 600);
+
+    Button backButton = new Button("Back To Player Name Selection");
+    backButton.getStyleClass().add("button");
+    backButton.getStyleClass().add("button-secondary");
+    backButton.setOnAction(event -> application.showPlayerNameView(selectedGame, playerNames.length));
+
+    mainLayout.getChildren().add(backButton);
+
+    root.setCenter(mainLayout);
+    scene = new Scene(root, 800, 600);
+    CssUtil.applyStyleSheet(scene);
 
     Stage stage = application.getPrimaryStage();
     stage.setMinWidth(600);
@@ -130,7 +145,7 @@ public class TokenSelectionView {
     currentPlayerIndex++;
 
     if (currentPlayerIndex < playerNames.length) {
-      VBox layout = (VBox) scene.getRoot();
+      VBox layout = (VBox) ((BorderPane) scene.getRoot()).getCenter();
       Label titleLabel = (Label) layout.getChildren().getFirst();
       titleLabel.setText(playerNames[currentPlayerIndex] + ", Select Your Token");
 
@@ -146,7 +161,10 @@ public class TokenSelectionView {
             }
           }
 
-          tokenButton.setDisable(tokenAlreadySelected);
+          if (tokenAlreadySelected) {
+            tokenButton.setDisable(true);
+            tokenButton.getStyleClass().add("token-button-disabled");
+          }
         }
       }
     } else {

@@ -2,13 +2,13 @@ package edu.ntnu.idi.idatt;
 
 import edu.ntnu.idi.idatt.controllers.LadderGameController;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
-import edu.ntnu.idi.idatt.views.GameSelectionView;
-import edu.ntnu.idi.idatt.views.PlayerCountView;
-import edu.ntnu.idi.idatt.views.PlayerNameView;
-import edu.ntnu.idi.idatt.views.TokenSelectionView;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
-import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.views.menuviews.GameSelectionView;
+import edu.ntnu.idi.idatt.views.menuviews.PlayerCountView;
+import edu.ntnu.idi.idatt.views.menuviews.PlayerNameView;
+import edu.ntnu.idi.idatt.views.menuviews.TokenSelectionView;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -20,11 +20,11 @@ import java.util.logging.Level;
  * Application that serves as the entry point for the JavaFX application.
  * Manages the different views.
  */
-public class BoardGameApplication extends Application {
+public class MainApp extends Application {
   private Stage primaryStage;
   private BoardGame boardGame;
   private String selectedGame;
-  private static final Logger LOGGER = Logger.getLogger(BoardGameApplication.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(MainApp.class.getName());
 
   /**
    * Initializes and starts the primary stage of the application.

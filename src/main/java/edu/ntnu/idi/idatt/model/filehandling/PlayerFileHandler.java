@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.filehandling;
+package edu.ntnu.idi.idatt.model.filehandling;
 
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
