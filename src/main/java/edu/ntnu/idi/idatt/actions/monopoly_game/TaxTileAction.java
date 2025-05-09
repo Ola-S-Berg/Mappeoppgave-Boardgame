@@ -65,4 +65,12 @@ public class TaxTileAction implements TileAction {
       }
     });
   }
+
+  public int getPercentageTax() {
+    return percentageTax;
+  }
+
+  public int getFixedTax() {
+    return fixedTax;
+  }
 }

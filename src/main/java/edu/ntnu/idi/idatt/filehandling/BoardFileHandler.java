@@ -8,14 +8,24 @@ import com.google.gson.GsonBuilder;
 import edu.ntnu.idi.idatt.actions.ladder_game.BackToStartAction;
 import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
 import edu.ntnu.idi.idatt.actions.ladder_game.WaitAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.ChanceTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.FreeParkingAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.GoToJailAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.WealthTaxTileAction;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Tile;
 
 import com.google.gson.Gson;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.List;
-import java.io.*;
 
 /**
  * Handles file operations for BoardGame objects using JSON.
@@ -34,13 +44,26 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
    */
   public JsonObject serializeBoard(BoardGame boardGame) {
     JsonObject boardJson = new JsonObject();
-    boardJson.addProperty("name", "Ladder game");
-    boardJson.addProperty("description", "A classic ladder game with 90 tiles.");
-    boardJson.addProperty("variantName", boardGame.getVariantName());
+    String variantName = boardGame.getVariantName();
+
+    if ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) {
+      boardJson.addProperty("name", "Monopoly Game");
+      boardJson.addProperty("description", "A classic Monopoly game with 40 tiles.");
+    } else {
+      boardJson.addProperty("name", "Ladder game");
+      boardJson.addProperty("description", "A ladder game with 90 tiles.");
+    }
+
+    boardJson.addProperty("variantName", variantName);
 
     JsonArray tilesArray = new JsonArray();
-    for (int i = 1; i <= 90; i++) {
+
+    int maxTileId = ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) ? 40 : 90;
+
+    for (int i = 1; i <= maxTileId; i++) {
       Tile tile = boardGame.getBoard().getTile(i);
+      if (tile == null) continue;
+
       JsonObject tileJson = new JsonObject();
       tileJson.addProperty("id", tile.getTileId());
 
@@ -53,6 +76,28 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
           tileJson.addProperty("actionType", "backToStart");
         } else if (tile.getAction() instanceof WaitAction) {
           tileJson.addProperty("actionType", "wait");
+        } else if (tile.getAction() instanceof PropertyTileAction propertyTileAction) {
+          tileJson.addProperty("actionType", "property");
+          tileJson.addProperty("propertyName", propertyTileAction.getPropertyName());
+          tileJson.addProperty("cost", propertyTileAction.getCost());
+          tileJson.addProperty("type", propertyTileAction.getPropertyType());
+        } else if (tile.getAction() instanceof ChanceTileAction) {
+          tileJson.addProperty("actionType", "chance");
+        } else if (tile.getAction() instanceof StartTileAction) {
+          tileJson.addProperty("actionType", "start");
+        } else if (tile.getAction() instanceof JailTileAction) {
+          tileJson.addProperty("actionType", "jail");
+        } else if (tile.getAction() instanceof GoToJailAction) {
+          tileJson.addProperty("actionType", "gotToJail");
+        } else if (tile.getAction() instanceof FreeParkingAction) {
+          tileJson.addProperty("actionType", "FreeParking");
+        } else if (tile.getAction() instanceof TaxTileAction taxTileAction) {
+          tileJson.addProperty("actionType", "tax");
+          tileJson.addProperty("percentageTax", taxTileAction.getPercentageTax());
+          tileJson.addProperty("fixedTax", taxTileAction.getFixedTax());
+        } else if (tile.getAction() instanceof WealthTaxTileAction wealthTaxTileAction) {
+          tileJson.addProperty("actionType", "wealthTax");
+          tileJson.addProperty("amount", wealthTaxTileAction.getAmount());
         }
       }
 
@@ -99,11 +144,14 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
     JsonObject boardJson = JsonParser.parseString(json).getAsJsonObject();
 
     BoardGame boardGame = new BoardGame();
-    boardGame.createLadderGameBoard();
 
-    if (boardJson.has("variantName")) {
-      String variantName = boardJson.get("variantName").getAsString();
-      boardGame.setVariantName(variantName);
+    String variantName = boardJson.has("variantName") ? boardJson.get("variantName").getAsString() : "";
+    boardGame.setVariantName(variantName);
+
+    if ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) {
+      boardGame.createMonopolyGameBoard();
+    } else {
+      boardGame.createLadderGameBoard();
     }
 
     JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
@@ -121,13 +169,39 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
             String direction = tileJson.get("direction").getAsString();
             tile.setAction(new LadderAction(destination, direction));
             break;
-
           case "backToStart":
             tile.setAction(new BackToStartAction());
             break;
-
           case "wait":
             tile.setAction(new WaitAction());
+            break;
+          case "property":
+            String propertyName = tileJson.get("propertyName").getAsString();
+            int cost = tileJson.get("cost").getAsInt();
+            String type = tileJson.get("type").getAsString();
+            tile.setAction(new PropertyTileAction(propertyName, cost, type));
+            break;
+          case "chance":
+            tile.setAction(new ChanceTileAction());
+            break;
+          case "jail":
+            tile.setAction(new JailTileAction());
+            break;
+          case "goToJail":
+            int jailTileId = tileJson.get("jailTileId").getAsInt();
+            tile.setAction(new GoToJailAction(jailTileId));
+            break;
+          case "freeParking":
+            tile.setAction(new FreeParkingAction());
+            break;
+          case "tax":
+            int percentageTax = tileJson.get("percentageTax").getAsInt();
+            int fixedTax = tileJson.get("fixedTax").getAsInt();
+            tile.setAction(new TaxTileAction(percentageTax, fixedTax));
+            break;
+          case "wealthTax":
+            int amount = tileJson.get("amount").getAsInt();
+            tile.setAction(new WealthTaxTileAction(amount));
             break;
         }
       }

@@ -6,7 +6,7 @@ import edu.ntnu.idi.idatt.model.Player;
 /**
  * Class representing action when landing on a pay tile in Monopoly.
  */
-public class PayTileAction implements TileAction {
+public class WealthTaxTileAction implements TileAction {
   private final int amount;
 
   /**
@@ -14,7 +14,7 @@ public class PayTileAction implements TileAction {
    *
    * @param amount The amount of money the player has to pay.
    */
-  public PayTileAction(int amount) {
+  public WealthTaxTileAction(int amount) {
     this.amount = amount;
   }
 
@@ -25,7 +25,7 @@ public class PayTileAction implements TileAction {
    */
   @Override
   public void perform(Player player) {
-    System.out.println(player.getName() + " landed on a Pay tile");
+    System.out.println(player.getName() + " landed on a wealth tax tile");
     System.out.println(player.getName() + " must pay " + amount);
 
     boolean paymentSuccessful = player.payMoney(amount);
@@ -33,5 +33,9 @@ public class PayTileAction implements TileAction {
     if (!paymentSuccessful) {
       System.out.println(player.getName() + " couldn't afford to pay " + amount);
     }
+  }
+
+  public int getAmount() {
+    return amount;
   }
 }

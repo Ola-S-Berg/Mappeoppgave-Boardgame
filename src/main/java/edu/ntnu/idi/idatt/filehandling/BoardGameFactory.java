@@ -1,6 +1,5 @@
 package edu.ntnu.idi.idatt.filehandling;
 
-import edu.ntnu.idi.idatt.model.Board;
 import edu.ntnu.idi.idatt.model.BoardGame;
 import edu.ntnu.idi.idatt.model.Player;
 

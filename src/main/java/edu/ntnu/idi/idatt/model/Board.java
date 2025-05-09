@@ -5,7 +5,7 @@ import edu.ntnu.idi.idatt.actions.monopoly_game.FreeParkingAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.GoToJailAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.JailTileAction;
 import edu.ntnu.idi.idatt.actions.ladder_game.LadderAction;
-import edu.ntnu.idi.idatt.actions.monopoly_game.PayTileAction;
+import edu.ntnu.idi.idatt.actions.monopoly_game.WealthTaxTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.StartTileAction;
 import edu.ntnu.idi.idatt.actions.monopoly_game.TaxTileAction;
@@ -218,6 +218,6 @@ public class Board {
     board.getTile(31).setAction(new GoToJailAction(11));
 
     //Pay Tile.
-    board.getTile(37).setAction(new PayTileAction(10000));
+    board.getTile(37).setAction(new WealthTaxTileAction(10000));
   }
 }

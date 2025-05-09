@@ -213,14 +213,18 @@ public class GameSelectionView {
       BoardGame loadedGame = BoardGameFactory.loadSavedGame(saveName);
       String gameVariation = loadedGame.getVariantName();
 
-      if (gameVariation.startsWith("Ladder Game")) {
+      if (gameVariation.startsWith("Ladder Game") ||
+          gameVariation.equals("ladderGame") ||
+          gameVariation.equals("ladderGameAdvanced") ||
+          gameVariation.equals("ladderGameExtreme")) {
+
         String displayName = switch (gameVariation) {
           case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
           case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
           default -> "Ladder Game Classic";
         };
         new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
-      } else if (gameVariation.startsWith("Monopoly Game")) {
+      } else if (gameVariation.startsWith("Monopoly Game") || gameVariation.equals("monopolyGame")) {
         new MonopolyGameController(loadedGame, application.getPrimaryStage(), "Monopoly Game");
       } else {
         System.err.println("Unknown game variation: " + gameVariation);
