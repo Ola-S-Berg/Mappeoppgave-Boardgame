@@ -38,6 +38,28 @@ public class Board {
   }
 
   /**
+   * Sets up the common actions for all ladder game tiles.
+   *
+   * @param board The board game to set up.
+   */
+  private static void setupCommonTileActions(Board board) {
+    board.getTile(25).setAction(new LadderAction(7, "down"));
+    board.getTile(38).setAction(new LadderAction(1, "down"));
+    board.getTile(48).setAction(new LadderAction(13, "down"));
+    board.getTile(70).setAction(new LadderAction(30, "down"));
+    board.getTile(79).setAction(new LadderAction(27, "down"));
+    board.getTile(89).setAction(new LadderAction(53, "down"));
+
+
+    board.getTile(37).setAction(new WaitAction());
+    board.getTile(54).setAction(new WaitAction());
+    board.getTile(71).setAction(new WaitAction());
+
+    board.getTile(10).setAction(new BackToStartAction());
+    board.getTile(81).setAction(new BackToStartAction());
+  }
+
+  /**
    * Sets up actions for the first variation of the ladder game.
    * A classic balanced ladder game with a normal number of actions.
    * @param board The game board to set up.
@@ -50,19 +72,7 @@ public class Board {
     board.getTile(55).setAction(new LadderAction(87, "up"));
     board.getTile(65).setAction(new LadderAction(84, "up"));
 
-    board.getTile(25).setAction(new LadderAction(7, "down"));
-    board.getTile(38).setAction(new LadderAction(1, "down"));
-    board.getTile(48).setAction(new LadderAction(13, "down"));
-    board.getTile(70).setAction(new LadderAction(30, "down"));
-    board.getTile(79).setAction(new LadderAction(27, "down"));
-    board.getTile(89).setAction(new LadderAction(53, "down"));
-
-    board.getTile(37).setAction(new WaitAction());
-    board.getTile(54).setAction(new WaitAction());
-    board.getTile(71).setAction(new WaitAction());
-
-    board.getTile(10).setAction(new BackToStartAction());
-    board.getTile(81).setAction(new BackToStartAction());
+    setupCommonTileActions(board);
   }
 
   /**
@@ -77,35 +87,24 @@ public class Board {
     board.getTile(21).setAction(new LadderAction(41, "up"));
     board.getTile(43).setAction(new LadderAction(61, "up"));
     board.getTile(52).setAction(new LadderAction(72, "up"));
-    board.getTile(55).setAction(new LadderAction(87, "up"));
     board.getTile(65).setAction(new LadderAction(84, "up"));
 
-    board.getTile(25).setAction(new LadderAction(7, "down"));
-    board.getTile(38).setAction(new LadderAction(1, "down"));
     board.getTile(42).setAction(new LadderAction(2, "down"));
     board.getTile(46).setAction(new LadderAction(15, "down"));
-    board.getTile(48).setAction(new LadderAction(13, "down"));
     board.getTile(64).setAction(new LadderAction(24, "down"));
-    board.getTile(70).setAction(new LadderAction(30, "down"));
-    board.getTile(79).setAction(new LadderAction(27, "down"));
-    board.getTile(82).setAction(new LadderAction(63, "down"));
-    board.getTile(89).setAction(new LadderAction(53, "down"));
 
     board.getTile(18).setAction(new WaitAction());
     board.getTile(28).setAction(new WaitAction());
-    board.getTile(37).setAction(new WaitAction());
     board.getTile(45).setAction(new WaitAction());
-    board.getTile(54).setAction(new WaitAction());
     board.getTile(58).setAction(new WaitAction());
-    board.getTile(71).setAction(new WaitAction());
     board.getTile(75).setAction(new WaitAction());
     board.getTile(88).setAction(new WaitAction());
 
-    board.getTile(10).setAction(new BackToStartAction());
     board.getTile(34).setAction(new BackToStartAction());
     board.getTile(56).setAction(new BackToStartAction());
     board.getTile(68).setAction(new BackToStartAction());
-    board.getTile(81).setAction(new BackToStartAction());
+
+    setupCommonTileActions(board);
   }
 
   /**
@@ -117,39 +116,30 @@ public class Board {
   public static void setupTileActionsLadderGameExtreme(Board board) {
 
     board.getTile(17).setAction(new LadderAction(5, "down"));
-    board.getTile(25).setAction(new LadderAction(7, "down"));
-    board.getTile(38).setAction(new LadderAction(1, "down"));
     board.getTile(41).setAction(new LadderAction(21, "down"));
     board.getTile(42).setAction(new LadderAction(2, "down"));
     board.getTile(46).setAction(new LadderAction(15, "down"));
-    board.getTile(48).setAction(new LadderAction(13, "down"));
     board.getTile(47).setAction(new LadderAction(14, "down"));
     board.getTile(49).setAction(new LadderAction(12, "down"));
     board.getTile(61).setAction(new LadderAction(43, "down"));
     board.getTile(64).setAction(new LadderAction(24, "down"));
-    board.getTile(70).setAction(new LadderAction(30, "down"));
     board.getTile(72).setAction(new LadderAction(52, "down"));
-    board.getTile(79).setAction(new LadderAction(27, "down"));
     board.getTile(82).setAction(new LadderAction(63, "down"));
     board.getTile(84).setAction(new LadderAction(65, "down"));
     board.getTile(87).setAction(new LadderAction(55, "down"));
-    board.getTile(89).setAction(new LadderAction(53, "down"));
 
     board.getTile(18).setAction(new WaitAction());
     board.getTile(28).setAction(new WaitAction());
-    board.getTile(37).setAction(new WaitAction());
     board.getTile(45).setAction(new WaitAction());
-    board.getTile(54).setAction(new WaitAction());
     board.getTile(58).setAction(new WaitAction());
-    board.getTile(71).setAction(new WaitAction());
     board.getTile(75).setAction(new WaitAction());
     board.getTile(88).setAction(new WaitAction());
 
-    board.getTile(10).setAction(new BackToStartAction());
     board.getTile(34).setAction(new BackToStartAction());
     board.getTile(56).setAction(new BackToStartAction());
     board.getTile(68).setAction(new BackToStartAction());
-    board.getTile(81).setAction(new BackToStartAction());
+
+    setupCommonTileActions(board);
   }
 
   /**
