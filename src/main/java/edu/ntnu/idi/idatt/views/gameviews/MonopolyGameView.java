@@ -1,9 +1,9 @@
-package edu.ntnu.idi.idatt.views.boardgameviews;
+package edu.ntnu.idi.idatt.views.gameviews;
 
-import edu.ntnu.idi.idatt.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import java.util.Comparator;
 import java.util.List;
 import javafx.application.Platform;

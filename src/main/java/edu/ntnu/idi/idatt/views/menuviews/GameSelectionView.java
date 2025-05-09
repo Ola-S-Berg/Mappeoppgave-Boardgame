@@ -1,10 +1,11 @@
-package edu.ntnu.idi.idatt.views;
+package edu.ntnu.idi.idatt.views.menuviews;
 
-import edu.ntnu.idi.idatt.BoardGameApplication;
+import edu.ntnu.idi.idatt.MainApp;
 import edu.ntnu.idi.idatt.controllers.LadderGameController;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
-import edu.ntnu.idi.idatt.filehandling.BoardGameFactory;
-import edu.ntnu.idi.idatt.model.BoardGame;
+import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.views.CssUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +28,7 @@ import javafx.stage.Stage;
  * Allows players to choose which game to play.
  */
 public class GameSelectionView {
-  private final BoardGameApplication application;
+  private final MainApp application;
   private Scene scene;
   private static final String LADDER_GAME_DIRECTORY = "src/main/resources/saves/ladder_game";
   private static final String MONOPOLY_GAME_DIRECTORY = "src/main/resources/saves/monopoly_game";
@@ -36,7 +37,7 @@ public class GameSelectionView {
    * Constructor that creates the game selection view.
    * @param application The application to create.
    */
-  public GameSelectionView(BoardGameApplication application) {
+  public GameSelectionView(MainApp application) {
     this.application = application;
     createView();
   }
@@ -46,14 +47,16 @@ public class GameSelectionView {
    */
   private void createView() {
     BorderPane root = new BorderPane();
+    root.getStyleClass().add("root");
     root.setPadding(new Insets(10));
 
     VBox layout = new VBox(30);
     layout.setAlignment(Pos.CENTER);
     layout.setPadding(new Insets(10));
+    layout.getStyleClass().add("content-box");
 
     Label titleLabel = new Label("Select a game to play");
-    titleLabel.setStyle("-fx-font-size: 24px");
+    titleLabel.getStyleClass().add("heading-large");
     layout.getChildren().add(titleLabel);
 
     VBox ladderGameSection = createGameSection("Ladder Game", "Ladder Game");
@@ -62,9 +65,16 @@ public class GameSelectionView {
     VBox monopolyGameSection = createGameSection("Monopoly Game", "Monopoly Game");
     layout.getChildren().add(monopolyGameSection);
 
+    Button exitButton = new Button("Exit Game");
+    exitButton.getStyleClass().add("button");
+    exitButton.setOnAction(event -> application.getPrimaryStage().close());
+
+    layout.getChildren().add(exitButton);
+
     root.setCenter(layout);
 
     scene = new Scene(root, 800, 600);
+    CssUtil.applyStyleSheet(scene);
 
     Stage stage = application.getPrimaryStage();
     stage.setMinWidth(600);
@@ -77,18 +87,20 @@ public class GameSelectionView {
    *
    * @param displayName The display name of the game.
    * @param gameType The internal game type identifier.
-   * @return A VBox containing the same section UI elements.
+   * @return A VBox containing the same section of UI elements.
    */
   private VBox createGameSection(String displayName, String gameType) {
     VBox gameSection = new VBox(15);
     gameSection.setAlignment(Pos.CENTER);
-    gameSection.setStyle("-fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;");
+    gameSection.getStyleClass().add("game-selection-panel");
     gameSection.setMaxWidth(400);
 
     Label gameLabel = new Label(displayName);
-    gameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+    gameLabel.getStyleClass().add("heading-medium");
 
     Button playButton = new Button("Play " + displayName);
+    playButton.getStyleClass().add("button");
+    playButton.getStyleClass().add("button-primary");
     playButton.setMinWidth(250);
     playButton.setOnAction(event -> {
       if (gameType.equals("Ladder Game")) {
@@ -110,16 +122,29 @@ public class GameSelectionView {
     boolean hasSave = boardFile.exists() && playerFile.exists();
 
     Button loadSaveButton = new Button("Load Save");
+    loadSaveButton.getStyleClass().add("button");
+    loadSaveButton.getStyleClass().add("button-secondary");
+    if (!hasSave) {
+      loadSaveButton.getStyleClass().add("button-disabled");
+    }
     loadSaveButton.setDisable(!hasSave);
     loadSaveButton.setOnAction(event -> loadGame(saveName, gameType));
 
     Button deleteSaveButton = new Button("Delete Save");
+    deleteSaveButton.getStyleClass().add("button");
+    deleteSaveButton.getStyleClass().add("button-danger");
+    if (!hasSave) {
+      deleteSaveButton.getStyleClass().add("button-disabled");
+    }
     deleteSaveButton.setDisable(!hasSave);
     deleteSaveButton.setOnAction(event -> {
       if (showDeleteConfirmation(displayName)) {
         if (deleteSave(boardFile, playerFile)) {
           loadSaveButton.setDisable(true);
-          deleteSaveButton.setDisable(true);}
+          loadSaveButton.getStyleClass().add("button-disabled");
+          deleteSaveButton.setDisable(true);
+          deleteSaveButton.getStyleClass().add("button-disabled");
+        }
       }
     });
 
@@ -141,9 +166,10 @@ public class GameSelectionView {
     VBox popupLayout = new VBox(15);
     popupLayout.setAlignment(Pos.CENTER);
     popupLayout.setPadding(new Insets(20));
+    popupLayout.getStyleClass().add("dialog-pane");
 
     Label label = new Label("Choose a variation of the ladder game and create a new game:");
-    label.setStyle("-fx-font-size: 18px");
+    label.getStyleClass().add("dialog-header");
     popupLayout.getChildren().add(label);
 
     List<String> variations = BoardGameFactory.getAvailableVariants();
@@ -151,6 +177,8 @@ public class GameSelectionView {
     for (String variation : variations) {
       if (variation.startsWith("Ladder Game")) {
         Button variationButton = new Button(variation);
+        variationButton.getStyleClass().add("button");
+        variationButton.getStyleClass().add("button-primary");
         variationButton.setOnAction(event -> {
           popup.close();
           application.showPlayerCountView(variation);
@@ -160,6 +188,8 @@ public class GameSelectionView {
     }
 
     Scene popupScene = new Scene(popupLayout, 700, 500);
+    CssUtil.applyStyleSheet(popupScene);
+
     popup.setScene(popupScene);
     popup.setMinWidth(700);
     popup.setMinHeight(500);
@@ -176,8 +206,16 @@ public class GameSelectionView {
   private boolean showDeleteConfirmation(String gameType) {
     Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
     confirmDialog.setTitle("Confirm Deletion");
-    confirmDialog.setHeaderText("Delete" + gameType + " save?");
+    confirmDialog.setHeaderText("Delete " + gameType + " save?");
     confirmDialog.setContentText("Are you sure you want to delete this saved game? This action cannot be undone.");
+
+    if (confirmDialog.getDialogPane() != null) {
+      confirmDialog.getDialogPane().getStyleClass().add("dialog-pane");
+      Scene dialogScene = confirmDialog.getDialogPane().getScene();
+      if (dialogScene != null) {
+        CssUtil.applyStyleSheet(dialogScene);
+      }
+    }
 
     return confirmDialog.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
   }

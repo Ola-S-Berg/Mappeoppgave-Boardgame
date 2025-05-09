@@ -1,9 +1,9 @@
-package edu.ntnu.idi.idatt.views.boardgameviews;
+package edu.ntnu.idi.idatt.views.gameviews;
 
 import edu.ntnu.idi.idatt.controllers.BoardGameController;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
-import edu.ntnu.idi.idatt.model.BoardGameObserver;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGameObserver;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;

@@ -1,8 +1,8 @@
-package edu.ntnu.idi.idatt.views.boardgameviews;
+package edu.ntnu.idi.idatt.views.gameviews;
 
 import edu.ntnu.idi.idatt.controllers.LadderGameController;
-import edu.ntnu.idi.idatt.model.BoardGame;
-import edu.ntnu.idi.idatt.model.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import javafx.stage.Stage;
 
 /**
