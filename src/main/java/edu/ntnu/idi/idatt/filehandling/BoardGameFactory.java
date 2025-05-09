@@ -17,10 +17,11 @@ import java.util.List;
  * Can create predefined game types or load games from saved files.
  */
 public class BoardGameFactory {
-  private static final String SAVE_FILES_DIRECTORY = "src/main/resources/Saves";
+  private static final String SAVE_FILES_DIRECTORY = "src/main/resources/saves";
 
   /**
    * Creates a classic ladder game.
+   *
    * @return A configured board game.
    */
   public static BoardGame createLadderGameClassic() {
@@ -34,6 +35,7 @@ public class BoardGameFactory {
 
   /**
    * Creates a second version of the classic ladder game with mixed tile actions.
+   *
    * @return A configured board game.
    */
   public static BoardGame createLadderGameAdvanced() {
@@ -47,6 +49,7 @@ public class BoardGameFactory {
 
   /**
    * Creates a third version of the classic ladder game with mixed tile actions.
+   *
    * @return A configured board game.
    */
   public static BoardGame createLadderGameExtreme() {
@@ -58,6 +61,11 @@ public class BoardGameFactory {
     return boardGame;
   }
 
+  /**
+   * Creates a monopoly game variant.
+   *
+   * @return A configured board game.
+   */
   public static BoardGame createMonopolyGame() {
     BoardGame boardGame = new BoardGame();
     boardGame.setVariantName("Monopoly Game");
@@ -69,6 +77,7 @@ public class BoardGameFactory {
 
   /**
    * Gets a list of available board game variants.
+   *
    * @return List of predefined game variants.
    */
   public static List<String> getAvailableVariants() {
@@ -99,12 +108,15 @@ public class BoardGameFactory {
 
   /**
    * Save a board game to a file.
+   *
    * @param boardGame The board game to save.
    * @param boardName The name to save the board game as.
    * @throws IOException If an error occurs during file writing.
    */
   public static void saveBoardGame(BoardGame boardGame, String boardName) throws IOException {
-    String filename = getBoardSaveFilePath(boardName);
+    String gameType = getGameType(boardGame);
+    String filename = getBoardSaveFilePath(gameType, boardName);
+
     BoardFileHandler fileHandler = new BoardFileHandler();
     fileHandler.writeToFile(filename, List.of(boardGame));
   }
@@ -120,9 +132,9 @@ public class BoardGameFactory {
    * @return The loaded BoardGame instance with restored state and player positions.
    * @throws IOException If an error occurs while reading the save files.
    */
-  public static BoardGame loadSavedGame(String saveName) throws IOException {
-    String boardFilename = getBoardSaveFilePath(saveName);
-    String playerFilename = getPlayerSaveFilePath(saveName);
+  public static BoardGame loadSavedGame(String gameType, String saveName) throws IOException {
+    String boardFilename = getBoardSaveFilePath(gameType, saveName);
+    String playerFilename = getPlayerSaveFilePath(gameType, saveName);
 
     BoardFileHandler fileHandler = new BoardFileHandler();
     BoardGame loadedGame = fileHandler.readFromFile(boardFilename).getFirst();
@@ -178,6 +190,13 @@ public class BoardGameFactory {
     return loadedGame;
   }
 
+  /**
+   * Associates a property with a player in a Monopoly game.
+   *
+   * @param game The game containing the properties.
+   * @param player The player to assign the property to.
+   * @param propertyName The name of the property to assign.
+   */
   private static void addPropertyToPlayer(BoardGame game, Player player, String propertyName) {
     if(!game.getVariantName().contains("Monopoly")) {
       return;
@@ -201,12 +220,32 @@ public class BoardGameFactory {
    * @return The path to the "saves" directory.
    * @throws IOException If an I/O error occurs while checking for or creating the directory.
    */
-  private static Path ensureSavesDirectory() throws IOException {
-    Path savesDir = Paths.get(SAVE_FILES_DIRECTORY);
-    if (!Files.exists(savesDir)) {
-      Files.createDirectories(savesDir);
+  private static Path ensureSavesDirectory(String gameType) throws IOException {
+    Path savesBaseDir = Paths.get(SAVE_FILES_DIRECTORY);
+    if (!Files.exists(savesBaseDir)) {
+      Files.createDirectories(savesBaseDir);
     }
-    return savesDir;
+
+    Path gameTypeDir = savesBaseDir.resolve(gameType);
+    if (!Files.exists(gameTypeDir)) {
+      Files.createDirectories(gameTypeDir);
+    }
+    return gameTypeDir;
+  }
+
+  /**
+   * Determines the appropriate game type from a BoardGame object.
+   *
+   * @param boardGame The board game to get the game type from.
+   * @return A string identifying the game type (monopoly or ladder).
+   */
+  private static String getGameType(BoardGame boardGame) {
+    String variantName = boardGame.getVariantName();
+    if (variantName != null && variantName.toLowerCase().contains("monopoly")) {
+      return "monopoly_game";
+    } else {
+      return "ladder_game";
+    }
   }
 
   /**
@@ -217,8 +256,8 @@ public class BoardGameFactory {
    * @return The full path to the save file, as a string.
    * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.
    */
-  private static String getBoardSaveFilePath(String saveName) throws IOException {
-    Path savesDir = ensureSavesDirectory();
+  private static String getBoardSaveFilePath(String gameType, String saveName) throws IOException {
+    Path savesDir = ensureSavesDirectory(gameType);
     return savesDir.resolve(saveName + "_board.json").toString();
   }
 
@@ -230,8 +269,8 @@ public class BoardGameFactory {
    * @return The full path to the player save file, as a string.
    * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.
    */
-  private static String getPlayerSaveFilePath(String saveName) throws IOException {
-    Path savesDir = ensureSavesDirectory();
+  public static String getPlayerSaveFilePath(String gameType, String saveName) throws IOException {
+    Path savesDir = ensureSavesDirectory(gameType);
     return savesDir.resolve(saveName + "_players.csv").toString();
   }
 }

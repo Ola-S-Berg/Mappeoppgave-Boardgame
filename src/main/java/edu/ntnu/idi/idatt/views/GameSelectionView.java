@@ -11,7 +11,10 @@ import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -22,13 +25,12 @@ import javafx.stage.Stage;
 /**
  * View class for the game selection view.
  * Allows players to choose which game to play.
- * TODO:
- * Move loading saves for all games to game selection screen next to the option for each game.
  */
 public class GameSelectionView {
   private final BoardGameApplication application;
   private Scene scene;
-  private static final String SAVE_FILES_DIRECTORY = "src/main/resources/Saves";
+  private static final String LADDER_GAME_DIRECTORY = "src/main/resources/saves/ladder_game";
+  private static final String MONOPOLY_GAME_DIRECTORY = "src/main/resources/saves/monopoly_game";
 
   /**
    * Constructor that creates the game selection view.
@@ -54,37 +56,11 @@ public class GameSelectionView {
     titleLabel.setStyle("-fx-font-size: 24px");
     layout.getChildren().add(titleLabel);
 
+    VBox ladderGameSection = createGameSection("Ladder Game", "Ladder Game");
+    layout.getChildren().add(ladderGameSection);
 
-    String[] games = {"Ladder Game", "Monopoly Trondheim Edition", "WIP"};
-
-    VBox buttonContainer = new VBox(15);
-    buttonContainer.setAlignment(Pos.CENTER);
-    buttonContainer.setMaxWidth(400);
-    buttonContainer.prefWidthProperty().bind(root.widthProperty().multiply(0.6));
-
-    for (String game : games) {
-      Button gameButton = new Button(game);
-      gameButton.setMinWidth(200);
-      gameButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5));
-      gameButton.setOnAction(event -> {
-        if (game.equals("Ladder Game")) {
-          showLadderVariationsPopup();
-        } else if (game.equals("Monopoly Trondheim Edition")) {
-          application.showPlayerCountView("Monopoly Game");
-        } else {
-          application.showPlayerCountView(game);
-        }
-      });
-      layout.getChildren().add(gameButton);
-    }
-
-    Button loadSavedGameButton = new Button("Load Saved Game");
-    loadSavedGameButton.setMinWidth(200);
-    loadSavedGameButton.prefWidthProperty().bind(root.widthProperty().multiply(0.9));
-    loadSavedGameButton.setOnAction(event -> showLoadSavedGamePopup());
-    buttonContainer.getChildren().add(loadSavedGameButton);
-
-    layout.getChildren().add(buttonContainer);
+    VBox monopolyGameSection = createGameSection("Monopoly Game", "Monopoly Game");
+    layout.getChildren().add(monopolyGameSection);
 
     root.setCenter(layout);
 
@@ -97,10 +73,65 @@ public class GameSelectionView {
   }
 
   /**
-   * Displays a popup for selecting a variant of the ladder game or loading a previously saved game.
-   * This method creates a modal popup window where users can:
-   * 1. Choose from a list of predefined or available ladder game variations to start a new game.
-   * 2. View saved game files, load a selected saved game, or delete a saved game file.
+   * Creates a section for a specific game with play and save handling options.
+   *
+   * @param displayName The display name of the game.
+   * @param gameType The internal game type identifier.
+   * @return A VBox containing the same section UI elements.
+   */
+  private VBox createGameSection(String displayName, String gameType) {
+    VBox gameSection = new VBox(15);
+    gameSection.setAlignment(Pos.CENTER);
+    gameSection.setStyle("-fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;");
+    gameSection.setMaxWidth(400);
+
+    Label gameLabel = new Label(displayName);
+    gameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+    Button playButton = new Button("Play " + displayName);
+    playButton.setMinWidth(250);
+    playButton.setOnAction(event -> {
+      if (gameType.equals("Ladder Game")) {
+        showLadderVariationsPopup();
+      } else {
+        application.showPlayerCountView(gameType);
+      }
+    });
+
+    HBox saveSection = new HBox(10);
+    saveSection.setAlignment(Pos.CENTER);
+
+    String saveDirectory = gameType.equals("Ladder Game") ? LADDER_GAME_DIRECTORY : MONOPOLY_GAME_DIRECTORY;
+    String saveName = gameType.equals("Ladder Game") ? "LadderGameSave" : "MonopolyGameSave";
+
+    File boardFile = new File(saveDirectory + "/" + saveName + "_board.json");
+    File playerFile = new File(saveDirectory + "/" + saveName + "_players.csv");
+
+    boolean hasSave = boardFile.exists() && playerFile.exists();
+
+    Button loadSaveButton = new Button("Load Save");
+    loadSaveButton.setDisable(!hasSave);
+    loadSaveButton.setOnAction(event -> loadGame(saveName, gameType));
+
+    Button deleteSaveButton = new Button("Delete Save");
+    deleteSaveButton.setDisable(!hasSave);
+    deleteSaveButton.setOnAction(event -> {
+      if (showDeleteConfirmation(displayName)) {
+        if (deleteSave(boardFile, playerFile)) {
+          loadSaveButton.setDisable(true);
+          deleteSaveButton.setDisable(true);}
+      }
+    });
+
+    saveSection.getChildren().addAll(loadSaveButton, deleteSaveButton);
+
+    gameSection.getChildren().addAll(gameLabel, playButton, saveSection);
+
+    return gameSection;
+  }
+
+  /**
+   * Displays a popup for selecting which variation of the ladder game to play.
    */
   private void showLadderVariationsPopup() {
     Stage popup = new Stage();
@@ -109,6 +140,7 @@ public class GameSelectionView {
 
     VBox popupLayout = new VBox(15);
     popupLayout.setAlignment(Pos.CENTER);
+    popupLayout.setPadding(new Insets(20));
 
     Label label = new Label("Choose a variation of the ladder game and create a new game:");
     label.setStyle("-fx-font-size: 18px");
@@ -127,79 +159,46 @@ public class GameSelectionView {
       }
     }
 
-    Scene popupScene = new Scene(popupLayout, 500, 500);
+    Scene popupScene = new Scene(popupLayout, 700, 500);
     popup.setScene(popupScene);
+    popup.setMinWidth(700);
+    popup.setMinHeight(500);
+    popup.centerOnScreen();
     popup.showAndWait();
   }
 
   /**
-   * Displays a popup for loading saved games.
-   * This method creates a modal popup window where users can:
-   * 1. View saved game files, load a selected saved game, or delete a saved game file.
+   * Displays a confirmation dialog before deleting a save file.
+   *
+   * @param gameType The type of game whose save is being deleted.
+   * @return true if the user confirms deletion, false otherwise.
    */
-  private void showLoadSavedGamePopup() {
-    Stage popup = new Stage();
-    popup.initModality(Modality.APPLICATION_MODAL);
-    popup.setTitle("Load Saved Game");
+  private boolean showDeleteConfirmation(String gameType) {
+    Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+    confirmDialog.setTitle("Confirm Deletion");
+    confirmDialog.setHeaderText("Delete" + gameType + " save?");
+    confirmDialog.setContentText("Are you sure you want to delete this saved game? This action cannot be undone.");
 
-    VBox popupLayout = new VBox(15);
-    popupLayout.setAlignment(Pos.CENTER);
+    return confirmDialog.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
+  }
 
-    Label loadLabel = new Label("Select a saved game to load");
-    loadLabel.setStyle("-fx-font-size: 24px");
-    popupLayout.getChildren().add(loadLabel);
+  /**
+   * Deletes the save files for a game.
+   *
+   * @param boardFile The board file to delete.
+   * @param playerFile The player file to delete.
+   * @return true if the deletion was successful, false otherwise.
+   */
+  private boolean deleteSave(File boardFile, File playerFile) {
+    boolean boardFileDeleted = boardFile.delete();
+    boolean playerFileDeleted = playerFile.delete();
 
-    File savesDir = new File(SAVE_FILES_DIRECTORY);
-    if (!savesDir.exists()) {
-      boolean dirCreated = savesDir.mkdirs();
-      if (!dirCreated) {
-        System.err.println("Failed to create save directory: " + savesDir.getAbsolutePath());
-      }
+    if (!boardFileDeleted || !playerFileDeleted) {
+      System.err.println("Failed to delete save files");
+      return false;
     }
 
-    File[] playerSaveFiles = savesDir.listFiles((dir, name) -> name.endsWith("_players.csv"));
-    boolean hasSavedGames = false;
-
-    if (playerSaveFiles != null) {
-      for (File playerFile : playerSaveFiles) {
-        String saveName = playerFile.getName().replace("_players.csv", "");
-
-        File boardFile = new File(SAVE_FILES_DIRECTORY + "/" + saveName + "_board.json");
-        if (boardFile.exists()) {
-          hasSavedGames = true;
-          Button loadButton = new Button("Load: " + saveName);
-          loadButton.setOnAction(e -> {
-            popup.close();
-            loadGame(saveName);
-          });
-
-          Button deleteButton = new Button("Delete: " + saveName);
-          deleteButton.setOnAction(e -> {
-            boolean boardFileDeleted = boardFile.delete();
-            boolean playerFileDeleted = playerFile.delete();
-            if (!boardFileDeleted || !playerFileDeleted) {
-              System.err.println("Failed to delete save files");
-              return;
-            }
-            popup.close();
-            showLoadSavedGamePopup();
-          });
-
-          HBox saveButtons = new HBox(10, loadButton, deleteButton);
-          saveButtons.setAlignment(Pos.CENTER);
-          popupLayout.getChildren().add(saveButtons);
-        }
-      }
-    }
-
-    if (!hasSavedGames) {
-      Label noSavesLabel = new Label("No saved games found");
-      popupLayout.getChildren().add(noSavesLabel);
-    }
-
-    Scene popupScene = new Scene(popupLayout, 500, 500);
-    popup.setScene(popupScene);
-    popup.showAndWait();
+    return true;
   }
 
   /**
@@ -208,28 +207,23 @@ public class GameSelectionView {
    *
    * @param saveName The name of the saved game file to load.
    */
-  private void loadGame(String saveName) {
+  private void loadGame(String saveName, String gameType) {
     try {
-      BoardGame loadedGame = BoardGameFactory.loadSavedGame(saveName);
+      String gameDirectoryType = gameType.equals("Ladder Game") ? "ladder_game" : "monopoly_game";
+      BoardGame loadedGame = BoardGameFactory.loadSavedGame(gameDirectoryType, saveName);
       String gameVariation = loadedGame.getVariantName();
 
-      if (gameVariation.startsWith("Ladder Game") ||
-          gameVariation.equals("ladderGame") ||
-          gameVariation.equals("ladderGameAdvanced") ||
-          gameVariation.equals("ladderGameExtreme")) {
-
+      if (gameType.equals("Ladder Game")) {
         String displayName = switch (gameVariation) {
           case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
           case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
           default -> "Ladder Game Classic";
         };
         new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
-      } else if (gameVariation.startsWith("Monopoly Game") || gameVariation.equals("monopolyGame")) {
-        new MonopolyGameController(loadedGame, application.getPrimaryStage(), "Monopoly Game");
       } else {
-        System.err.println("Unknown game variation: " + gameVariation);
+        new MonopolyGameController(loadedGame, application.getPrimaryStage(), "Monopoly Game");
       }
-    } catch (IOException e) {
+    } catch  (IOException e) {
       System.err.println("Failed to load save: " + e.getMessage());
     }
   }

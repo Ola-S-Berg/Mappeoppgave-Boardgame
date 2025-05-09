@@ -264,6 +264,14 @@ public class MonopolyGameController implements BoardGameController {
     return destinationTile;
   }
 
+  /**
+   * Checks whether a player has passed start during the current player turn.
+   * If so, performs startAction and updates the view.
+   *
+   * @param player The player whose turn it is.
+   * @param fromTileId Starting tile ID.
+   * @param toTileId Destination tile ID.
+   */
   private void checkIfPassedStart(Player player, int fromTileId, int toTileId) {
     final int startTileId = 1;
 
@@ -324,9 +332,10 @@ public class MonopolyGameController implements BoardGameController {
   @Override
   public boolean saveGame() {
     try {
-      String saveName = "SavedGame";
+      String saveName = "MonopolyGameSave";
       BoardGameFactory.saveBoardGame(boardGame, saveName);
-      new PlayerFileHandler().writeToFile("src/main/resources/Saves/" + saveName + "_players.csv",
+      new PlayerFileHandler().writeToFile(
+          BoardGameFactory.getPlayerSaveFilePath("monopoly_game", saveName),
           boardGame.getPlayers());
       return true;
     } catch (IOException e) {

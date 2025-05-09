@@ -89,6 +89,11 @@ public class LadderGameController implements BoardGameController {
     handlePlayerMove(currentPlayer);
   }
 
+  /**
+   * Handles player movement and performs actions, updating views accordingly.
+   *
+   * @param player The player that moves.
+   */
   private void handlePlayerMove(Player player) {
     Tile currentTile = player.getCurrentTile();
     TileAction action = currentTile.getAction();
@@ -176,9 +181,10 @@ public class LadderGameController implements BoardGameController {
    */
   public boolean saveGame() {
     try {
-      String saveName = "SavedGame";
+      String saveName = "LadderGameSave";
       BoardGameFactory.saveBoardGame(boardGame, saveName);
-      new PlayerFileHandler().writeToFile("src/main/resources/Saves/" + saveName + "_players.csv",
+      new PlayerFileHandler().writeToFile(
+          BoardGameFactory.getPlayerSaveFilePath("ladder_game", saveName),
           boardGame.getPlayers());
       return true;
     } catch (IOException e) {
