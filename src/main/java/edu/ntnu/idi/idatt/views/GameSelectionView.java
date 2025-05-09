@@ -8,10 +8,12 @@ import edu.ntnu.idi.idatt.model.BoardGame;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -41,17 +43,29 @@ public class GameSelectionView {
    * Creates the game selection view components.
    */
   private void createView() {
-    VBox layout = new VBox(20);
+    BorderPane root = new BorderPane();
+    root.setPadding(new Insets(10));
+
+    VBox layout = new VBox(30);
     layout.setAlignment(Pos.CENTER);
+    layout.setPadding(new Insets(10));
 
     Label titleLabel = new Label("Select a game to play");
     titleLabel.setStyle("-fx-font-size: 24px");
     layout.getChildren().add(titleLabel);
 
+
     String[] games = {"Ladder Game", "Monopoly Trondheim Edition", "WIP"};
+
+    VBox buttonContainer = new VBox(15);
+    buttonContainer.setAlignment(Pos.CENTER);
+    buttonContainer.setMaxWidth(400);
+    buttonContainer.prefWidthProperty().bind(root.widthProperty().multiply(0.6));
 
     for (String game : games) {
       Button gameButton = new Button(game);
+      gameButton.setMinWidth(200);
+      gameButton.prefWidthProperty().bind(root.widthProperty().multiply(0.5));
       gameButton.setOnAction(event -> {
         if (game.equals("Ladder Game")) {
           showLadderVariationsPopup();
@@ -65,10 +79,21 @@ public class GameSelectionView {
     }
 
     Button loadSavedGameButton = new Button("Load Saved Game");
+    loadSavedGameButton.setMinWidth(200);
+    loadSavedGameButton.prefWidthProperty().bind(root.widthProperty().multiply(0.9));
     loadSavedGameButton.setOnAction(event -> showLoadSavedGamePopup());
-    layout.getChildren().add(loadSavedGameButton);
+    buttonContainer.getChildren().add(loadSavedGameButton);
 
-    scene = new Scene(layout, 800, 800);
+    layout.getChildren().add(buttonContainer);
+
+    root.setCenter(layout);
+
+    scene = new Scene(root, 800, 600);
+
+    Stage stage = application.getPrimaryStage();
+    stage.setMinWidth(600);
+    stage.setMinHeight(600);
+    stage.centerOnScreen();
   }
 
   /**

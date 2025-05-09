@@ -96,11 +96,12 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     setupControlsPane(root);
     setupPlayerTokens();
 
-    Scene scene = new Scene(root, 800, 800);
+    Scene scene = new Scene(root, 800, 700);
     stage.setScene(scene);
     stage.setTitle(getGameTitle());
     stage.setMinWidth(600);
     stage.setMinHeight(600);
+    stage.centerOnScreen();
     stage.show();
 
     root.widthProperty().addListener((observable, oldValue, newValue) -> {

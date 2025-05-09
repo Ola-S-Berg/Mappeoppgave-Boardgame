@@ -1,12 +1,15 @@
 package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * View for collecting player names.
@@ -40,15 +43,22 @@ public class PlayerNameView {
    * Creates the player name view components.
    */
   private void createView() {
-    VBox layout = new VBox(20);
+    BorderPane root = new BorderPane();
+    root.setPadding(new Insets(10));
+
+    VBox layout = new VBox(30);
     layout.setAlignment(Pos.CENTER);
+    layout.setPadding(new Insets(10));
 
     Label titleLabel = new Label("Player " + (currentPlayerIndex + 1) + ": Enter Name");
     titleLabel.setStyle("-fx-font-size: 18px;");
 
     TextField nameField = new TextField();
     nameField.setPromptText("Enter Player Name");
-    nameField.setPrefWidth(200);
+    nameField.setAlignment(Pos.CENTER);
+    nameField.setMinWidth(50);
+    nameField.setMaxWidth(200);
+    nameField.prefWidthProperty().bind(root.widthProperty().multiply(0.6));
 
     Button continueButton = new Button("Continue");
     continueButton.setOnAction(e -> {
@@ -67,7 +77,12 @@ public class PlayerNameView {
 
     layout.getChildren().addAll(titleLabel, nameField, continueButton);
 
-    scene = new Scene(layout, 800, 800);
+    scene = new Scene(layout, 800, 600);
+
+    Stage stage = application.getPrimaryStage();
+    stage.setMinWidth(600);
+    stage.setMinHeight(600);
+    stage.centerOnScreen();
   }
 
   /**

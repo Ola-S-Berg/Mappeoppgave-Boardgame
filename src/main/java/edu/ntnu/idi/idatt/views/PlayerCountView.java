@@ -1,11 +1,14 @@
 package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.BoardGameApplication;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * View class for the player count selection screen.
@@ -31,8 +34,12 @@ public class PlayerCountView {
    * Creates the player count view components.
    */
   private void createView() {
-    VBox layout = new VBox(20);
+    BorderPane root = new BorderPane();
+    root.setPadding(new Insets(10));
+
+    VBox layout = new VBox(30);
     layout.setAlignment(Pos.CENTER);
+    layout.setPadding(new Insets(10));
 
     Label titleLabel = new Label("Select Number of Players");
     titleLabel.setStyle("-fx-font-size: 24px");
@@ -44,7 +51,13 @@ public class PlayerCountView {
       playerCountButton.setOnAction(event -> application.showPlayerNameView(selectedGame, count));
       layout.getChildren().add(playerCountButton);
     }
-    scene = new Scene(layout, 800, 800);
+    scene = new Scene(layout, 800, 600);
+
+    Stage stage = application.getPrimaryStage();
+    stage.setMinWidth(600);
+    stage.setMinHeight(600);
+    stage.centerOnScreen();
+
   }
 
   /**

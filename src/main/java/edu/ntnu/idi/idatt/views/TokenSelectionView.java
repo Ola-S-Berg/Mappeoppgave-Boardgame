@@ -4,14 +4,17 @@ import edu.ntnu.idi.idatt.BoardGameApplication;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * View class for token selection.
@@ -55,7 +58,6 @@ public class TokenSelectionView {
    */
   public TokenSelectionView(BoardGameApplication application, String selectedGame, String[] playerNames) {
     this.application = application;
-    //Used later when more games are added
     this.playerNames = playerNames;
     this.playerTokens = new String[playerNames.length];
     this.currentPlayerIndex = 0;
@@ -67,8 +69,12 @@ public class TokenSelectionView {
    * Creates the token selection view components.
    */
   private void createView() {
-    VBox mainLayout = new VBox(20);
+    BorderPane root = new BorderPane();
+    root.setPadding(new Insets(10));
+
+    VBox mainLayout = new VBox(30);
     mainLayout.setAlignment(Pos.CENTER);
+    mainLayout.setPadding(new Insets(10));
 
     Label titleLabel = new Label(playerNames[currentPlayerIndex] + ", select your token");
     titleLabel.setStyle("-fx-font-size: 20px;");
@@ -107,7 +113,12 @@ public class TokenSelectionView {
     }
 
     mainLayout.getChildren().add(tokenGrid);
-    scene = new Scene(mainLayout, 800, 800);
+    scene = new Scene(mainLayout, 800, 600);
+
+    Stage stage = application.getPrimaryStage();
+    stage.setMinWidth(600);
+    stage.setMinHeight(600);
+    stage.centerOnScreen();
   }
 
   /**
