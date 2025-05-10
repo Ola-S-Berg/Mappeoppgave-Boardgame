@@ -221,6 +221,29 @@ public class BoardGame {
   }
 
   /**
+   * Initializes the game with the saved current player as the starting player.
+   * Passes to initializeGame if it cannot find the current player.
+   *
+   * @param playerIndex The index of the starting player.
+   */
+  public void initializeGameWithCurrentPlayer(int playerIndex) {
+    if (playerIndex < 0 || playerIndex >= players.size()) {
+      System.out.println("Invalid player index: " + playerIndex + ", defaulting to regular initialization");
+      initializeGame();
+      return;
+    }
+
+    System.out.println("Initializing game with player at index " + playerIndex + " as current player.");
+    gameOver = false;
+    currentPlayerIndex = playerIndex;
+    currentPlayer = players.get(currentPlayerIndex);
+
+    if (currentPlayer != null) {
+      notifyCurrentPlayerChanged(currentPlayer);
+    }
+  }
+
+  /**
    * Processes the current player's turn in the game. If the game is over, it ends the turn
    * immediately. If the current player is set to skip their turn, it notifies observers, resets the
    * skip state, and ends the turn. Otherwise, the current player rolls the dice, calculates their
@@ -414,6 +437,15 @@ public class BoardGame {
 
       roundNumber++;
     }
+  }
+
+  /**
+   * Checks whether the initialized game is a loaded game.
+   *
+   * @return False if it is not a loaded game.
+   */
+  public boolean isLoadedGame() {
+    return !isLoadedGame;
   }
 
   /**

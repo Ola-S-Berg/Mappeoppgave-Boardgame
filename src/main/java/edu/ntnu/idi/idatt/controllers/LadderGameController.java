@@ -42,7 +42,9 @@ public class LadderGameController implements BoardGameController {
 
     this.view = new LadderGameView(boardGame, stage, this);
 
-    boardGame.initializeGame();
+    if (boardGame.isLoadedGame()) {
+      boardGame.initializeGame();
+    }
   }
 
   /**

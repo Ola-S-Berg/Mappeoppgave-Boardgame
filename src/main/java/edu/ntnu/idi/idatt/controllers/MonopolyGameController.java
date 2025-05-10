@@ -63,7 +63,9 @@ public class MonopolyGameController implements BoardGameController {
 
     this.view = new MonopolyGameView(boardGame, stage, this);
 
-    boardGame.initializeGame();
+    if (boardGame.isLoadedGame()) {
+      boardGame.initializeGame();
+    }
   }
 
   /**

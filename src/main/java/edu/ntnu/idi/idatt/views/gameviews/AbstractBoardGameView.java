@@ -133,7 +133,11 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     topSection.setAlignment(Pos.CENTER);
     topSection.setPadding(new Insets(0, 0, 10, 0));
 
-    statusLabel = new Label("Game Started! " + boardGame.getPlayers().getFirst().getName() + "'s Turn To Roll");
+    Player startingPlayer = boardGame.getCurrentPlayer() != null ?
+                            boardGame.getCurrentPlayer() :
+                            boardGame.getPlayers().getFirst();
+
+    statusLabel = new Label("Game Started! " + startingPlayer.getName() + "'s Turn To Roll");
     statusLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
     actionLabel = new Label("");

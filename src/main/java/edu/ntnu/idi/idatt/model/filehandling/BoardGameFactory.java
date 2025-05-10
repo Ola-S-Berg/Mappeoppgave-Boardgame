@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Factory class for creating different variants of board games.
@@ -18,6 +20,7 @@ import java.util.List;
  */
 public class BoardGameFactory {
   private static final String SAVE_FILES_DIRECTORY = "src/main/resources/saves";
+  static Logger LOGGER = Logger.getLogger(BoardGameFactory.class.getName());
 
   /**
    * Creates a classic ladder game.
@@ -117,6 +120,11 @@ public class BoardGameFactory {
     String gameType = getGameType(boardGame);
     String filename = getBoardSaveFilePath(gameType, boardName);
 
+    if (!boardGame.getPlayers().isEmpty() && boardGame.getCurrentPlayer() != null) {
+      String currentPlayerName = boardGame.getCurrentPlayer().getName();
+      boardGame.getPlayers().getFirst().setProperty("currentPlayerName", currentPlayerName);
+    }
+
     BoardFileHandler fileHandler = new BoardFileHandler();
     fileHandler.writeToFile(filename, List.of(boardGame));
   }
@@ -148,7 +156,10 @@ public class BoardGameFactory {
     PlayerFileHandler playerFileHandler = new PlayerFileHandler();
     List<Player> players = playerFileHandler.readFromFile(playerFilename);
 
-    for (Player player : players) {
+    int currentPlayerIndex = -1;
+
+    for (int index = 0; index < players.size(); index++) {
+      Player player = players.get(index);
       player.setGame(loadedGame);
 
       String savedTileIdStr = player.getProperty("savedTileId");
@@ -164,8 +175,7 @@ public class BoardGameFactory {
             player.placeOnTile(loadedGame.getBoard().getTile(1));
           }
         } catch (NumberFormatException e) {
-          System.out.println("Could not parse saved tile ID: " + savedTileIdStr);
-          e.printStackTrace();
+          LOGGER.log(Level.WARNING, "Could not parse saved tile ID: " + savedTileIdStr ,e);
           player.placeOnTile(loadedGame.getBoard().getTile(1));
         }
       } else {
@@ -183,10 +193,20 @@ public class BoardGameFactory {
         }
       }
 
+      if ("true".equals(player.getProperty("isCurrentPlayer"))) {
+        currentPlayerIndex = index;
+      }
+
       loadedGame.addPlayer(player);
     }
 
-    loadedGame.initializeGame();
+    if (currentPlayerIndex >= 0 && currentPlayerIndex < players.size()) {
+      loadedGame.initializeGameWithCurrentPlayer(currentPlayerIndex);
+    } else {
+      LOGGER.log(Level.WARNING, "Could not find current player in saved game, starting with first player instead.");
+      loadedGame.initializeGame();
+    }
+
     return loadedGame;
   }
 

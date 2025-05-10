@@ -29,6 +29,19 @@ public class PlayerFileHandler implements FileHandler<Player> {
   @Override
   public void writeToFile(String filename, List<Player> players) throws IOException {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+      String currentPlayerName = null;
+      for (Player player : players) {
+        if (player.getProperty("currentPlayerName") != null) {
+          currentPlayerName = player.getProperty("currentPlayerName");
+          break;
+        }
+      }
+
+      if (currentPlayerName != null) {
+        writer.write("CURRENT_PLAYER:" + currentPlayerName);
+        writer.newLine();
+      }
+
       for (Player player : players) {
         int currentTileId =
             (player.getCurrentTile() != null) ? player.getCurrentTile().getTileId() : 1;
@@ -57,10 +70,17 @@ public class PlayerFileHandler implements FileHandler<Player> {
   @Override
   public List<Player> readFromFile(String filename) throws IOException {
     List<Player> players = new ArrayList<>();
+    String currentPlayerName = null;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
       String line;
       while ((line = reader.readLine()) != null) {
+        if (line.startsWith("CURRENT_PLAYER:")) {
+          currentPlayerName = line.substring("CURRENT_PLAYER:".length()).trim();
+          System.out.println("Current player from file: " + currentPlayerName);
+          continue;
+        }
+
         String[] tokens = line.split(",");
         if (tokens.length >= 4) {
           String name = tokens[0].trim();
@@ -75,15 +95,26 @@ public class PlayerFileHandler implements FileHandler<Player> {
             player.setProperty("savedProperties", tokens[4].trim());
           }
 
+          if (name.equals(currentPlayerName)) {
+            player.setProperty("isCurrentPlayer", "true");
+          }
+
           players.add(player);
           System.out.println("Read player: " + name +
               ", Token: " + token +
               ", tileId: " + tileId +
               ", money: " + money +
-              ", properties: " + tokens[4].trim());
+              (tokens.length >= 5 ? ", properties: " + tokens[4].trim() : ""));
         }
       }
+
+      if (currentPlayerName == null && !players.isEmpty()) {
+        players.getFirst().setProperty("isCurrentPlayer", "true");
+        System.out.println("No current player found, defaulting to first player: " +
+            players.getFirst().getName());
+      }
     }
+
     return players;
   }
 }
