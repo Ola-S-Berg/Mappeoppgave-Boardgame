@@ -2,19 +2,19 @@ package edu.ntnu.idi.idatt;
 
 import edu.ntnu.idi.idatt.controllers.LadderGameController;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
+import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.views.menuviews.GameSelectionView;
 import edu.ntnu.idi.idatt.views.menuviews.PlayerCountView;
 import edu.ntnu.idi.idatt.views.menuviews.PlayerNameView;
 import edu.ntnu.idi.idatt.views.menuviews.TokenSelectionView;
-import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
-import edu.ntnu.idi.idatt.model.gamelogic.Player;
-import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  * Application that serves as the entry point for the JavaFX application.
@@ -138,6 +138,11 @@ public class MainApp extends Application {
     return primaryStage;
   }
 
+  /**
+   *Main method for the application.
+   *
+   * @param args The command line arguments.
+   */
   public static void main(String[] args) {
     launch(args);
   }
