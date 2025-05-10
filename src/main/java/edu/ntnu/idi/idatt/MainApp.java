@@ -17,8 +17,23 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Application that serves as the entry point for the JavaFX application.
- * Manages the different views.
+ * <h1>Board Game Application</h1>
+ *
+ * <p>The main application class that serves as the entry point for the javaFX board game platform.
+ * This class manages the flow between different views and controllers, handling the overall
+ * lifecycle of the application.</p>
+ *
+ * <h2>Application flow</h2>
+ * <ol>
+ * <li>Game selection (Monopoly or Ladder Game</li>
+ * <li>Player count selection</li>
+ * <li>Player name input</li>
+ * <li>Player token selection</li>
+ * <li>Game initialization and start</li>
+ * </ol>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class MainApp extends Application {
   private Stage primaryStage;

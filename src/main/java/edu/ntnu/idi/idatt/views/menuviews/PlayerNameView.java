@@ -14,8 +14,23 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * View for collecting player names.
- * Collects names for each player individually.
+ * <h1>Player Name View</h1>
+ *
+ * <p>This view handles the collection of player names in a sequential manner, displaying an
+ * input field for each player one at a time. Builds upon the player count selected in the
+ * previous view and prepares the data for token selection.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Collects names for each player individually through a step-by-step process</li>
+ *   <li>Validates inputs to ensure names are not empty</li>
+ *   <li>Provides visual feedback for the current player being prompted</li>
+ *   <li>Maintains state across multiple player entries</li>
+ *   <li>Includes navigation controls to return to previous steps</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class PlayerNameView {
   private final MainApp application;

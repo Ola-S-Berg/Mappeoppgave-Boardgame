@@ -12,8 +12,21 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * View class for the player count selection screen.
- * Allows selection of how many players will participate in the game.
+ * <h1>Player Count View</h1>
+ *
+ * <p>This view allows users to select the number of players who will participate in the game.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Provides a clean, intuitive interface for selecting player count</li>
+ *   <li>Supports 2-5 players with individual selection buttons</li>
+ *   <li>Maintains connection to the previously selected game type</li>
+ *   <li>Includes navigation controls to return to previous steps</li>
+ *   <li>Implements responsive design that adapts to window size</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class PlayerCountView {
   private final MainApp application;

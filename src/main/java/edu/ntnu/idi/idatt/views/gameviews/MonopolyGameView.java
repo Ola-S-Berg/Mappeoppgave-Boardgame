@@ -20,10 +20,42 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * View for the "Monopoly Game" game.
- * Displays the game board and player information, handles dice rolling, and shows player movement.
- * Communicates with the controller "MonopolyGameController" to handle game logic.
- * Extends AbstractGameView to inherit common game view functionality.
+ * <h1>Monopoly Game View</h1>
+ *
+ * <p>An implementation of the AbstractBoardGameView that specifically renders and manages the
+ * UI for the "Monopoly Game". This class handles the specific visual representations and UI
+ * elements unique to this board game.</p>
+ *
+ * <h2>Features</h2>
+ *
+ * <h3>Enhanced UI components</h3>
+ * <ul>
+ *   <li>Player information cards - Cards showing each player's financial and property status</li>
+ *   <li>Money transaction feedback - Visual feedback for financial transactions</li>
+ *   <li>Bankruptcy indication - Clear visual cues when a player goes bankrupt</li>
+ *   <li>Property categorization - Color-coded grouping of properties by their types</li>
+ *   <li>Dynamic player status highlighting for player turn or bankruptcy</li>
+ *   <li>Displays game winner at the end of the game</li>
+ * </ul>>
+ *
+ * <h3>Game Board Layout</h3>
+ * <p>The game board uses an 11x11 grid layout, with tiles organized in the movement pattern of
+ * the Monopoly Game. Grid coordinates are used to map logical tile positions to visual positions.
+ * Properties are positioned in a color-based grouping, with each grouping spread out by other
+ * actions and events.</p>
+ *
+ * <h3>Game events</h3>
+ * <ul>
+ *   <li>Property purchase - Shows when properties change ownership</li>
+ *   <li>Rent payments - Indicates when players must pay rent to property owners</li>
+ *   <li>Chance card draws - Visualizes random event card outcomes</li>
+ *   <li>Tax- and wealth tax payments - Shows when a player must pay taxes</li>
+ *   <li>Free parking - Shows when a player can move rent-free next turn</li>
+ *   <li>Jail events - Handles the visual aspects for jail events like rolling or bail payment</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class MonopolyGameView extends AbstractBoardGameView {
 

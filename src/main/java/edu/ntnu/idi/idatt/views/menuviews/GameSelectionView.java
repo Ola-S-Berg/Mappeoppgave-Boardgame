@@ -24,8 +24,24 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * View class for the game selection view.
- * Allows players to choose which game to play.
+ * <h1>Game Selection View</h1>
+ *
+ *
+ * <p>This view represents the main menu screen where players can choose which game to play,
+ * Ladder Game with its variations or a simplified version of a Monopoly Game. Serves as the
+ * central navigation hub of the application.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Displays available games with intuitive UI elements</li>
+ *   <li>Provides options to start new games or load saved games</li>
+ *   <li>Handles game variation selection for Ladder Game</li>
+ *   <li>Manages save file operations (loading and deletion)</li>
+ *   <li>Implements confirmation dialogs for destructive operations</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class GameSelectionView {
   private final MainApp application;

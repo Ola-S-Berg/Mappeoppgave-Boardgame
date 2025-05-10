@@ -18,8 +18,23 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * View class for token selection.
- * Allows each player to select a unique token.
+ * <h1>Token Selection View</h1>
+ *
+ * <p>This view enables players to select unique game tokens that will represent them on the
+ * game board. It presents a grid of available tokens and handles the selection process
+ * for each player sequentially, ensuring that no two players can select the same token.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Displays a visually engaging grid of token options</li>
+ *   <li>Processes players sequentially, showing the current player's name</li>
+ *   <li>Disables already selected tokens with visual representation to prevent duplicates </li>
+ *   <li>Initiates game start when all selections are complete</li>
+ *   <li>Includes navigation controls to return to previous steps</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class TokenSelectionView {
   private final MainApp application;

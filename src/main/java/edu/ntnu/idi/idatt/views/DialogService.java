@@ -19,7 +19,32 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
- * Service class for creating and displaying dialogs across the application.
+ * <h1>Dialog Service</h1>
+ *
+ * <p>A utility service class that provides a centralized system for creating and displaying
+ * modal dialogs throughout the application. This service ensures consistent dialog styling,
+ * behavior, and error handling while supporting various game-specific interaction scenarios.</p>
+ *
+ * <h2>Dialog Types</h2>
+ * <ul>
+ *   <li>Confirmation dialogs - For verifying user intent before significant actions</li>
+ *   <li>Property purchase actions - For buying properties in Monopoly Gameplay</li>
+ *   <li>Jail option dialogs - For handling player choices when in jail</li>
+ *   <li>Tax payment dialogs - For selecting between tax payment options</li>
+ * </ul>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Consistent styling across all dialogs through CSS application</li>
+ *   <li>Animated transitions for a smoother user experience</li>
+ *   <li>Centralized dialog creation to reduce code duplication</li>
+ *   <li>Callback-based design pattern for handling user choices</li>
+ *   <li>Proper model behavior to prevent interaction with the main window</li>
+ *   <li>Error handling and logging</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class DialogService {
   private static final Logger LOGGER = Logger.getLogger(DialogService.class.getName());

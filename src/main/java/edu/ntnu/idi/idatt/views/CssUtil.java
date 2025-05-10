@@ -6,8 +6,21 @@ import java.util.logging.Logger;
 import javafx.scene.Scene;
 
 /**
- * Utility class for CSS styling operations.
- * Provides methods to consistently apply CSS stylesheets to scenes.
+ * <h1>CSS Utility Class</h1>
+ *
+ * <p>A utility class that provides centralized functionality for CSS styling operations
+ * throughout the application. This class ensures the consistent application of stylesheets
+ * to JavaFX scenes and handles potential exceptions during the process.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Centralizes CSS application logic in a single utility class</li>
+ *   <li>Maintains consistent styling across the application</li>
+ *   <li>Uses logging to track styling errors when they occur.</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class CssUtil {
   private static final Logger LOGGER = Logger.getLogger(CssUtil.class.getName());

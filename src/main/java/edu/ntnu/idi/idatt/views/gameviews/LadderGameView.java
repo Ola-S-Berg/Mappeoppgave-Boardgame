@@ -6,10 +6,34 @@ import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import javafx.stage.Stage;
 
 /**
- * View for the "Ladder Game" game.
- * Displays the game board, handles dice rolling, and shows player movement.
- * Communicates with the controller "MonopolyGameController" to handle game logic.
- * Extends AbstractGameView to inherit common game view functionality.
+ * <h1>Ladder Game View</h1>
+ *
+ * <p>An implementation of the AbstractBoardGameView that specifically renders and manages the
+ * UI for the "Ladder Game". This class handles the specific visual representations and UI
+ * elements unique to this board game.</p>
+ *
+ * <h2>Game Variation</h2>
+ * <p>The Ladder Game View supports three different game variations:</p>
+ * <ul>
+ *   <li><strong>Classic</strong> - The classic Ladder Game experience</li>
+ *   <li><strong>Advanced</strong> - Features additional action tiles</li>
+ *   <li><strong>Extreme</strong> - Flips all up ladders to down</li>
+ * </ul>
+ *
+ * <h2>Game Board Layout</h2>
+ * <p>The game board uses a 9x10 grid layout, with tiles organized in the movement pattern of
+ * the Ladder Game. Grid coordinates are used to map logical tile positions to visual positions.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Action tiles - Unique visual indicators for special actions:</li>
+ *   <li>Ladder climbs/descents - Animated movement when a player lands on a ladder</li>
+ *   <li>Sent back to start - Animates a player's movement back to start</li>
+ *   <li>Wait action - Indicates when a player must skip their next turn</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class LadderGameView extends AbstractBoardGameView {
 

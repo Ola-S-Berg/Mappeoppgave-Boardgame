@@ -30,9 +30,38 @@ import javafx.util.Duration;
 
 
 /**
- * Abstract base class for board game views.
- * Contains common functionality for displaying game boards, handling player movements,
- * dice rolling, and game state updates.
+ * <h1>Abstract Board Game View</h1>
+ *
+ * <p>An abstract class that provides a foundation for creating board game user interfaces
+ * in JavaFX. This class implements the BoardGameObserver interface to handle game state updates
+ * and renders them visually to the user.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Dynamic game board creation and rendering based on superclass specifications</li>
+ *   <li>Player token visualization and animation between board positions</li>
+ *   <li>Dice rolling and display mechanics with visual feedback</li>
+ *   <li>Real-time UI updates based on game state changes</li>
+ *   <li>Window resize handling with responsive layout adjustments</li>
+ *   <li>Game state messaging system to inform players of events</li>
+ * </ul>
+ *
+ * <h2>Design Pattern</h2>
+ * <p>This class uses the Template Method design pattern, defining the skeleton of the game UI
+ * while allowing subclasses to override specific methods to provide game-specific behavior
+ * without changing the overall structure.</p>
+ *
+ * <h2>Observer implementation</h2>
+ * <p>As a BoardGameObserver, this class receives notifications about:</p>
+ * <ul>
+ *   <li>Player movements and position changes</li>
+ *   <li>Turn transitions between players</li>
+ *   <li>Game victory conditions</li>
+ *   <li>Special events like bankruptcy or turn skipping</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public abstract class AbstractBoardGameView implements BoardGameObserver {
 
