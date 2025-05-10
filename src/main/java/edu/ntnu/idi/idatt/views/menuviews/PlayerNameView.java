@@ -71,6 +71,12 @@ public class PlayerNameView {
     Button continueButton = new Button("Continue");
     continueButton.getStyleClass().add("button");
     continueButton.getStyleClass().add("button-primary");
+
+    continueButton.setDisable(true);
+
+    nameField.textProperty().addListener((observable, oldValue, newValue) ->
+        continueButton.setDisable(newValue.trim().isEmpty()));
+
     continueButton.setOnAction(e -> {
       String playerName = nameField.getText().trim();
       if (!playerName.isEmpty()) {
