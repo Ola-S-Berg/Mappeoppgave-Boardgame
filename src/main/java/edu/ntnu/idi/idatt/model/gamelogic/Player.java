@@ -148,22 +148,6 @@ public class Player {
   }
 
   /**
-   * Gets all properties owned by this player.
-   * @return The list of properties owned by this player.
-   */
-  public List<PropertyTileAction> getOwnedProperties() {
-    return new ArrayList<>(ownedProperties);
-  }
-
-  /**
-   * Gets the player's current money.
-   * @return The player's current money.
-   */
-  public int getMoney() {
-    return money;
-  }
-
-  /**
    * Releases the player from jail.
    */
   public void releaseFromJail() {
@@ -258,10 +242,6 @@ public class Player {
     return token;
   }
 
-  public int getStartingMoney() {
-    return money;
-  }
-
   /**
    * Stores a temporary property for the player.
    * @param key The property key.
@@ -278,6 +258,22 @@ public class Player {
    */
   public String getProperty(String key) {
     return properties.get(key);
+  }
+
+  /**
+   * Gets all properties owned by this player.
+   * @return The list of properties owned by this player.
+   */
+  public List<PropertyTileAction> getOwnedProperties() {
+    return new ArrayList<>(ownedProperties);
+  }
+
+  /**
+   * Gets the player's current money.
+   * @return The player's current money.
+   */
+  public int getMoney() {
+    return money;
   }
 }
 

@@ -4,6 +4,7 @@ import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.util.Comparator;
 import java.util.List;
 import javafx.application.Platform;
@@ -114,10 +115,29 @@ public class MonopolyGameView extends AbstractBoardGameView {
    */
   @Override
   public void onPlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
-    super.onPlayerMove(player, fromTileId, toTileId, diceValue);
-    if (diceValue > 0) {
-      updatePlayerMoney(player);
-    }
+    Platform.runLater(() -> {
+      javafx.scene.image.ImageView tokenView = playerTokenViews.get(player);
+      if (tokenView != null) {
+        int playerIndex = boardGame.getPlayers().indexOf(player);
+
+        Tile currentTile = player.getCurrentTile();
+        String tileName = currentTile != null ? Tile.getTileName(currentTile) : "unknown";
+
+        if (diceValue > 0) {
+          statusLabel.setText(player.getName() + " rolled " + diceValue + " and landed on " + tileName);
+        } else if (fromTileId != toTileId) {
+          statusLabel.setText(player.getName() + " moved from tile " + fromTileId + " to " + tileName + " due to an action");
+        }
+
+        if (fromTileId != toTileId) {
+          animationsInProgress.put(player, true);
+          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
+              animationsInProgress.put(player, false));
+        }
+
+        updatePlayerMoney(player);
+      }
+    });
   }
 
   /**
@@ -129,26 +149,68 @@ public class MonopolyGameView extends AbstractBoardGameView {
   @Override
   public void showActionMessage(Player player, String actionType) {
     Platform.runLater(() -> {
+      int currentTileId = player.getCurrentTile().getTileId();
+      String tileName = Tile.getTileName(player.getCurrentTile());
+      MonopolyGameController monopolyController = (MonopolyGameController) controller;
+
       switch (actionType) {
-        case "PropertyAction":
-          actionLabel.setText(player.getName() + " landed on a property");
+        case "PropertyTileAction":
+          PropertyTileAction property = monopolyController.getPropertyAtTile(currentTileId);
+          if (property != null) {
+            if (property.getOwner() == null) {
+              actionLabel.setText(tileName + " is unowned and can be purchased for " + (property.getCost()));
+            } else if (property.getOwner() == player) {
+              actionLabel.setText(player.getName() + " owns this property");
+            } else {
+              int rentAmount = property.getCost() * 2 / 10;
+              actionLabel.setText(player.getName() + " must pay " + (rentAmount) + " to " + property.getOwner().getName());
+            }
+          }
           break;
-        case "ChanceAction":
-          actionLabel.setText(player.getName() + " landed on chance");
+        case "ChanceTileAction":
+          actionLabel.setText(player.getName() + " landed on Chance and draws a random card");
           break;
-        case "JailAction":
-          actionLabel.setText(player.getName() + " is going to jail");
+        case "JailTileAction":
+          actionLabel.setText(player.getName() + " is visiting the jail");
           break;
-        case "TaxAction":
-          actionLabel.setText(player.getName() + " must pay tax");
+        case "TaxTileAction":
+          actionLabel.setText(player.getName() + " must pay 10% of wealth or 20000$");
+          break;
+        case "StartTileAction":
+          actionLabel.setText(player.getName() + " landed on Start and collects 20000$");
+          break;
+        case "FreeParkingAction":
+          actionLabel.setText(player.getName() + " landed on Free Parking and won't pay rent next turn");
+          break;
+        case "GoToJailAction":
+          actionLabel.setText(player.getName() + " is being sent to jail");
+          break;
+        case "WealthTaxTileAction":
+          actionLabel.setText(player.getName() + " must pay wealth tax of 10000$");
+          break;
+        case "InJail":
+          actionLabel.setText(player.getName() + " is in jail and must try to get out");
           break;
         default:
-          actionLabel.setText(player.getName() + " landed on a tile action");
+          actionLabel.setText(player.getName() + " landed on " + tileName);
           break;
       }
       actionLabel.setVisible(true);
     });
   }
+
+  /**
+   * Sets the action label text for a specific action.
+   *
+   * @param message The message to set the action label to.
+   */
+  public void setActionLabelText(String message) {
+    Platform.runLater(() -> {
+      actionLabel.setText(message);
+      actionLabel.setVisible(true);
+    });
+  }
+
 
   /**
    * Prepares the view for the next turn and updates player highlights.
@@ -166,8 +228,10 @@ public class MonopolyGameView extends AbstractBoardGameView {
    */
   @Override
   public void onCurrentPlayerChanged(Player player) {
-    super.onCurrentPlayerChanged(player);
-    Platform.runLater(this::updateCurrentPlayerHighlight);
+    Platform.runLater(() -> {
+      statusLabel.setText(player.getName() + " is taking their turn");
+      updateCurrentPlayerHighlight();
+    });
   }
 
   /**
@@ -403,9 +467,8 @@ public class MonopolyGameView extends AbstractBoardGameView {
    * Handles property change events for a player.
    *
    * @param player The player whose property is being changed.
-   * @param propertyName The name of the property that has changed.
    */
-  public void onPropertyChange(Player player, String propertyName) {
+  public void onPropertyChange(Player player) {
     Platform.runLater(() -> {
       updatePlayerMoney(player);
       updatePlayerProperties(player);

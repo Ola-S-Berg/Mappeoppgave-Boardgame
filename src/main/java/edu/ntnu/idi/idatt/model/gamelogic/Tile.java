@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.model.gamelogic;
 
 import edu.ntnu.idi.idatt.model.actions.TileAction;
+import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
 
 /**
  * Class representing a tile on the game board.
@@ -52,6 +53,38 @@ public class Tile {
    */
   public int getTileId() {
     return tileId;
+  }
+
+  /**
+   * Gets the tile name for a Monopoly board action tile.
+   *
+   * @param tile The tile to get the name for.
+   * @return A string representation of the action tile.
+   */
+  public static String getTileName(Tile tile) {
+    if (tile == null) {
+      return "unknown";
+    }
+
+    if (tile.getAction() == null) {
+      return "Tile " + tile.getTileId();
+    }
+
+    if (tile.getAction() instanceof PropertyTileAction propertyAction) {
+      return propertyAction.getPropertyName();
+    }
+
+    String actionType = tile.getAction().getClass().getSimpleName();
+    return switch (actionType) {
+      case "StartTileAction" -> "Start";
+      case "JailTileAction" -> "Jail";
+      case "FreeParkingAction" -> "Free Parking";
+      case "GoToJailAction" -> "Go To Jail";
+      case "TaxTileAction" -> "Income Tax";
+      case "WealthTaxTileAction" -> "Wealth Tax";
+      case "ChanceTileAction" -> "Chance";
+      default -> "Tile " + tile.getTileId();
+    };
   }
 
   /**

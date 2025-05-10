@@ -50,6 +50,11 @@ public class PropertyTileAction implements TileAction {
     this.owner = null;
   }
 
+  /**
+   * Sets the game controller for this action.
+   *
+   * @param controller The controller for this action.
+   */
   public void setController(MonopolyGameController controller) {
     this.controller = controller;
   }
@@ -85,7 +90,7 @@ public class PropertyTileAction implements TileAction {
               player.addProperty(this);
 
               if (controller != null) {
-                controller.updatePlayerProperty(player, propertyName);
+                controller.updatePlayerProperty(player);
                 controller.updatePlayerMoney(player);
               }
 
@@ -165,10 +170,18 @@ public class PropertyTileAction implements TileAction {
   /**
    * Sets the owner of this property.
    *
-   * @param player The player who owns the property.
+   * @param player The player to set ownership of the property to.
    */
   public void setOwner(Player player) {
     this.owner = player;
+  }
+
+  /**
+   * Gets the owner of this property.
+   * @return The player who owns this property.
+   */
+  public Player getOwner() {
+    return this.owner;
   }
 
   /**

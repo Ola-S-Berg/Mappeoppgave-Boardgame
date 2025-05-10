@@ -37,6 +37,10 @@ public class ChanceTileAction implements TileAction {
 
     System.out.println(player.getName() + " draws a chance card: " + action);
 
+    if (controller != null) {
+      controller.updateActionLabel(player.getName() + " draws a chance card: " + action);
+    }
+
     executeChanceAction(player, actionIndex);
   }
 
@@ -47,7 +51,8 @@ public class ChanceTileAction implements TileAction {
    * @param actionIndex The index of the action to perform.
    */
   private void executeChanceAction(Player player, int actionIndex) {
-
+    String actionMessage;
+    int playerCount = 0;
     switch (actionIndex) {
       case 0: // Move forward 3 spaces
         Tile destinationTile = player.getCurrentTile();
@@ -56,7 +61,14 @@ public class ChanceTileAction implements TileAction {
             destinationTile = destinationTile.getNextTile();
           }
         }
-        System.out.println(player.getName() + " moves forward 3 spaces");
+
+        actionMessage = player.getName() + " moves forward 3 spaces to tile " + Tile.getTileName(destinationTile);
+        System.out.println(actionMessage);
+
+        if (controller != null) {
+          controller.updateActionLabel(actionMessage);
+        }
+
         player.placeOnTile(destinationTile);
         if (destinationTile.getAction() != null && !(destinationTile.getAction() instanceof ChanceTileAction)) {
           if (destinationTile.getAction() instanceof PropertyTileAction) {
@@ -65,14 +77,29 @@ public class ChanceTileAction implements TileAction {
           destinationTile.getAction().perform(player);
         }
         break;
+
       case 1: // Collect 5000 from the bank.
         player.addMoney(5000);
-        System.out.println(player.getName() + " collects 5000 from the bank");
+        actionMessage= player.getName() + " collects 5000 from the bank";
+        System.out.println(actionMessage);
+
+        if (controller != null) {
+          controller.updateActionLabel(actionMessage);
+          controller.updatePlayerMoney(player);
+        }
         break;
+
       case 2: // Pay 3000 to the bank.
         player.payMoney(3000);
-        System.out.println(player.getName() + " pays 3000 to the bank");
+        actionMessage = player.getName() + " pays 3000 to the bank";
+        System.out.println(actionMessage);
+
+        if (controller != null) {
+          controller.updateActionLabel(actionMessage);
+          controller.updatePlayerMoney(player);
+        }
         break;
+
       case 3: // Advance to the nearest landmark.
         int currentPosition = player.getCurrentTile().getTileId();
         Tile nearestLandmarkTile6 = player.getGame().getBoard().getTile(6);
@@ -92,9 +119,15 @@ public class ChanceTileAction implements TileAction {
           landmarkTile = nearestLandmarkTile36;
         }
 
-        if (landmarkTile != null) {
-          System.out.println(player.getName() + " advances to the nearest landmark: " +
-              ((PropertyTileAction)landmarkTile.getAction()).getPropertyName());
+        if (landmarkTile != null && landmarkTile.getAction() instanceof PropertyTileAction) {
+          String propertyName = ((PropertyTileAction)landmarkTile.getAction()).getPropertyName();
+          actionMessage = player.getName() + " advances to the nearest landmark: " + propertyName;
+          System.out.println(actionMessage);
+
+          if (controller != null) {
+            controller.updateActionLabel(actionMessage);
+          }
+
           player.placeOnTile(landmarkTile);
 
           if (landmarkTile.getAction() != null && landmarkTile.getAction() instanceof PropertyTileAction propertyAction) {
@@ -102,27 +135,53 @@ public class ChanceTileAction implements TileAction {
             propertyAction.perform(player);
           }
         } else {
-          System.out.println("No landmark found");
+          actionMessage = "No landmark found";
+          System.out.println(actionMessage);
+
+          if (controller != null) {
+            controller.updateActionLabel(actionMessage);
+          }
         }
         break;
       case 4: // Pay each player 1000.
         for (Player otherPlayer : player.getGame().getPlayers()) {
           if (otherPlayer != player) {
             player.payPlayer(otherPlayer, 1000);
+            controller.updatePlayerMoney(otherPlayer);
+            playerCount++;
           }
         }
-        System.out.println(player.getName() + " pays 1000 to each player");
+        actionMessage = player.getName() + " pays 1000 to each player (total: " + (playerCount * 1000) + ")";
+        System.out.println(actionMessage);
+
+        if (controller != null) {
+          controller.updateActionLabel(actionMessage);
+          controller.updatePlayerMoney(player);
+        }
         break;
       case 5: // Collect 1000 from each player.
         for (Player otherPlayer : player.getGame().getPlayers()) {
           if (otherPlayer != player) {
             otherPlayer.payPlayer(player, 1000);
+            controller.updatePlayerMoney(otherPlayer);
+            playerCount++;
           }
         }
-        System.out.println(player.getName() + " collects 1000 from each player");
+        actionMessage = player.getName() + " collects 1000 from each player (total: " + (playerCount * 1000) + ")";
+        System.out.println(actionMessage);
+
+        if (controller != null) {
+          controller.updateActionLabel(actionMessage);
+          controller.updatePlayerMoney(player);
+        }
         break;
       default:
-        System.out.println("Unknown chance action");
+        actionMessage = "Unknown chance action";
+        System.out.println(actionMessage);
+
+        if (controller != null) {
+          controller.updateActionLabel(actionMessage);
+        }
         break;
     }
   }

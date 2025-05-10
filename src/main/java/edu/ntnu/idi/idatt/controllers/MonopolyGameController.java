@@ -299,10 +299,9 @@ public class MonopolyGameController implements BoardGameController {
    * Notifies the view that a property change has occurred for the specified player.
    *
    * @param player The player whose property is being updated.
-   * @param propertyName The name of the property being updated.
    */
-  public void updatePlayerProperty(Player player, String propertyName) {
-    view.onPropertyChange(player, propertyName);
+  public void updatePlayerProperty(Player player) {
+    view.onPropertyChange(player);
   }
 
   /**
@@ -324,6 +323,31 @@ public class MonopolyGameController implements BoardGameController {
    */
   public Stage getStage() {
     return stage;
+  }
+
+  /**
+   * Gets the property action at a specific tileId.
+   *
+   * @param tileId The tile ID to get the property action from.
+   * @return The property action.
+   */
+  public PropertyTileAction getPropertyAtTile(int tileId) {
+    Tile tile = boardGame.getBoard().getTile(tileId);
+    if (tile != null && tile.getAction() instanceof PropertyTileAction propertyAction) {
+      return propertyAction;
+    }
+    return null;
+  }
+
+  /**
+   * Updates the action label with a message string.
+   *
+   * @param message The message to update the label with.
+   */
+  public void updateActionLabel(String message) {
+    if (view != null) {
+      Platform.runLater(() -> view.setActionLabelText(message));
+    }
   }
 
   /**

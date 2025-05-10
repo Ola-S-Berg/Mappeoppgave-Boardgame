@@ -15,13 +15,14 @@ import java.util.HashMap;
 
 /**
  * Class representing the game board. Consists of a collection of tiles.
- * Also keeps a complete overview of all tiles.
+ * Also keeps a complete overview of all tiles with their associated action.
  */
 public class Board {
   private final Map<Integer, Tile> tiles = new HashMap<>();
 
   /**
    * Adds a tile to the board.
+   *
    * @param tile The tile to add.
    */
   public void addTile(Tile tile) {
@@ -30,6 +31,7 @@ public class Board {
 
   /**
    * Accessor that gets the ID (number) of the tile.
+   *
    * @param tileId The tile ID represented by an integer.
    * @return The ID.
    */
@@ -195,7 +197,6 @@ public class Board {
     board.getTile(26).setAction(new PropertyTileAction("Kristiansen Festning", 20000, "landmark"));
     board.getTile(36).setAction(new PropertyTileAction("Gloshaugen", 20000, "landmark"));
 
-    //Chance Tiles.
     board.getTile(3).setAction(new ChanceTileAction());
     board.getTile(8).setAction(new ChanceTileAction());
     board.getTile(13).setAction(new ChanceTileAction());
@@ -205,19 +206,14 @@ public class Board {
     board.getTile(34).setAction(new ChanceTileAction());
     board.getTile(39).setAction(new ChanceTileAction());
 
-    //Tax Tile.
     board.getTile(5).setAction(new TaxTileAction(10, 20000));
 
-    //Jail Tile.
     board.getTile(11).setAction(new JailTileAction());
 
-    //Free Parking.
     board.getTile(21).setAction(new FreeParkingAction());
 
-    //Go To Jail Tile.
     board.getTile(31).setAction(new GoToJailAction(11));
 
-    //Pay Tile.
     board.getTile(37).setAction(new WealthTaxTileAction(10000));
   }
 }
