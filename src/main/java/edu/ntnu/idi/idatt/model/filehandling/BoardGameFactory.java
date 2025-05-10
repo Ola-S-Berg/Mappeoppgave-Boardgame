@@ -263,9 +263,9 @@ public class BoardGameFactory {
   private static String getGameType(BoardGame boardGame) {
     String variantName = boardGame.getVariantName();
     if (variantName != null && variantName.toLowerCase().contains("monopoly")) {
-      return "monopoly_game";
+      return "monopolygame";
     } else {
-      return "ladder_game";
+      return "laddergame";
     }
   }
 

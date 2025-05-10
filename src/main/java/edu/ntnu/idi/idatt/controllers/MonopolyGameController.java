@@ -372,7 +372,7 @@ public class MonopolyGameController implements BoardGameController {
       String saveName = "MonopolyGameSave";
       BoardGameFactory.saveBoardGame(boardGame, saveName);
       new PlayerFileHandler().writeToFile(
-          BoardGameFactory.getPlayerSaveFilePath("monopoly_game", saveName),
+          BoardGameFactory.getPlayerSaveFilePath("monopolygame", saveName),
           boardGame.getPlayers());
       return true;
     } catch (IOException e) {

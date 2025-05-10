@@ -30,8 +30,8 @@ import javafx.stage.Stage;
 public class GameSelectionView {
   private final MainApp application;
   private Scene scene;
-  private static final String LADDER_GAME_DIRECTORY = "src/main/resources/saves/ladder_game";
-  private static final String MONOPOLY_GAME_DIRECTORY = "src/main/resources/saves/monopoly_game";
+  private static final String LADDER_GAME_DIRECTORY = "src/main/resources/saves/laddergame";
+  private static final String MONOPOLY_GAME_DIRECTORY = "src/main/resources/saves/monopolygame";
 
   /**
    * Constructor that creates the game selection view.
@@ -256,7 +256,7 @@ public class GameSelectionView {
    */
   private void loadGame(String saveName, String gameType) {
     try {
-      String gameDirectoryType = gameType.equals("Ladder Game") ? "ladder_game" : "monopoly_game";
+      String gameDirectoryType = gameType.equals("Ladder Game") ? "laddergame" : "monopolygame";
       BoardGame loadedGame = BoardGameFactory.loadSavedGame(gameDirectoryType, saveName);
       String gameVariation = loadedGame.getVariantName();
 

@@ -185,7 +185,7 @@ public class LadderGameController implements BoardGameController {
       String saveName = "LadderGameSave";
       BoardGameFactory.saveBoardGame(boardGame, saveName);
       new PlayerFileHandler().writeToFile(
-          BoardGameFactory.getPlayerSaveFilePath("ladder_game", saveName),
+          BoardGameFactory.getPlayerSaveFilePath("laddergame", saveName),
           boardGame.getPlayers());
       return true;
     } catch (IOException e) {
