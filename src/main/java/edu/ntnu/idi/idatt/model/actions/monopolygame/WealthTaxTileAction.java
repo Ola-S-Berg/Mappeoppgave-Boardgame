@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
 import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;

@@ -1,15 +1,14 @@
 package edu.ntnu.idi.idatt.controllers;
 
+import edu.ntnu.idi.idatt.MainApp;
 import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
-import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
+import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.views.gameviews.LadderGameView;
-import edu.ntnu.idi.idatt.MainApp;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -210,8 +209,6 @@ public class LadderGameController implements BoardGameController {
    * Restarts the game with the same players.
    */
   public void restartGame() {
-    BoardGame newGame = BoardGameFactory.createBoardGame(gameVariation);
-
     String[] playerNames = new String[boardGame.getPlayers().size()];
     String[] playerTokens = new String[boardGame.getPlayers().size()];
 
@@ -226,6 +223,8 @@ public class LadderGameController implements BoardGameController {
     Stage newStage = new Stage();
     MainApp application = new MainApp();
     application.start(newStage);
+
+    BoardGame newGame = BoardGameFactory.createBoardGame(gameVariation);
 
     for (int i = 0; i < playerNames.length; i++) {
       Player player = new Player(playerNames[i], playerTokens[i], newGame, 100000);
@@ -278,7 +277,8 @@ public class LadderGameController implements BoardGameController {
    * @param playerIndex The index of the player.
    * @param totalPlayers The total number of players in the game.
    * @param baseRadius The base radius to use for the offset calculation.
-   * @return A double array where the first element is the X offset and the second element is the Y offset.
+   * @return A double array where the first element is the X offset
+   *         and the second element is the Y offset.
    */
   public double[] calculateTokenOffset(int playerIndex, int totalPlayers, double baseRadius) {
     if (totalPlayers <= 0) {

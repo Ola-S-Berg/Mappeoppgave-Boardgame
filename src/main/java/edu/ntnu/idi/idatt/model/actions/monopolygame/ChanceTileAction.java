@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.model.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
-import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.util.Random;
@@ -62,7 +62,8 @@ public class ChanceTileAction implements TileAction {
           }
         }
 
-        actionMessage = player.getName() + " moves forward 3 spaces to tile " + Tile.getTileName(destinationTile);
+        actionMessage = player.getName() + " moves forward 3 spaces to tile "
+            + Tile.getTileName(destinationTile);
         System.out.println(actionMessage);
 
         if (controller != null) {
@@ -70,7 +71,8 @@ public class ChanceTileAction implements TileAction {
         }
 
         player.placeOnTile(destinationTile);
-        if (destinationTile.getAction() != null && !(destinationTile.getAction() instanceof ChanceTileAction)) {
+        if (destinationTile.getAction() != null
+            && !(destinationTile.getAction() instanceof ChanceTileAction)) {
           if (destinationTile.getAction() instanceof PropertyTileAction) {
             ((PropertyTileAction) destinationTile.getAction()).setController(this.controller);
           }
@@ -80,7 +82,7 @@ public class ChanceTileAction implements TileAction {
 
       case 1: // Collect 5000 from the bank.
         player.addMoney(5000);
-        actionMessage= player.getName() + " collects 5000 from the bank";
+        actionMessage = player.getName() + " collects 5000 from the bank";
         System.out.println(actionMessage);
 
         if (controller != null) {
@@ -120,7 +122,7 @@ public class ChanceTileAction implements TileAction {
         }
 
         if (landmarkTile != null && landmarkTile.getAction() instanceof PropertyTileAction) {
-          String propertyName = ((PropertyTileAction)landmarkTile.getAction()).getPropertyName();
+          String propertyName = ((PropertyTileAction) landmarkTile.getAction()).getPropertyName();
           actionMessage = player.getName() + " advances to the nearest landmark: " + propertyName;
           System.out.println(actionMessage);
 
@@ -130,7 +132,8 @@ public class ChanceTileAction implements TileAction {
 
           player.placeOnTile(landmarkTile);
 
-          if (landmarkTile.getAction() != null && landmarkTile.getAction() instanceof PropertyTileAction propertyAction) {
+          if (landmarkTile.getAction() != null
+              && landmarkTile.getAction() instanceof PropertyTileAction propertyAction) {
             propertyAction.setController(this.controller);
             propertyAction.perform(player);
           }
@@ -151,7 +154,8 @@ public class ChanceTileAction implements TileAction {
             playerCount++;
           }
         }
-        actionMessage = player.getName() + " pays 1000 to each player (total: " + (playerCount * 1000) + ")";
+        actionMessage = player.getName() + " pays 1000 to each player (total: "
+            + (playerCount * 1000) + ")";
         System.out.println(actionMessage);
 
         if (controller != null) {
@@ -167,7 +171,8 @@ public class ChanceTileAction implements TileAction {
             playerCount++;
           }
         }
-        actionMessage = player.getName() + " collects 1000 from each player (total: " + (playerCount * 1000) + ")";
+        actionMessage = player.getName() + " collects 1000 from each player (total: "
+            + (playerCount * 1000) + ")";
         System.out.println(actionMessage);
 
         if (controller != null) {

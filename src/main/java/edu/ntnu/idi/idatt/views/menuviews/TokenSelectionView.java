@@ -31,7 +31,7 @@ public class TokenSelectionView {
   private static final Logger LOGGER = Logger.getLogger(TokenSelectionView.class.getName());
 
 
-  private final String[] TOKEN_PATHS = {
+  private final String[] tokenPaths = {
       "/Images/tokens/BlueToken.png",
       "/Images/tokens/LightBlueToken.png",
       "/Images/tokens/RedToken.png",
@@ -42,7 +42,7 @@ public class TokenSelectionView {
   /**
    * Defines the positions for each token.
    */
-  private final int[][] TOKEN_POSITIONS = {
+  private final int[][] tokenPositions = {
       {1, 0},
       {0, 1},
       {1, 1},
@@ -91,12 +91,12 @@ public class TokenSelectionView {
     tokenGrid.setHgap(20);
     tokenGrid.setVgap(20);
 
-    tokenButtons = new Button[TOKEN_PATHS.length];
+    tokenButtons = new Button[tokenPaths.length];
 
-    for (int i = 0; i < TOKEN_PATHS.length; i++) {
+    for (int i = 0; i < tokenPaths.length; i++) {
       try {
         Image tokenImage = new Image(
-            Objects.requireNonNull(getClass().getResourceAsStream(TOKEN_PATHS[i])));
+            Objects.requireNonNull(getClass().getResourceAsStream(tokenPaths[i])));
         ImageView tokenImageView = new ImageView(tokenImage);
         tokenImageView.setFitHeight(80);
         tokenImageView.setFitWidth(80);
@@ -109,12 +109,12 @@ public class TokenSelectionView {
         tokenButtons[i] = tokenButton;
 
         final int tokenIndex = i;
-        tokenButton.setOnAction(event -> selectToken(TOKEN_PATHS[tokenIndex]));
+        tokenButton.setOnAction(event -> selectToken(tokenPaths[tokenIndex]));
 
-        tokenGrid.add(tokenButton, TOKEN_POSITIONS[i][0], TOKEN_POSITIONS[i][1]);
+        tokenGrid.add(tokenButton, tokenPositions[i][0], tokenPositions[i][1]);
 
       } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Error loading token image: " + TOKEN_PATHS[i] ,e);
+        LOGGER.log(Level.SEVERE, "Error loading token image: " + tokenPaths[i], e);
       }
     }
 
@@ -123,7 +123,8 @@ public class TokenSelectionView {
     Button backButton = new Button("Back To Player Name Selection");
     backButton.getStyleClass().add("button");
     backButton.getStyleClass().add("button-secondary");
-    backButton.setOnAction(event -> application.showPlayerNameView(selectedGame, playerNames.length));
+    backButton.setOnAction(event ->
+        application.showPlayerNameView(selectedGame, playerNames.length));
 
     mainLayout.getChildren().add(backButton);
 
@@ -151,13 +152,13 @@ public class TokenSelectionView {
       Label titleLabel = (Label) layout.getChildren().getFirst();
       titleLabel.setText(playerNames[currentPlayerIndex] + ", Select Your Token");
 
-      for (int i = 0; i < TOKEN_PATHS.length; i++) {
+      for (int i = 0; i < tokenPaths.length; i++) {
         if (i < tokenButtons.length) {
           Button tokenButton = tokenButtons[i];
 
           boolean tokenAlreadySelected = false;
           for (int j = 0; j < currentPlayerIndex; j++) {
-            if (j < playerTokens.length && TOKEN_PATHS[i].equals(playerTokens[j])) {
+            if (j < playerTokens.length && tokenPaths[i].equals(playerTokens[j])) {
               tokenAlreadySelected = true;
               break;
             }

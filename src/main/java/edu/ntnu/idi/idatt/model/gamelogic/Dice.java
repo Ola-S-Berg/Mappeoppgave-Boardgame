@@ -1,4 +1,5 @@
 package edu.ntnu.idi.idatt.model.gamelogic;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class Dice {
 
   /**
    * Creates an array list of dice and adds a pre-defined number of dice.
+   *
    * @param numberOfDice The number of dice to add.
    */
   public Dice(int numberOfDice) {
@@ -21,6 +23,7 @@ public class Dice {
 
   /**
    * Method for summarizing the values of all die rolled.
+   *
    * @return Returns the sum of pips.
    */
   public int roll() {

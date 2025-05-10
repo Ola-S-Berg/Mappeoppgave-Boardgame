@@ -22,6 +22,7 @@ public class PlayerCountView {
 
   /**
    * Constructor that creates the player count view.
+   *
    * @param application The main application instance.
    * @param selectedGame The game selected by the user.
    */
@@ -75,6 +76,7 @@ public class PlayerCountView {
 
   /**
    * Returns the scene for this view.
+   *
    * @return The scene.
    */
   public Scene getScene() {

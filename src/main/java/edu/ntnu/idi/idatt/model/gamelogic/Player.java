@@ -1,13 +1,13 @@
 package edu.ntnu.idi.idatt.model.gamelogic;
 
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Class representing a player in the game
+ * Class representing a player in the game.
  */
 public class Player {
   private final String name;
@@ -36,6 +36,7 @@ public class Player {
 
   /**
    * Sets the game instance for this player.
+   *
    * @param game The game associated with this player.
    */
   public void setGame(BoardGame game) {
@@ -44,9 +45,10 @@ public class Player {
 
   /**
    * Places the player on a specific tile.
+   *
    * @param tile The tile to place the player on.
    */
-  public void placeOnTile (Tile tile) {
+  public void placeOnTile(Tile tile) {
     if (currentTile != null) {
       currentTile.leavePlayer(this);
     }
@@ -61,9 +63,10 @@ public class Player {
   /**
    * Moves the player a certain amount of tile based on pips rolled from dice.
    * Notifies BoardGame about movement and game win.
+   *
    * @param steps The number of steps the player moves.
    */
-  public void move (int steps) {
+  public void move(int steps) {
     if (waitTurn) {
       System.out.println(name + " Skips this turn");
       waitTurn = false;
@@ -140,6 +143,7 @@ public class Player {
 
   /**
    * Adds a property to the player's owned properties.
+   *
    * @param property The property to add.
    */
   public void addProperty(PropertyTileAction property) {
@@ -174,15 +178,17 @@ public class Player {
     for (PropertyTileAction property : ownedProperties) {
       property.setOwner(null);
     }
+
     ownedProperties.clear();
 
-    if (game!= null) {
+    if (game != null) {
       game.playerBankrupt(this);
     }
   }
 
   /**
    * Gets the current tile the player is standing on.
+   *
    * @return The current tile.
    */
   public Tile getCurrentTile() {
@@ -200,6 +206,7 @@ public class Player {
 
   /**
    * Sets whether the player should skip their next turn.
+   *
    * @param skip True if the player has landed on a skip turn tile.
    */
   public void setWaitTurn(boolean skip) {
@@ -208,6 +215,7 @@ public class Player {
 
   /**
    * Checks if the player skips their next turn.
+   *
    * @return True if the player skips their next turn.
    */
   public boolean willWaitTurn() {
@@ -222,11 +230,12 @@ public class Player {
    */
   @Override
   public String toString() {
-      return "Player{name='" + name + "', tile=" + currentTile.getTileId() + "}";
+    return "Player{name='" + name + "', tile=" + currentTile.getTileId() + "}";
   }
 
   /**
    * Accessor method that gets the board game instance a player is playing on.
+   *
    * @return The board game.
    */
   public BoardGame getGame() {
@@ -244,6 +253,7 @@ public class Player {
 
   /**
    * Stores a temporary property for the player.
+   *
    * @param key The property key.
    * @param value The property value.
    */
@@ -253,6 +263,7 @@ public class Player {
 
   /**
    * Gets a temporary property value.
+   *
    * @param key The property key.
    * @return The property value, or null if not found.
    */
@@ -262,6 +273,7 @@ public class Player {
 
   /**
    * Gets all properties owned by this player.
+   *
    * @return The list of properties owned by this player.
    */
   public List<PropertyTileAction> getOwnedProperties() {
@@ -270,6 +282,7 @@ public class Player {
 
   /**
    * Gets the player's current money.
+   *
    * @return The player's current money.
    */
   public int getMoney() {

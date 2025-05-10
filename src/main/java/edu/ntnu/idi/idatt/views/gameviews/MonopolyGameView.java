@@ -1,22 +1,23 @@
 package edu.ntnu.idi.idatt.views.gameviews;
 
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * View for the "Monopoly Game" game.
@@ -45,6 +46,7 @@ public class MonopolyGameView extends AbstractBoardGameView {
 
   /**
    * Gets the board image path for the Monopoly game.
+   *
    * @return The image path.
    */
   @Override
@@ -114,14 +116,16 @@ public class MonopolyGameView extends AbstractBoardGameView {
    * @param diceValue The value rolled on the dice which determined the movement.
    */
   @Override
-  protected void updateStatusLabelForMove(Player player, int fromTileId, int toTileId, int diceValue) {
+  protected void updateStatusLabelForMove(Player player, int fromTileId,
+      int toTileId, int diceValue) {
     Tile currentTile = player.getCurrentTile();
     String tileName = currentTile != null ? Tile.getTileName(currentTile) : "unknown";
 
     if (diceValue > 0) {
       statusLabel.setText(player.getName() + " rolled " + diceValue + " and landed on " + tileName);
     } else if (fromTileId != toTileId) {
-      statusLabel.setText(player.getName() + " moved from tile " + fromTileId + " to " + tileName + " due to an action");
+      statusLabel.setText(player.getName() + " moved from tile " + fromTileId
+          + " to " + tileName + " due to an action");
     }
   }
 
@@ -153,12 +157,14 @@ public class MonopolyGameView extends AbstractBoardGameView {
           PropertyTileAction property = monopolyController.getPropertyAtTile(currentTileId);
           if (property != null) {
             if (property.getOwner() == null) {
-              actionLabel.setText(tileName + " is unowned and can be purchased for " + (property.getCost()));
+              actionLabel.setText(tileName + " is unowned and can be purchased for "
+                  + (property.getCost()));
             } else if (property.getOwner() == player) {
               actionLabel.setText(player.getName() + " owns this property");
             } else {
               int rentAmount = property.getCost() * 2 / 10;
-              actionLabel.setText(player.getName() + " must pay " + (rentAmount) + " to " + property.getOwner().getName());
+              actionLabel.setText(player.getName() + " must pay " + (rentAmount) + " to "
+                  + property.getOwner().getName());
             }
           }
           break;
@@ -175,7 +181,8 @@ public class MonopolyGameView extends AbstractBoardGameView {
           actionLabel.setText(player.getName() + " landed on Start and collects 20000$");
           break;
         case "FreeParkingAction":
-          actionLabel.setText(player.getName() + " landed on Free Parking and won't pay rent next turn");
+          actionLabel.setText(player.getName()
+              + " landed on Free Parking and won't pay rent next turn");
           break;
         case "GoToJailAction":
           actionLabel.setText(player.getName() + " is being sent to jail");
@@ -230,9 +237,10 @@ public class MonopolyGameView extends AbstractBoardGameView {
   }
 
   /**
-   * Sets up the player information panel as a vertically oriented box containing details about each player.
-   * The panel includes a title and dynamically generated cards for every player in the game. Each card
-   * displays the specific player's information. The method also adds a scrollable container to ensure
+   * Sets up the player information panel as a box containing details about each player.
+   * The panel includes a title and dynamically generated cards for every player in the game.
+   * Each card displays the specific player's information.
+   * The method also adds a scrollable container to ensure
    * all player information is accessible, even if it exceeds the visible space.
    *
    * @return A VBox instance containing the styled and scrollable player information panel.
@@ -240,7 +248,8 @@ public class MonopolyGameView extends AbstractBoardGameView {
   private VBox setupPlayerInfoPanel() {
     VBox infoPanel = new VBox(10);
     infoPanel.setPadding(new Insets(10));
-    infoPanel.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #cccccc; -fx-border-width: 1px");
+    infoPanel.setStyle("-fx-background-color: #f5f5f5;"
+        + " -fx-border-color: #cccccc; -fx-border-width: 1px");
     infoPanel.setPrefWidth(200);
     infoPanel.setMinWidth(180);
 
@@ -278,8 +287,8 @@ public class MonopolyGameView extends AbstractBoardGameView {
   private VBox createPlayerInfoCard(Player player) {
     VBox playerCard = new VBox(5);
     playerCard.setPadding(new Insets(8));
-    playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; " +
-        "-fx-border-width: 1px; -fx-border-radius: 5px;");
+    playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; "
+        + "-fx-border-width: 1px; -fx-border-radius: 5px;");
 
     String playerColor = getPlayerColorStyle(player);
 
@@ -377,7 +386,8 @@ public class MonopolyGameView extends AbstractBoardGameView {
 
     if (properties.isEmpty()) {
       Label noPropertiesLabel = new Label("No properties owned");
-      noPropertiesLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #999999; -fx-font-size: 11px;");
+      noPropertiesLabel.setStyle("-fx-font-style: italic;"
+          + " -fx-text-fill: #999999; -fx-font-size: 11px;");
       propertiesBox.getChildren().add(noPropertiesLabel);
     } else {
       properties.sort(Comparator.comparing(PropertyTileAction::getPropertyName));
@@ -390,26 +400,6 @@ public class MonopolyGameView extends AbstractBoardGameView {
     }
   }
 
-  /**
-   * Updates the displayed money information for a specified player in the game's player information panel.
-   * This method locates the corresponding UI label for the player's money and updates its value to reflect
-   * the player's current monetary amount.
-   *
-   * @param player The Player object whose money information needs to be updated in the user interface.
-   */
-  public void updatePlayerMoney(Player player) {
-    Platform.runLater(() -> {
-      VBox playerCard = playerInfoCards.get(player);
-      if (playerCard != null) {
-        for (javafx.scene.Node node : playerCard.getChildren()) {
-          if (node instanceof Label && node.getId() != null && node.getId().startsWith("money-" + player.getName())) {
-            ((Label) node).setText(String.valueOf(player.getMoney()));
-            break;
-          }
-        }
-      }
-    });
-  }
 
   /**
    * Updates the properties section of the specified player's information card in the UI.
@@ -434,18 +424,40 @@ public class MonopolyGameView extends AbstractBoardGameView {
   }
 
   /**
-   * Updates the visual highlight of a player's card in the game interface based on whether they are the current player.
+   * Updates the displayed money information for a player in the game's player information panel.
+   * This method locates the corresponding UI label for the player's money and
+   * updates its value to reflect the player's current monetary amount.
+   *
+   * @param player The Player object whose money information needs to be updated in the UI.
+   */
+  public void updatePlayerMoney(Player player) {
+    Platform.runLater(() -> {
+      VBox playerCard = playerInfoCards.get(player);
+      if (playerCard != null) {
+        for (javafx.scene.Node node : playerCard.getChildren()) {
+          if (node instanceof Label && node.getId() != null
+              && node.getId().startsWith("money-" + player.getName())) {
+            ((Label) node).setText(String.valueOf(player.getMoney()));
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Updates the visual highlight of the current player's card in the game interface.
    *
    * @param playerCard The visual element representing the player's card
    * @param player The player associated with the card being updated
    */
   private void updatePlayerCardHighlight(VBox playerCard, Player player) {
     if (player.equals(boardGame.getCurrentPlayer())) {
-      playerCard.setStyle("-fx-background-color: #e3f2fd; -fx-border-color: #2196f3; " +
-          "-fx-border-width: 2px; -fx-border-radius: 5px;");
+      playerCard.setStyle("-fx-background-color: #e3f2fd; -fx-border-color: #2196f3; "
+          + "-fx-border-width: 2px; -fx-border-radius: 5px;");
     } else {
-      playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; " +
-          "-fx-border-width: 1px; -fx-border-radius: 5px;");
+      playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; "
+          + "-fx-border-width: 1px; -fx-border-radius: 5px;");
     }
   }
 
@@ -488,10 +500,11 @@ public class MonopolyGameView extends AbstractBoardGameView {
     Platform.runLater(() -> {
       VBox playerCard = playerInfoCards.get(player);
       if (playerCard != null) {
-        playerCard.setStyle("-fx-background-color: #ffebee; -fx-border-color: #ef5350;" +
-            "-fx-border-width: 1px; -fx-border-radius: 5px; -fx-opacity: 0.7");
+        playerCard.setStyle("-fx-background-color: #ffebee; -fx-border-color: #ef5350;"
+            + "-fx-border-width: 1px; -fx-border-radius: 5px; -fx-opacity: 0.7");
         Label bankruptLabel = new Label("Bankrupt");
-        bankruptLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #d32f2f;");
+        bankruptLabel.setStyle("-fx-font-size: 12px;"
+            + "-fx-font-weight: bold; -fx-text-fill: #d32f2f;");
 
         boolean hasLabel = false;
         for (javafx.scene.Node node : playerCard.getChildren()) {
@@ -534,8 +547,8 @@ public class MonopolyGameView extends AbstractBoardGameView {
 
       VBox winnerCard = playerInfoCards.get(winner);
       if (winnerCard != null) {
-        winnerCard.setStyle("-fx-background-color: #e8f5e9; -fx-border-color: #4caf50; " +
-            "-fx-border-width: 2px; -fx-border-radius: 5px;");
+        winnerCard.setStyle("-fx-background-color: #e8f5e9; -fx-border-color: #4caf50; "
+            + "-fx-border-width: 2px; -fx-border-radius: 5px;");
       }
 
       Alert alert = new Alert(Alert.AlertType.INFORMATION);

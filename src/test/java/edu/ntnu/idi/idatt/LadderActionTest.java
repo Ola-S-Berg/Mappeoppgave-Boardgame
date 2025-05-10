@@ -1,6 +1,6 @@
 package edu.ntnu.idi.idatt;
 
-import edu.ntnu.idi.idatt.model.actions.ladder_game.LadderAction;
+import edu.ntnu.idi.idatt.model.actions.laddergame.LadderAction;
 
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;

@@ -1,9 +1,8 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
-
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -175,7 +174,7 @@ public class BoardGameFactory {
             player.placeOnTile(loadedGame.getBoard().getTile(1));
           }
         } catch (NumberFormatException e) {
-          LOGGER.log(Level.WARNING, "Could not parse saved tile ID: " + savedTileIdStr ,e);
+          LOGGER.log(Level.WARNING, "Could not parse saved tile ID: " + savedTileIdStr, e);
           player.placeOnTile(loadedGame.getBoard().getTile(1));
         }
       } else {
@@ -203,7 +202,8 @@ public class BoardGameFactory {
     if (currentPlayerIndex >= 0 && currentPlayerIndex < players.size()) {
       loadedGame.initializeGameWithCurrentPlayer(currentPlayerIndex);
     } else {
-      LOGGER.log(Level.WARNING, "Could not find current player in saved game, starting with first player instead.");
+      LOGGER.log(Level.WARNING, "Could not find current player in saved game,"
+          + " starting with first player instead.");
       loadedGame.initializeGame();
     }
 
@@ -218,11 +218,11 @@ public class BoardGameFactory {
    * @param propertyName The name of the property to assign.
    */
   private static void addPropertyToPlayer(BoardGame game, Player player, String propertyName) {
-    if(!game.getVariantName().contains("Monopoly")) {
+    if (!game.getVariantName().contains("Monopoly")) {
       return;
     }
 
-    for (int i = 1 ; i <= 40 ; i++) {
+    for (int i = 1; i <= 40; i++) {
       Tile tile = game.getBoard().getTile(i);
       if (tile != null && tile.getAction() instanceof PropertyTileAction propertyAction) {
         if (propertyAction.getPropertyName().equals(propertyName)) {
@@ -235,7 +235,8 @@ public class BoardGameFactory {
   }
 
   /**
-   * Ensures that the directory for saving files exists. If the directory does not exist, it creates it.
+   * Ensures that the directory for saving files exists.
+   * If the directory does not exist, it creates it.
    *
    * @return The path to the "saves" directory.
    * @throws IOException If an I/O error occurs while checking for or creating the directory.

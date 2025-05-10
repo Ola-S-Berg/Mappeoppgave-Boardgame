@@ -1,17 +1,18 @@
 package edu.ntnu.idi.idatt.model.gamelogic;
-import edu.ntnu.idi.idatt.model.actions.ladder_game.BackToStartAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.ChanceTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.FreeParkingAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.GoToJailAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.JailTileAction;
-import edu.ntnu.idi.idatt.model.actions.ladder_game.LadderAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.WealthTaxTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.StartTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.TaxTileAction;
-import edu.ntnu.idi.idatt.model.actions.ladder_game.WaitAction;
-import java.util.Map;
+
+import edu.ntnu.idi.idatt.model.actions.laddergame.BackToStartAction;
+import edu.ntnu.idi.idatt.model.actions.laddergame.LadderAction;
+import edu.ntnu.idi.idatt.model.actions.laddergame.WaitAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.ChanceTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.FreeParkingAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.GoToJailAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.JailTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.StartTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.TaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.WealthTaxTileAction;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class representing the game board. Consists of a collection of tiles.

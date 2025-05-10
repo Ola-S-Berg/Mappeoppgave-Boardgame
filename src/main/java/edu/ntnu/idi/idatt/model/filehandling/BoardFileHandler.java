@@ -1,30 +1,29 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.GsonBuilder;
-import edu.ntnu.idi.idatt.model.actions.ladder_game.BackToStartAction;
-import edu.ntnu.idi.idatt.model.actions.ladder_game.LadderAction;
-import edu.ntnu.idi.idatt.model.actions.ladder_game.WaitAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.ChanceTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.FreeParkingAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.GoToJailAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.JailTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.StartTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.TaxTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.WealthTaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.laddergame.BackToStartAction;
+import edu.ntnu.idi.idatt.model.actions.laddergame.LadderAction;
+import edu.ntnu.idi.idatt.model.actions.laddergame.WaitAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.ChanceTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.FreeParkingAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.GoToJailAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.JailTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.StartTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.TaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.WealthTaxTileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
-
-import com.google.gson.Gson;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -38,9 +37,9 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
    * Serializes a BoardGame object into a JSON representation, including the board's tiles
    * and their properties such as tile ID, the next tile in the sequence, and their actions.
    *
-   * @param boardGame the BoardGame object to be serialized; it contains the board and its tiles
-   * @return a JsonObject representing the serialized board game, including the board name, description,
-   *         and a list of tiles with their properties
+   * @param boardGame The BoardGame object to be serialized; it contains the board and its tiles
+   * @return A JsonObject representing the serialized board game, including the board name,
+   *          description, and a list of tiles with their properties
    */
   public JsonObject serializeBoard(BoardGame boardGame) {
     JsonObject boardJson = new JsonObject();
@@ -58,11 +57,14 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
 
     JsonArray tilesArray = new JsonArray();
 
-    int maxTileId = ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) ? 40 : 90;
+    int maxTileId = ("Monopoly Game".equals(variantName)
+        || "monopolyGame".equals(variantName)) ? 40 : 90;
 
     for (int i = 1; i <= maxTileId; i++) {
       Tile tile = boardGame.getBoard().getTile(i);
-      if (tile == null) continue;
+      if (tile == null) {
+        continue;
+      }
 
       JsonObject tileJson = new JsonObject();
       tileJson.addProperty("id", tile.getTileId());
@@ -130,9 +132,9 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
   }
 
   /**
-   * Reads the content of a JSON file and converts it into a list containing a single BoardGame object.
-   * The JSON file is expected to have a list of tiles with their properties, which are used to set up
-   * the game board and its relationships between tiles.
+   * Reads the content of a JSON file and converts it into a list containing a BoardGame object.
+   * The JSON file is expected to have a list of tiles with their properties,
+   * which are used to set up the game board and its relationships between tiles.
    *
    * @param filename the name of the file to read from
    * @return a list containing a single BoardGame object initialized based on the JSON file content
@@ -145,7 +147,8 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
 
     BoardGame boardGame = new BoardGame();
 
-    String variantName = boardJson.has("variantName") ? boardJson.get("variantName").getAsString() : "";
+    String variantName = boardJson.has("variantName")
+        ? boardJson.get("variantName").getAsString() : "";
     boardGame.setVariantName(variantName);
 
     if ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) {
@@ -202,6 +205,9 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
           case "wealthTax":
             int amount = tileJson.get("amount").getAsInt();
             tile.setAction(new WealthTaxTileAction(amount));
+            break;
+          default:
+            System.out.println("Could not find action type");
             break;
         }
       }

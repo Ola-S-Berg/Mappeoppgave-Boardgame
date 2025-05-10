@@ -1,8 +1,7 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -49,11 +48,11 @@ public class PlayerFileHandler implements FileHandler<Player> {
             PropertyTileAction::getPropertyName).collect(
             Collectors.joining(";"));
 
-        writer.write(player.getName() + ", " +
-            player.getToken() + ", " +
-            currentTileId + ", " +
-            player.getMoney() + ", " +
-            properties);
+        writer.write(player.getName() + ", "
+            + player.getToken() + ", "
+            + currentTileId + ", "
+            + player.getMoney() + ", "
+            + properties);
 
         writer.newLine();
       }
@@ -100,18 +99,18 @@ public class PlayerFileHandler implements FileHandler<Player> {
           }
 
           players.add(player);
-          System.out.println("Read player: " + name +
-              ", Token: " + token +
-              ", tileId: " + tileId +
-              ", money: " + money +
-              (tokens.length >= 5 ? ", properties: " + tokens[4].trim() : ""));
+          System.out.println("Read player: " + name
+              + ", Token: " + token
+              + ", tileId: " + tileId
+              + ", money: " + money
+              + (tokens.length >= 5 ? ", properties: " + tokens[4].trim() : ""));
         }
       }
 
       if (currentPlayerName == null && !players.isEmpty()) {
         players.getFirst().setProperty("isCurrentPlayer", "true");
-        System.out.println("No current player found, defaulting to first player: " +
-            players.getFirst().getName());
+        System.out.println("No current player found, defaulting to first player: "
+            + players.getFirst().getName());
       }
     }
 

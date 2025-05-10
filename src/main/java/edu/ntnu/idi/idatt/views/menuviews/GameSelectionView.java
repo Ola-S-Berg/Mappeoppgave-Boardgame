@@ -35,6 +35,7 @@ public class GameSelectionView {
 
   /**
    * Constructor that creates the game selection view.
+   *
    * @param application The application to create.
    */
   public GameSelectionView(MainApp application) {
@@ -113,7 +114,8 @@ public class GameSelectionView {
     HBox saveSection = new HBox(10);
     saveSection.setAlignment(Pos.CENTER);
 
-    String saveDirectory = gameType.equals("Ladder Game") ? LADDER_GAME_DIRECTORY : MONOPOLY_GAME_DIRECTORY;
+    String saveDirectory = gameType.equals("Ladder Game")
+        ? LADDER_GAME_DIRECTORY : MONOPOLY_GAME_DIRECTORY;
     String saveName = gameType.equals("Ladder Game") ? "LadderGameSave" : "MonopolyGameSave";
 
     File boardFile = new File(saveDirectory + "/" + saveName + "_board.json");
@@ -213,7 +215,8 @@ public class GameSelectionView {
     Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
     confirmDialog.setTitle("Confirm Deletion");
     confirmDialog.setHeaderText("Delete " + gameType + " save?");
-    confirmDialog.setContentText("Are you sure you want to delete this saved game? This action cannot be undone.");
+    confirmDialog.setContentText(
+        "Are you sure you want to delete this saved game? This action cannot be undone.");
 
     if (confirmDialog.getDialogPane() != null) {
       confirmDialog.getDialogPane().getStyleClass().add("dialog-pane");
@@ -274,6 +277,7 @@ public class GameSelectionView {
 
   /**
    * Returns the scene for this view.
+   *
    * @return The scene.
    */
   public Scene getScene() {

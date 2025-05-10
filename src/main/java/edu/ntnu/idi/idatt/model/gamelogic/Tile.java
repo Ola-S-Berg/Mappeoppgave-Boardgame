@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.model.gamelogic;
 
 import edu.ntnu.idi.idatt.model.actions.TileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 
 /**
  * Class representing a tile on the game board.
@@ -11,12 +11,18 @@ public class Tile {
   private final int tileId;
   private TileAction action;
 
+  /**
+   * The constructor for the tile class.
+   *
+   * @param tileId The ID of a tile.
+   */
   public Tile(int tileId) {
     this.tileId = tileId;
   }
 
   /**
    * Checks which tile the player has landed on. Only performs actions for Monopoly.
+   *
    * @param player The player that lands.
    */
   public void landPlayer(Player player) {
@@ -33,22 +39,25 @@ public class Tile {
 
   /**
    * Logs when a player leaves a tile.
+   *
    * @param player The player that leaves.
    */
-  public void leavePlayer(Player player){
+  public void leavePlayer(Player player) {
     System.out.println(player.getName() + " leaves at " + tileId);
   }
 
   /**
    * Sets the tile in sequence.
+   *
    * @param nextTile The next tile.
    */
-  public void setNextTile (Tile nextTile ) {
+  public void setNextTile(Tile nextTile) {
     this.nextTile = nextTile;
   }
 
   /**
    * Gets the tileID.
+   *
    * @return The tileID.
    */
   public int getTileId() {
@@ -89,6 +98,7 @@ public class Tile {
 
   /**
    * Gets the next tile in sequence.
+   *
    * @return The next tile.
    */
   public Tile getNextTile() {
@@ -97,6 +107,7 @@ public class Tile {
 
   /**
    * Sets an action for this tile.
+   *
    * @param action The action to be performed.
    */
   public void setAction(TileAction action) {
@@ -105,6 +116,7 @@ public class Tile {
 
   /**
    * Gets the action associated with this tile.
+   *
    * @return The tile action.
    */
   public TileAction getAction() {

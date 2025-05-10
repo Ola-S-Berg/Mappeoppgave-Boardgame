@@ -1,20 +1,19 @@
 package edu.ntnu.idi.idatt.controllers;
 
+import edu.ntnu.idi.idatt.MainApp;
 import edu.ntnu.idi.idatt.model.actions.TileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.ChanceTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.JailTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.StartTileAction;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.TaxTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.ChanceTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.JailTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.StartTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.TaxTileAction;
 import edu.ntnu.idi.idatt.model.filehandling.BoardGameFactory;
 import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
-import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
+import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.views.gameviews.MonopolyGameView;
-import edu.ntnu.idi.idatt.MainApp;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +39,7 @@ public class MonopolyGameController implements BoardGameController {
 
   /**
    * Constructor for the controller.
-   * Creates a thread factory for daemon threads to ensure the application does not hang on shutdown.
+   * Creates a thread factory for daemon threads to ensure the application doesn't hang on shutdown.
    *
    * @param boardGame The game model.
    * @param stage The JavaFX stage.
@@ -171,10 +170,14 @@ public class MonopolyGameController implements BoardGameController {
         try {
           Thread.sleep(1000);
 
-          if (isShutDown) return;
+          if (isShutDown) {
+            return;
+          }
 
           Platform.runLater(() -> {
-            if (isShutDown) return;
+            if (isShutDown) {
+              return;
+            }
 
             try {
               int fromTileId = player.getCurrentTile().getTileId();
@@ -201,7 +204,9 @@ public class MonopolyGameController implements BoardGameController {
 
           Thread.sleep(1000);
 
-          if (isShutDown) return;
+          if (isShutDown) {
+            return;
+          }
 
           Platform.runLater(() -> {
             if (!isShutDown) {
@@ -313,12 +318,18 @@ public class MonopolyGameController implements BoardGameController {
     view.onMoneyChange(player);
   }
 
+  /**
+   * Enables the roll button.
+   *
+   * @param disabled Not true if the roll button is to be enabled.
+   */
   public void enableRollButton(boolean disabled) {
     view.disableRollButton(!disabled);
   }
 
   /**
    * Returns the stage instance used by this controller.
+   *
    * @return The stage.
    */
   public Stage getStage() {
@@ -387,8 +398,6 @@ public class MonopolyGameController implements BoardGameController {
    */
   @Override
   public void restartGame() {
-    BoardGame newGame = BoardGameFactory.createBoardGame(gameVariation);
-
     String[] playerNames = new String[boardGame.getPlayers().size()];
     String[] playerTokens = new String[boardGame.getPlayers().size()];
 
@@ -403,6 +412,8 @@ public class MonopolyGameController implements BoardGameController {
     Stage newStage = new Stage();
     MainApp application = new MainApp();
     application.start(newStage);
+
+    BoardGame newGame = BoardGameFactory.createBoardGame(gameVariation);
 
     for (int i = 0; i < playerNames.length; i++) {
       Player player = new Player(playerNames[i], playerTokens[i], newGame, 200000);
@@ -436,14 +447,11 @@ public class MonopolyGameController implements BoardGameController {
 
     if (tileId < 11) {
       return new int[] {boardSize - 1 - (tileId - 1), 0};
-    }
-    else if (tileId < 21) {
+    } else if (tileId < 21) {
       return new int[] {0, tileId - 11};
-    }
-    else if (tileId < 31) {
+    } else if (tileId < 31) {
       return new int[] {tileId - 21, boardSize - 1};
-    }
-    else {
+    } else {
       return new int[] {boardSize - 1, boardSize - 1 - (tileId - 31)};
     }
   }
@@ -454,7 +462,8 @@ public class MonopolyGameController implements BoardGameController {
    * @param playerIndex The index of the player.
    * @param totalPlayers The total number of players in the game.
    * @param baseRadius The base radius to use for the offset calculation.
-   * @return A double array where the first element is the X offset and the second element is the Y offset.
+   * @return A double array where the first element is the X offset
+   *         and the second element is the Y offset.
    */
   @Override
   public double[] calculateTokenOffset(int playerIndex, int totalPlayers, double baseRadius) {

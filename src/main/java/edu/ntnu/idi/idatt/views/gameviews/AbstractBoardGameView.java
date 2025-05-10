@@ -2,11 +2,14 @@ package edu.ntnu.idi.idatt.views.gameviews;
 
 import edu.ntnu.idi.idatt.controllers.BoardGameController;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
-import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGameObserver;
+import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -16,12 +19,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * Abstract base class for board game views.
@@ -133,8 +139,8 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     topSection.setAlignment(Pos.CENTER);
     topSection.setPadding(new Insets(0, 0, 10, 0));
 
-    Player startingPlayer = boardGame.getCurrentPlayer() != null ?
-                            boardGame.getCurrentPlayer() :
+    Player startingPlayer = boardGame.getCurrentPlayer() != null
+                          ? boardGame.getCurrentPlayer() :
                             boardGame.getPlayers().getFirst();
 
     statusLabel = new Label("Game Started! " + startingPlayer.getName() + "'s Turn To Roll");
@@ -156,7 +162,8 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   protected void setupBoardPane(BorderPane root) {
     StackPane boardPane = new StackPane();
     boardPane.setPadding(new Insets(5));
-    boardPane.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+    boardPane.setStyle("-fx-background-color: white;"
+        + " -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
     boardPane.prefWidthProperty().bind(root.widthProperty().multiply(0.85));
     boardPane.prefHeightProperty().bind(root.heightProperty().multiply(0.85));
     boardPane.setMinSize(400, 400);
@@ -169,9 +176,12 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     boardImageView.setPreserveRatio(true);
 
     boardGridPane = new GridPane();
-    boardImageView.imageProperty().addListener((obs, oldImg, newImg) -> updateGridPaneSize());
-    boardImageView.fitWidthProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
-    boardImageView.fitHeightProperty().addListener((obs, oldVal, newVal) -> updateGridPaneSize());
+    boardImageView.imageProperty().addListener((obs,
+        oldImg, newImg) -> updateGridPaneSize());
+    boardImageView.fitWidthProperty().addListener((obs,
+        oldVal, newVal) -> updateGridPaneSize());
+    boardImageView.fitHeightProperty().addListener((obs,
+        oldVal, newVal) -> updateGridPaneSize());
 
     int rows = getGridRows();
     int cols = getGridCols();
@@ -197,7 +207,8 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   protected void setupControlsPane(BorderPane root) {
     Button saveButton = new Button("Save Game");
     saveButton.setMinWidth(120);
-    saveButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    saveButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;"
+        + " -fx-background-color: #4CAF50; -fx-text-fill: white;");
     saveButton.setOnAction(event -> {
       if (controller.saveGame()) {
         statusLabel.setText("Game saved successfully!");
@@ -208,7 +219,8 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
 
     Button quitButton = new Button("Quit to Menu");
     quitButton.setMinWidth(120);
-    quitButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-color: #CC0000; -fx-text-fill: white;");
+    quitButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;"
+        + " -fx-background-color: #CC0000; -fx-text-fill: white;");
     quitButton.setOnAction(event -> controller.quitToMenu());
 
     diceView1 = new ImageView();
@@ -230,7 +242,8 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     rollButton = new Button();
     rollButton.setOnAction(event -> controller.rollDice());
 
-    Image rollDieImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/die/RollDie.png")));
+    Image rollDieImage = new Image(Objects.requireNonNull(
+        getClass().getResourceAsStream("/images/die/RollDie.png")));
     ImageView rollDieImageView = new ImageView(rollDieImage);
     rollDieImageView.setFitWidth(60);
     rollDieImageView.setFitHeight(60);
@@ -375,9 +388,12 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
    * @param playerIndex The player's index in the player list.
    * @param onFinished A callback to run when the animation completes.
    */
-  protected void animateTokenMovement(ImageView tokenView, int fromTileId, int toTileId, int playerIndex, Runnable onFinished) {
+  protected void animateTokenMovement(ImageView tokenView, int fromTileId,
+      int toTileId, int playerIndex, Runnable onFinished) {
     if (fromTileId == toTileId) {
-      if (onFinished != null) onFinished.run();
+      if (onFinished != null) {
+        onFinished.run();
+      }
       return;
     }
 
@@ -388,12 +404,14 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     StackPane toCell = getStackPaneAt(toCoords[0], toCoords[1]);
 
     if (fromCell == null || toCell == null) {
-      System.out.println("ERROR: Could not find cells for animation from " + fromTileId +
-          " to " + toTileId + " (coords: [" + fromCoords[0] + "," + fromCoords[1] +
-          "] to [" + toCoords[0] + "," + toCoords[1] + "])");
+      System.out.println("ERROR: Could not find cells for animation from " + fromTileId
+          + " to " + toTileId + " (coords: [" + fromCoords[0] + "," + fromCoords[1]
+          + "] to [" + toCoords[0] + "," + toCoords[1] + "])");
 
       positionTokenAtTile(tokenView, toTileId, playerIndex);
-      if (onFinished != null) onFinished.run();
+      if (onFinished != null) {
+        onFinished.run();
+      }
       return;
     }
 
@@ -401,11 +419,13 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       Bounds fromBounds = fromCell.localToScene(fromCell.getBoundsInLocal());
       Bounds toBounds = toCell.localToScene(toCell.getBoundsInLocal());
 
-      if (fromBounds.getWidth() <= 0 || fromBounds.getHeight() <= 0 ||
-          toBounds.getWidth() <= 0 || toBounds.getHeight() <= 0) {
+      if (fromBounds.getWidth() <= 0 || fromBounds.getHeight() <= 0
+          || toBounds.getWidth() <= 0 || toBounds.getHeight() <= 0) {
         System.out.println("ERROR: Invalid bounds for animation");
         positionTokenAtTile(tokenView, toTileId, playerIndex);
-        if (onFinished != null) onFinished.run();
+        if (onFinished != null) {
+          onFinished.run();
+        }
         return;
       }
 
@@ -421,11 +441,10 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       double offsetX = offsetPosition[0];
       double offsetY = offsetPosition[1];
 
-      double startX = fromBounds.getMinX() + (fromBounds.getWidth() / 2) + offsetX - (tokenSize / 2);
-      double startY = fromBounds.getMinY() + (fromBounds.getHeight() / 2) + offsetY - (tokenSize / 2);
-
-      double endX = toBounds.getMinX() + (toBounds.getWidth() / 2) + offsetX - (tokenSize / 2);
-      double endY = toBounds.getMinY() + (toBounds.getHeight() / 2) + offsetY - (tokenSize / 2);
+      double startX = fromBounds.getMinX() + (fromBounds.getWidth() / 2)
+          + offsetX - (tokenSize / 2);
+      double startY = fromBounds.getMinY() + (fromBounds.getHeight() / 2)
+          + offsetY - (tokenSize / 2);
 
       animatedToken.setLayoutX(startX);
       animatedToken.setLayoutY(startY);
@@ -438,6 +457,9 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
         currentParent.getChildren().remove(tokenView);
       }
 
+      double endX = toBounds.getMinX() + (toBounds.getWidth() / 2) + offsetX - (tokenSize / 2);
+      double endY = toBounds.getMinY() + (toBounds.getHeight() / 2) + offsetY - (tokenSize / 2);
+
       TranslateTransition transition = new TranslateTransition(Duration.millis(800), animatedToken);
       transition.setFromX(0);
       transition.setFromY(0);
@@ -447,7 +469,9 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       transition.setOnFinished(event -> {
         rootPane.getChildren().remove(animatedToken);
         positionTokenAtTile(tokenView, toTileId, playerIndex);
-        if (onFinished != null) onFinished.run();
+        if (onFinished != null) {
+          onFinished.run();
+        }
       });
 
       transition.play();
@@ -463,9 +487,9 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
    */
   protected StackPane getStackPaneAt(int row, int col) {
     for (javafx.scene.Node node : boardGridPane.getChildren()) {
-      if (node instanceof StackPane &&
-          GridPane.getRowIndex(node) == row &&
-          GridPane.getColumnIndex(node) == col) {
+      if (node instanceof StackPane
+          && GridPane.getRowIndex(node) == row
+          && GridPane.getColumnIndex(node) == col) {
         return (StackPane) node;
       }
     }
@@ -598,11 +622,14 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
    * @param toTileId The ID of the tile the player is moving to.
    * @param diceValue The value rolled on the dice which determined the movement.
    */
-  protected void updateStatusLabelForMove(Player player, int fromTileId, int  toTileId, int diceValue) {
+  protected void updateStatusLabelForMove(Player player, int fromTileId,
+                                          int  toTileId, int diceValue) {
     if (diceValue > 0) {
-      statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from " + fromTileId + " to " + toTileId);
+      statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from "
+          + fromTileId + " to " + toTileId);
     } else if (fromTileId != toTileId) {
-      statusLabel.setText(player.getName() + " moved from " + fromTileId + " to " + toTileId + " due to an action");
+      statusLabel.setText(player.getName() + " moved from " + fromTileId + " to "
+          + toTileId + " due to an action");
     }
   }
 

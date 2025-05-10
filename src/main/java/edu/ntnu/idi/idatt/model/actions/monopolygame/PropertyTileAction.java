@@ -1,16 +1,17 @@
-package edu.ntnu.idi.idatt.model.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
+import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
-import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
 import edu.ntnu.idi.idatt.views.DialogService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+
 
 /**
  * Class representing action when landing on a property tile in Monopoly Game.
@@ -75,7 +76,8 @@ public class PropertyTileAction implements TileAction {
         System.out.println("Price: " + cost);
 
         if (player.getMoney() < cost) {
-          System.out.println(player.getName() + " doesn't have enough money to purchase " + propertyName);
+          System.out.println(player.getName()
+              + " doesn't have enough money to purchase " + propertyName);
           if (controller != null) {
             controller.updatePlayerMoney(player);
           }
@@ -96,14 +98,16 @@ public class PropertyTileAction implements TileAction {
 
               System.out.println(player.getName() + " purchased " + propertyName + " for " + cost);
             }
-            }, () -> System.out.println(player.getName() + " declined to purchase " + propertyName));
+          }, () -> System.out.println(player.getName()
+              + " declined to purchase " + propertyName));
         } catch (Exception e) {
           LOGGER.log(Level.SEVERE, "Error showing property purchase dialog", e);
         }
       } else if (owner != player) {
         String freeParking = player.getProperty("freeParking");
         if (freeParking != null && freeParking.equals("true")) {
-          System.out.println(player.getName() + " landed on " + propertyName + " owned by " + owner.getName() + " but has Free Parking");
+          System.out.println(player.getName() + " landed on " + propertyName
+              + " owned by " + owner.getName() + " but has Free Parking");
           System.out.println(player.getName() + " doesn't need to pay rent this turn");
 
           player.setProperty("freeParking", null);
@@ -112,13 +116,13 @@ public class PropertyTileAction implements TileAction {
             controller.updatePlayerMoney(player);
           }
         } else {
-          int rent = cost*2/10;
+          int rent = cost * 2 / 10;
           boolean ownsAllOfType = ownsAllPropertiesOfType(owner, propertyType);
 
           if (ownsAllOfType) {
             rent = cost;
-            System.out.println(player.getName() + " landed on " + propertyName +
-                " owned by " + owner.getName() + " (Monopoly bonus: rent = cost)");
+            System.out.println(player.getName() + " landed on " + propertyName
+                + " owned by " + owner.getName() + " (Monopoly bonus: rent = cost)");
           } else {
             System.out.println(
                 player.getName() + " landed on " + propertyName + " owned by " + owner.getName());
@@ -178,6 +182,7 @@ public class PropertyTileAction implements TileAction {
 
   /**
    * Gets the owner of this property.
+   *
    * @return The player who owns this property.
    */
   public Player getOwner() {
@@ -195,6 +200,7 @@ public class PropertyTileAction implements TileAction {
 
   /**
    * Gets the property type of this property.
+   *
    * @return The property type.
    */
   public String getPropertyType() {

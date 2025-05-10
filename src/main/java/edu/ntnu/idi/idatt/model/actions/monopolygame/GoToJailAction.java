@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
 import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
@@ -48,6 +48,7 @@ public class GoToJailAction implements TileAction {
 
     player.placeOnTile(jailTile);
 
-    System.out.println(player.getName() + " went to jail and must wait 3 turns or pay bail/roll doubles to get out");
+    System.out.println(player.getName()
+        + " went to jail and must wait 3 turns or pay bail/roll doubles to get out");
   }
 }

@@ -2,8 +2,9 @@ package edu.ntnu.idi.idatt.model.gamelogic;
 
 import static edu.ntnu.idi.idatt.model.gamelogic.Board.setupTileActionsMonopolyGame;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * The class that handles information about the game.
@@ -20,6 +21,9 @@ public class BoardGame {
   private boolean gameOver;
   private boolean isLoadedGame = false;
 
+  /**
+   * The constructor for the BoardGame class.
+   */
   public BoardGame() {
     this.currentPlayerIndex = 0;
     this.gameOver = false;
@@ -27,11 +31,12 @@ public class BoardGame {
 
   /**
    * Registers an observer to receive game state updates.
+   *
    * @param observer The observer to register.
    */
-  public void addObserver (BoardGameObserver observer) {
-   if (observer == null) {
-     throw new NullPointerException("Observer cannot be null");
+  public void addObserver(BoardGameObserver observer) {
+    if (observer == null) {
+      throw new NullPointerException("Observer cannot be null");
     }
 
     observers.add(observer);
@@ -39,6 +44,7 @@ public class BoardGame {
 
   /**
    * Notifies all observers when a player has moved.
+   *
    * @param player The player who moved.
    * @param fromTileId The tile ID the player moved from.
    * @param toTileId The tile ID the player moved to.
@@ -52,6 +58,7 @@ public class BoardGame {
 
   /**
    * Notifies all observers when a player has won the game.
+   *
    * @param player The player that won the game.
    */
   public void notifyGameWon(Player player) {
@@ -62,6 +69,7 @@ public class BoardGame {
 
   /**
    * Notifies all observers when a player skips their turn.
+   *
    * @param player The player who skipped their turn.
    */
   public void notifyPlayerSkipTurn(Player player) {
@@ -72,6 +80,7 @@ public class BoardGame {
 
   /**
    * Notifies all observers when the current player changes.
+   *
    * @param player The new current player.
    */
   public void notifyCurrentPlayerChanged(Player player) {
@@ -82,14 +91,15 @@ public class BoardGame {
 
   /**
    * Adds a player when called upon.
+   *
    * @param player The player to add.
    */
   public void addPlayer(Player player) {
     if (player == null) {
-        throw new NullPointerException("Player cannot be null.");
+      throw new NullPointerException("Player cannot be null.");
     }
     players.add(player);
-}
+  }
 
   /**
    * Creates an instance of the Ladder Game Board.
@@ -173,6 +183,7 @@ public class BoardGame {
 
   /**
    * Gets the winner of the game.
+   *
    * @return The name of the player that won.
    */
   public Player getWinner() {
@@ -184,7 +195,9 @@ public class BoardGame {
     return null;
   }
 
-  public void setIsLoadedGame(boolean isLoadedGame) { this.isLoadedGame = isLoadedGame; }
+  public void setIsLoadedGame(boolean isLoadedGame) {
+    this.isLoadedGame = isLoadedGame;
+  }
 
   /**
    * Initializes the game by setting up the initial game state and preparing players.
@@ -218,12 +231,14 @@ public class BoardGame {
    */
   public void initializeGameWithCurrentPlayer(int playerIndex) {
     if (playerIndex < 0 || playerIndex >= players.size()) {
-      System.out.println("Invalid player index: " + playerIndex + ", defaulting to regular initialization");
+      System.out.println("Invalid player index: " + playerIndex
+          + ", defaulting to regular initialization");
       initializeGame();
       return;
     }
 
-    System.out.println("Initializing game with player at index " + playerIndex + " as current player.");
+    System.out.println("Initializing game with player at index "
+        + playerIndex + " as current player.");
     gameOver = false;
     currentPlayerIndex = playerIndex;
     currentPlayer = players.get(currentPlayerIndex);
@@ -279,7 +294,7 @@ public class BoardGame {
    * @param player The player who went bankrupt.
    */
   public void playerBankrupt(Player player) {
-    if(!players.contains(player)) {
+    if (!players.contains(player)) {
       return;
     }
 
@@ -320,7 +335,7 @@ public class BoardGame {
    */
   public List<Player> getActivePlayers() {
     List<Player> activePlayers = new ArrayList<>();
-    for (Player player: players) {
+    for (Player player : players) {
       if (!player.isBankrupt()) {
         activePlayers.add(player);
       }
@@ -402,7 +417,7 @@ public class BoardGame {
       notifyCurrentPlayerChanged(currentPlayer);
     }
 
-     checkGameOver();
+    checkGameOver();
   }
 
   /**
@@ -449,6 +464,7 @@ public class BoardGame {
 
   /**
    * Accessor method that gets the dice.
+   *
    * @return The dice.
    */
   public Dice getDice() {
@@ -458,6 +474,7 @@ public class BoardGame {
 
   /**
    * Accessor method that gets the current player.
+   *
    * @return The current player.
    */
   public List<Player> getPlayers() {
@@ -467,6 +484,7 @@ public class BoardGame {
 
   /**
    * Accessor method that gets the board.
+   *
    * @return The board.
    */
   public Board getBoard() {

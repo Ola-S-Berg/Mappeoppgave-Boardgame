@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.actions.ladder_game;
+package edu.ntnu.idi.idatt.model.actions.laddergame;
 
 import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
@@ -10,6 +10,7 @@ public class WaitAction implements TileAction {
 
   /**
    * Performs the action of making the player wait a turn before rolling again.
+   *
    * @param player The player that lands on the tile with this action.
    */
   @Override

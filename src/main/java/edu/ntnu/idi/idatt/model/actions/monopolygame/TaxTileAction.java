@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.model.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
-import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.views.DialogService;
 import javafx.stage.Stage;
@@ -39,7 +39,8 @@ public class TaxTileAction implements TileAction {
   @Override
   public void perform(Player player) {
     System.out.println(player.getName() + " landed on a tax tile");
-    System.out.println("Options: Pay " + percentageTax + "% of money or " + fixedTax + " fixed tax");
+    System.out.println("Options: Pay " + percentageTax
+        + "% of money or " + fixedTax + " fixed tax");
 
     if (ownerStage == null && controller != null) {
       ownerStage = controller.getStage();
@@ -49,7 +50,8 @@ public class TaxTileAction implements TileAction {
 
     DialogService.showTaxPaymentDialog(ownerStage, percentageTax, fixedTax, player, () -> {
       if (player.payMoney(percentageAmount)) {
-        System.out.println(player.getName() + " paid " + percentageAmount + " as " + percentageTax + "% tax");
+        System.out.println(player.getName() + " paid " + percentageAmount
+            + " as " + percentageTax + "% tax");
 
         if (controller != null) {
           controller.updatePlayerMoney(player);

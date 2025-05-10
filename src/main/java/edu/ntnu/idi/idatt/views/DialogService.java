@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.views;
 
 import edu.ntnu.idi.idatt.MainApp;
-import edu.ntnu.idi.idatt.model.actions.monopoly_game.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -79,7 +79,8 @@ public class DialogService {
     Scene dialogScene = new Scene(dialogVbox, 350, 150);
 
     try {
-      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      String cssPath = Objects.requireNonNull(
+          MainApp.class.getResource("/styles.css")).toExternalForm();
       dialogScene.getStylesheets().add(cssPath);
     } catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Error loading CSS: " + e);
@@ -118,10 +119,10 @@ public class DialogService {
 
     handleDialogCloseRequest(dialogStage, onDecline);
 
-    VBox dialogVBox = new VBox(15);
-    dialogVBox.getStyleClass().add("dialog-pane");
-    dialogVBox.setPadding(new Insets(20));
-    dialogVBox.setAlignment(Pos.CENTER);
+    VBox dialogVbox = new VBox(15);
+    dialogVbox.getStyleClass().add("dialog-pane");
+    dialogVbox.setPadding(new Insets(20));
+    dialogVbox.setAlignment(Pos.CENTER);
 
     Label propertyNameLabel = new Label(property.getPropertyName());
     propertyNameLabel.getStyleClass().add("dialog-header");
@@ -150,7 +151,7 @@ public class DialogService {
       }
     });
 
-    DialogContentAssembler(dialogStage, dialogVBox, propertyNameLabel, costLabel, promptLabel,
+    dialogContentAssembler(dialogStage, dialogVbox, propertyNameLabel, costLabel, promptLabel,
         purchaseButton, declineButton);
 
     try {
@@ -173,7 +174,6 @@ public class DialogService {
    */
   public static void showJailOptionsDialog(Player player, Stage ownerStage,
       Runnable onPayBail, Runnable onTryRollDoubles) {
-    int JAIL_BAIL = 5000;
 
     if (ownerStage == null) {
       if (onTryRollDoubles != null) {
@@ -189,10 +189,10 @@ public class DialogService {
 
     handleDialogCloseRequest(dialogStage, onTryRollDoubles);
 
-    VBox dialogVBox = new VBox(15);
-    dialogVBox.getStyleClass().add("dialog-pane");
-    dialogVBox.setPadding(new Insets(20));
-    dialogVBox.setAlignment(Pos.CENTER);
+    VBox dialogVbox = new VBox(15);
+    dialogVbox.getStyleClass().add("dialog-pane");
+    dialogVbox.setPadding(new Insets(20));
+    dialogVbox.setAlignment(Pos.CENTER);
 
     Label titleLabel = new Label(player.getName() + " is in jail.");
     titleLabel.getStyleClass().add("dialog-header");
@@ -205,7 +205,9 @@ public class DialogService {
     Label promptLabel = new Label("Would you like to pay bail or roll doubles?");
     promptLabel.getStyleClass().add("dialog-message");
 
-    Button payButton = new Button("Pay $" + JAIL_BAIL + " Bail");
+    int jailBail = 5000;
+
+    Button payButton = new Button("Pay $" + jailBail + " Bail");
     payButton.getStyleClass().addAll("button", "button-primary");
     payButton.setOnAction(event -> {
       animateDialogAndClose(dialogStage);
@@ -223,13 +225,13 @@ public class DialogService {
       }
     });
 
-    if (player.getMoney() < JAIL_BAIL) {
+    if (player.getMoney() < jailBail) {
       payButton.setDisable(true);
       payButton.getStyleClass().add("button-disabled");
       payButton.setText("Not enough money to pay bail.");
     }
 
-    DialogContentAssembler(dialogStage, dialogVBox, titleLabel, turnsLabel, promptLabel, rollButton,
+    dialogContentAssembler(dialogStage, dialogVbox, titleLabel, turnsLabel, promptLabel, rollButton,
         payButton);
 
     try {
@@ -252,7 +254,8 @@ public class DialogService {
    * @param onPercentage Runnable to execute if the user chooses to pay percentage tax.
    * @param onFixed Runnable to execute if the user chooses to pay fixed tax.
    */
-  public static void showTaxPaymentDialog(Stage ownerStage, int percentageTax, int fixedTax, Player player, Runnable onPercentage, Runnable onFixed) {
+  public static void showTaxPaymentDialog(Stage ownerStage, int percentageTax, int fixedTax,
+      Player player, Runnable onPercentage, Runnable onFixed) {
     if (ownerStage == null) {
       if (onFixed != null) {
         onFixed.run();
@@ -267,10 +270,10 @@ public class DialogService {
 
     handleDialogCloseRequest(dialogStage, onFixed);
 
-    VBox dialogVBox = new VBox(15);
-    dialogVBox.getStyleClass().add("dialog-pane");
-    dialogVBox.setPadding(new Insets(20));
-    dialogVBox.setAlignment(Pos.CENTER);
+    VBox dialogVbox = new VBox(15);
+    dialogVbox.getStyleClass().add("dialog-pane");
+    dialogVbox.setPadding(new Insets(20));
+    dialogVbox.setAlignment(Pos.CENTER);
 
     Label titleLabel = new Label(player.getName() + " landed on a tax tile");
     titleLabel.getStyleClass().add("dialog-header");
@@ -280,13 +283,17 @@ public class DialogService {
     Label optionsLabel = new Label("Choose your payment option:");
     optionsLabel.getStyleClass().add("dialog-message");
 
-    Label percentageLabel = new Label("Pay " + percentageTax + "% of your money: $" + percentageAmount);
+    Label percentageLabel = new Label("Pay " + percentageTax
+        + "% of your money: $" + percentageAmount);
+
     percentageLabel.getStyleClass().add("dialog-message");
 
     Label fixedLabel = new Label("Pay fixed tax: $" + fixedTax);
     fixedLabel.getStyleClass().add("dialog-message");
 
-    Button percentageButton = new Button("Pay " + percentageTax + "% ($" + percentageAmount + ")");
+    Button percentageButton = new Button("Pay " + percentageTax
+        + "% ($" + percentageAmount + ")");
+
     percentageButton.getStyleClass().addAll("button", "button-primary");
     percentageButton.setOnAction(event -> {
       animateDialogAndClose(dialogStage);
@@ -314,9 +321,10 @@ public class DialogService {
     buttonBox.setAlignment(Pos.CENTER);
     buttonBox.getChildren().addAll(percentageButton, fixedButton);
 
-    dialogVBox.getChildren().addAll(titleLabel, optionsLabel, percentageLabel, fixedLabel, buttonBox);
+    dialogVbox.getChildren().addAll(titleLabel, optionsLabel, percentageLabel,
+        fixedLabel, buttonBox);
 
-    setupDialogStage(dialogStage, dialogVBox);
+    setupDialogStage(dialogStage, dialogVbox);
 
     try {
       dialogStage.show();
@@ -351,7 +359,8 @@ public class DialogService {
    */
   private static void animateDialogAndClose(Stage dialogStage) {
     try {
-      FadeTransition fadeOut = new FadeTransition(Duration.millis(150), dialogStage.getScene().getRoot());
+      FadeTransition fadeOut = new FadeTransition(Duration.millis(150),
+                                    dialogStage.getScene().getRoot());
       fadeOut.setFromValue(1);
       fadeOut.setToValue(0);
       fadeOut.setOnFinished(event -> dialogStage.close());
@@ -368,36 +377,38 @@ public class DialogService {
    * the button layout in an HBox.
    *
    * @param dialogStage The stage that will display the dialog.
-   * @param dialogVBox The main VBox container for the dialog content.
+   * @param dialogVbox The main VBox container for the dialog content.
    * @param propertyNameLabel The title or header label for the dialog.
    * @param costLabel The label displaying cost or additional information.
    * @param promptLabel The label with the user prompt or question.
    * @param confirmButton The primary action button.
    * @param declineButton The secondary action button.
    */
-  private static void DialogContentAssembler(Stage dialogStage, VBox dialogVBox,
+  private static void dialogContentAssembler(Stage dialogStage, VBox dialogVbox,
       Label propertyNameLabel, Label costLabel, Label promptLabel, Button confirmButton,
       Button declineButton) {
     HBox buttonBox = new HBox(20);
     buttonBox.setAlignment(Pos.CENTER);
     buttonBox.getChildren().addAll(confirmButton, declineButton);
 
-    dialogVBox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
+    dialogVbox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
 
-    setupDialogStage(dialogStage, dialogVBox);
+    setupDialogStage(dialogStage, dialogVbox);
   }
 
   /**
    * Configures the dialog scene with proper dimensions and CSS styling.
    *
    * @param dialogStage The stage that will display the dialog.
-   * @param dialogVBox The main VBOX container holding all dialog content.
+   * @param dialogVbox The main VBOX container holding all dialog content.
    */
-  private static void setupDialogStage(Stage dialogStage, VBox dialogVBox) {
-    Scene dialogScene = new Scene(dialogVBox, 400, 200);
+  private static void setupDialogStage(Stage dialogStage, VBox dialogVbox) {
+    Scene dialogScene = new Scene(dialogVbox, 400, 200);
 
     try {
-      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      String cssPath = Objects.requireNonNull(
+          MainApp.class.getResource("/styles.css")).toExternalForm();
+
       dialogScene.getStylesheets().add(cssPath);
     } catch (Exception e) {
       System.err.println("Error loading CSS: " + e.getMessage());

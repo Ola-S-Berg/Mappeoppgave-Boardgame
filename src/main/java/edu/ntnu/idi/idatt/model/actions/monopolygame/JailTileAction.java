@@ -1,7 +1,7 @@
-package edu.ntnu.idi.idatt.model.actions.monopoly_game;
+package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
-import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
+import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
@@ -62,7 +62,8 @@ public class JailTileAction implements TileAction {
       System.out.println(player.getName() + " has been in jail for " + jailTurnCountInt + " turns");
 
       if (jailTurnCountInt >= MAX_JAIL_TURNS) {
-        System.out.println(player.getName() + " has spent " + MAX_JAIL_TURNS + " turns in jail and is released");
+        System.out.println(player.getName() + " has spent "
+            + MAX_JAIL_TURNS + " turns in jail and is released");
         player.releaseFromJail();
         player.setProperty("jailTurnCount", "0");
         Platform.runLater(() -> {
@@ -114,10 +115,12 @@ public class JailTileAction implements TileAction {
 
       BoardGame game = player.getGame();
       if (game != null) {
-        game.notifyPlayerMove(player, player.getCurrentTile().getTileId(),player.getCurrentTile().getTileId(),0);
+        game.notifyPlayerMove(player,
+            player.getCurrentTile().getTileId(), player.getCurrentTile().getTileId(), 0);
       }
     } else {
-      System.out.println(player.getName() + " cannot afford " + JAIL_BAIL + " and must roll doubles to get out");
+      System.out.println(player.getName() + " cannot afford " + JAIL_BAIL
+          + " and must roll doubles to get out");
     }
     if (controller != null) {
       Platform.runLater(() -> controller.advanceToNextPlayer());

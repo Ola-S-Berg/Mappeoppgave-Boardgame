@@ -32,6 +32,7 @@ public class LadderGameView extends AbstractBoardGameView {
 
   /**
    * Gets the appropriate board image path based on the game variation.
+   *
    * @return The path to the board image.
    */
   @Override

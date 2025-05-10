@@ -2,6 +2,9 @@ package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
+/**
+ * Interface for the controllers.
+ */
 public interface BoardGameController {
 
   /**
@@ -57,7 +60,8 @@ public interface BoardGameController {
    * @param playerIndex The index of the player.
    * @param totalPlayers The total number of players in the game.
    * @param baseRadius The base radius to use for the offset calculation.
-   * @return A double array where the first element is the X offset and the second element is the Y offset.
+   * @return A double array where the first element is the X offset
+   *         and the second element is the Y offset.
    */
   double[] calculateTokenOffset(int playerIndex, int totalPlayers, double baseRadius);
 }
