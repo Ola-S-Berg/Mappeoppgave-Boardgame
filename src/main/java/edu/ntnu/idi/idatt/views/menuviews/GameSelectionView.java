@@ -187,6 +187,12 @@ public class GameSelectionView {
       }
     }
 
+    Button backButton = new Button("Back To Game Selection");
+    backButton.getStyleClass().add("button");
+    backButton.getStyleClass().add("button-secondary");
+    backButton.setOnAction(event -> popup.close());
+    popupLayout.getChildren().add(backButton);
+
     Scene popupScene = new Scene(popupLayout, 700, 500);
     CssUtil.applyStyleSheet(popupScene);
 

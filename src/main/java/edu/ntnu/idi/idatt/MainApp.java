@@ -74,6 +74,7 @@ public class MainApp extends Application {
 
   /**
    * Shows the player-count selection view.
+   *
    * @param selectedGame The game selected by the user.
    */
   public void showPlayerCountView(String selectedGame) {
@@ -85,6 +86,7 @@ public class MainApp extends Application {
 
   /**
    * Shows the player name input view.
+   *
    * @param selectedGame The game selected by the user.
    * @param playerCount The number of players.
    */
@@ -96,6 +98,7 @@ public class MainApp extends Application {
 
   /**
    * Shows the token selection view.
+   *
    * @param selectedGame The game selected by the user.
    * @param playerNames Array of player names.
    */
@@ -107,6 +110,7 @@ public class MainApp extends Application {
 
   /**
    * Starts the game and shows the game view.
+   *
    * @param playerNames Array of player names.
    * @param playerTokens Array of player token paths.
    */
@@ -127,18 +131,11 @@ public class MainApp extends Application {
 
   /**
    * Returns the primary stage.
+   *
    * @return The primary stage.
    */
   public Stage getPrimaryStage() {
     return primaryStage;
-  }
-
-  /**
-   * Returns the board game instance.
-   * @return The board game.
-   */
-  public BoardGame getBoardGame() {
-    return boardGame;
   }
 
   public static void main(String[] args) {
