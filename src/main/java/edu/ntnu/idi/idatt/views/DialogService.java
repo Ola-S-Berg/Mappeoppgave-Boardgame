@@ -150,22 +150,8 @@ public class DialogService {
       }
     });
 
-    HBox buttonBox = new HBox(20);
-    buttonBox.setAlignment(Pos.CENTER);
-    buttonBox.getChildren().addAll(purchaseButton, declineButton);
-
-    dialogVBox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
-
-    Scene dialogScene = new Scene(dialogVBox, 400, 200);
-
-    try {
-      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
-      dialogScene.getStylesheets().add(cssPath);
-    } catch (Exception e) {
-      System.err.println("Error loading CSS: " + e.getMessage());
-    }
-
-    dialogStage.setScene(dialogScene);
+    DialogContentAssembler(dialogStage, dialogVBox, propertyNameLabel, costLabel, promptLabel,
+        purchaseButton, declineButton);
 
     try {
       dialogStage.show();
@@ -243,22 +229,8 @@ public class DialogService {
       payButton.setText("Not enough money to pay bail.");
     }
 
-    HBox buttonBox = new HBox(20);
-    buttonBox.setAlignment(Pos.CENTER);
-    buttonBox.getChildren().addAll(rollButton, payButton);
-
-    dialogVBox.getChildren().addAll(titleLabel, turnsLabel, promptLabel, buttonBox);
-
-    Scene dialogScene = new Scene(dialogVBox, 400, 200);
-
-    try {
-      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
-      dialogScene.getStylesheets().add(cssPath);
-    } catch (Exception e) {
-      System.err.println("Error loading CSS: " + e.getMessage());
-    }
-
-    dialogStage.setScene(dialogScene);
+    DialogContentAssembler(dialogStage, dialogVBox, titleLabel, turnsLabel, promptLabel, rollButton,
+        payButton);
 
     try {
       dialogStage.show();
@@ -344,16 +316,7 @@ public class DialogService {
 
     dialogVBox.getChildren().addAll(titleLabel, optionsLabel, percentageLabel, fixedLabel, buttonBox);
 
-    Scene dialogScene = new Scene(dialogVBox, 400, 200);
-
-    try {
-      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
-      dialogScene.getStylesheets().add(cssPath);
-    } catch (Exception e) {
-      System.err.println("Error loading CSS: " + e.getMessage());
-    }
-
-    dialogStage.setScene(dialogScene);
+    setupDialogStage(dialogStage, dialogVBox);
 
     try {
       dialogStage.show();
@@ -397,5 +360,49 @@ public class DialogService {
       System.err.println("Error during fade out animation: " + e.getMessage());
       dialogStage.close();
     }
+  }
+
+
+  /**
+   * Assembles the dialog box layout by adding labels and buttons to a dialog VBox and configuring
+   * the button layout in an HBox.
+   *
+   * @param dialogStage The stage that will display the dialog.
+   * @param dialogVBox The main VBox container for the dialog content.
+   * @param propertyNameLabel The title or header label for the dialog.
+   * @param costLabel The label displaying cost or additional information.
+   * @param promptLabel The label with the user prompt or question.
+   * @param confirmButton The primary action button.
+   * @param declineButton The secondary action button.
+   */
+  private static void DialogContentAssembler(Stage dialogStage, VBox dialogVBox,
+      Label propertyNameLabel, Label costLabel, Label promptLabel, Button confirmButton,
+      Button declineButton) {
+    HBox buttonBox = new HBox(20);
+    buttonBox.setAlignment(Pos.CENTER);
+    buttonBox.getChildren().addAll(confirmButton, declineButton);
+
+    dialogVBox.getChildren().addAll(propertyNameLabel, costLabel, promptLabel, buttonBox);
+
+    setupDialogStage(dialogStage, dialogVBox);
+  }
+
+  /**
+   * Configures the dialog scene with proper dimensions and CSS styling.
+   *
+   * @param dialogStage The stage that will display the dialog.
+   * @param dialogVBox The main VBOX container holding all dialog content.
+   */
+  private static void setupDialogStage(Stage dialogStage, VBox dialogVBox) {
+    Scene dialogScene = new Scene(dialogVBox, 400, 200);
+
+    try {
+      String cssPath = Objects.requireNonNull(MainApp.class.getResource("/styles.css")).toExternalForm();
+      dialogScene.getStylesheets().add(cssPath);
+    } catch (Exception e) {
+      System.err.println("Error loading CSS: " + e.getMessage());
+    }
+
+    dialogStage.setScene(dialogScene);
   }
 }

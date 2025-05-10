@@ -2,7 +2,6 @@ package edu.ntnu.idi.idatt.model.gamelogic;
 
 import static edu.ntnu.idi.idatt.model.gamelogic.Board.setupTileActionsMonopolyGame;
 
-import edu.ntnu.idi.idatt.model.filehandling.BoardFileHandler;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -22,7 +21,6 @@ public class BoardGame {
   private boolean isLoadedGame = false;
 
   public BoardGame() {
-    BoardFileHandler fileHandler = new BoardFileHandler();
     this.currentPlayerIndex = 0;
     this.gameOver = false;
   }
@@ -37,14 +35,6 @@ public class BoardGame {
     }
 
     observers.add(observer);
-  }
-
-  /**
-   * Removes an observer from the list of registered observers.
-   * @param observer The observer to remove.
-   */
-  public void removeObserver(BoardGameObserver observer) {
-    observers.remove(observer);
   }
 
   /**
@@ -136,7 +126,7 @@ public class BoardGame {
     if (variantName != null) {
       switch (variantName) {
         case "ladderGame":
-          Board.setupTileActionsLadderGame(board);
+          Board.setupTileActionsLadderGameClassic(board);
           break;
         case "ladderGameAdvanced":
           Board.setupTileActionsLadderGameAdvanced(board);

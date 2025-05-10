@@ -575,25 +575,44 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       if (tokenView != null) {
         int playerIndex = boardGame.getPlayers().indexOf(player);
 
-        if (diceValue > 0) {
-          statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from " + fromTileId + " to " + toTileId);
-        } else if (fromTileId != toTileId) {
-          statusLabel.setText(player.getName() + " moved from " + fromTileId + " to " + toTileId + " due to an action");
-        }
-
-        Boolean inProgress = animationsInProgress.get(player);
-        if (inProgress != null && inProgress) {
-          return;
-        }
+        updateStatusLabelForMove(player, fromTileId, toTileId, diceValue);
 
         if (fromTileId != toTileId) {
           animationsInProgress.put(player, true);
-          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
-              animationsInProgress.put(player, false));
+          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () -> {
+            animationsInProgress.put(player, false);
+            performPostMoveUpdates(player);
+          });
+        } else {
+          performPostMoveUpdates(player);
         }
       }
     });
   }
+
+  /**
+   * Updates the status label with the appropriate message for player movement.
+   *
+   * @param player The player who is moving.
+   * @param fromTileId The ID of the tile the player is moving from.
+   * @param toTileId The ID of the tile the player is moving to.
+   * @param diceValue The value rolled on the dice which determined the movement.
+   */
+  protected void updateStatusLabelForMove(Player player, int fromTileId, int  toTileId, int diceValue) {
+    if (diceValue > 0) {
+      statusLabel.setText(player.getName() + " rolled " + diceValue + " and moved from " + fromTileId + " to " + toTileId);
+    } else if (fromTileId != toTileId) {
+      statusLabel.setText(player.getName() + " moved from " + fromTileId + " to " + toTileId + " due to an action");
+    }
+  }
+
+  /**
+   * Performs game-specific updates after a player's move is completed.
+   * To Be overwritten by subclasses for game-specific behavior.
+   *
+   * @param player The player who just moved.
+   */
+  protected void performPostMoveUpdates(Player player) {}
 
   /**
    * Ends the game and displays the winner's information.

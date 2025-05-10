@@ -54,6 +54,7 @@ public class TokenSelectionView {
 
   /**
    * Constructor that creates the token selection view.
+   *
    * @param application The main application instance.
    * @param selectedGame The game selected by the user.
    * @param playerNames Array of player names.
@@ -138,6 +139,7 @@ public class TokenSelectionView {
 
   /**
    * Handles token selection for the current player.
+   *
    * @param tokenPath The path of the selected token.
    */
   private void selectToken(String tokenPath) {
@@ -174,7 +176,8 @@ public class TokenSelectionView {
 
   /**
    * Returns the scene for this view.
-   * @return The scene.
+   *
+   * @return The scene for this view.
    */
   public Scene getScene() {
     return scene;

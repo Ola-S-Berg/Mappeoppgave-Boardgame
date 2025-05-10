@@ -27,6 +27,7 @@ public class PlayerNameView {
 
   /**
    * Constructor that creates the player name view.
+   *
    * @param application The main application instance.
    * @param selectedGame The game selected by the user.
    * @param playerCount The number of players.
@@ -123,7 +124,8 @@ public class PlayerNameView {
 
   /**
    * Returns the scene for this view.
-   * @return The scene-
+   *
+   * @return The scene for this view.
    */
   public Scene getScene() {
     return scene;

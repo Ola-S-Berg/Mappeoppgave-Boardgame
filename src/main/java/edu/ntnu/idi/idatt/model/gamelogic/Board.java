@@ -62,11 +62,12 @@ public class Board {
   }
 
   /**
-   * Sets up actions for the first variation of the ladder game.
+   * Sets up actions for Ladder Game Classic.
    * A classic balanced ladder game with a normal number of actions.
+   *
    * @param board The game board to set up.
    */
-  public static void setupTileActionsLadderGame(Board board) {
+  public static void setupTileActionsLadderGameClassic(Board board) {
     board.getTile(5).setAction(new LadderAction(17, "up"));
     board.getTile(12).setAction(new LadderAction(49, "up"));
     board.getTile(21).setAction(new LadderAction(41, "up"));
@@ -78,8 +79,9 @@ public class Board {
   }
 
   /**
-   * Sets up actions for the second variation of the ladder game.
+   * Sets up actions for Ladder Game Advanced.
    * Increased number of actions from the first variation.
+   *
    * @param board The board game to set up.
    */
   public static void setupTileActionsLadderGameAdvanced(Board board) {
@@ -110,9 +112,10 @@ public class Board {
   }
 
   /**
-   * Sets up the actions for the third variant of the Ladder game.
+   * Sets up the actionsLadder Game Extreme.
    * Flips all up ladders from the second variation to down.
    * A diabolical version of the classic ladder game.
+   *
    * @param board The board game to set up.
    */
   public static void setupTileActionsLadderGameExtreme(Board board) {

@@ -106,38 +106,33 @@ public class MonopolyGameView extends AbstractBoardGameView {
   }
 
   /**
-   * Handles the movement of a player's token on the game board.
+   * Updates the status label with the appropriate message for player movement.
    *
-   * @param player The player whose token is moving.
+   * @param player The player who is moving.
    * @param fromTileId The ID of the tile the player is moving from.
    * @param toTileId The ID of the tile the player is moving to.
    * @param diceValue The value rolled on the dice which determined the movement.
    */
   @Override
-  public void onPlayerMove(Player player, int fromTileId, int toTileId, int diceValue) {
-    Platform.runLater(() -> {
-      javafx.scene.image.ImageView tokenView = playerTokenViews.get(player);
-      if (tokenView != null) {
-        int playerIndex = boardGame.getPlayers().indexOf(player);
+  protected void updateStatusLabelForMove(Player player, int fromTileId, int toTileId, int diceValue) {
+    Tile currentTile = player.getCurrentTile();
+    String tileName = currentTile != null ? Tile.getTileName(currentTile) : "unknown";
 
-        Tile currentTile = player.getCurrentTile();
-        String tileName = currentTile != null ? Tile.getTileName(currentTile) : "unknown";
+    if (diceValue > 0) {
+      statusLabel.setText(player.getName() + " rolled " + diceValue + " and landed on " + tileName);
+    } else if (fromTileId != toTileId) {
+      statusLabel.setText(player.getName() + " moved from tile " + fromTileId + " to " + tileName + " due to an action");
+    }
+  }
 
-        if (diceValue > 0) {
-          statusLabel.setText(player.getName() + " rolled " + diceValue + " and landed on " + tileName);
-        } else if (fromTileId != toTileId) {
-          statusLabel.setText(player.getName() + " moved from tile " + fromTileId + " to " + tileName + " due to an action");
-        }
-
-        if (fromTileId != toTileId) {
-          animationsInProgress.put(player, true);
-          animateTokenMovement(tokenView, fromTileId, toTileId, playerIndex, () ->
-              animationsInProgress.put(player, false));
-        }
-
-        updatePlayerMoney(player);
-      }
-    });
+  /**
+   * Updates the player's money information in the UI.
+   *
+   * @param player The player who just moved.
+   */
+  @Override
+  protected void performPostMoveUpdates(Player player) {
+    updatePlayerMoney(player);
   }
 
   /**
