@@ -7,7 +7,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class representing a player in the game.
+ * <h1>Player Class</h1>
+ *
+ * <p>Represents a player in a board game. The Player class contains all player-related
+ * characteristics and behaviors including movement across the game board, financial transactions,
+ * property ownership and game state tracking</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Player identification through name and token</li>
+ *   <li>Movement mechanics on the game board</li>
+ *   <li>System for financial transactions</li>
+ *   <li>Property ownership tracking</li>
+ *   <li>Game state tracking (bankruptcy, jail status, etc.)</li>
+ *   <li>Turn management mechanics</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @author Markus Øyen Lund
+ * @since v1.1.0
  */
 public class Player {
   private final String name;
@@ -21,10 +39,12 @@ public class Player {
   private final List<PropertyTileAction> ownedProperties = new ArrayList<>();
 
   /**
-   * The constructor for Player with a game instance.
+   * Constructs a new player with specified attributes and connects them to a game instance.
    *
-   * @param name name The name of the player.
-   * @param token The player's token.
+   * @param name The name of the player.
+   * @param token The player's token identifier.
+   * @param game The board game instance this player is participating in.
+   * @param startingMoney The initial amount of money the player begins with.
    */
   public Player(String name, String token, BoardGame game, int startingMoney) {
     this.name = name;
@@ -44,7 +64,8 @@ public class Player {
   }
 
   /**
-   * Places the player on a specific tile.
+   * Places the player on a specific tile on the game board and removes the player
+   * from the previous tile if it exists.
    *
    * @param tile The tile to place the player on.
    */
@@ -125,7 +146,7 @@ public class Player {
   }
 
   /**
-   * Transfers money to another player.
+   * Transfers money from this player to another player.
    *
    * @param recipient The player to transfer money to.
    * @param amount The amount of money to transfer.
@@ -169,7 +190,8 @@ public class Player {
   }
 
   /**
-   * Declares the player bankrupt and removes them from the game.
+   * Declares the player bankrupt, updates their status, releases owned properties,
+   * notifies the game and removes them from the game.
    */
   public void declareBankrupt() {
     this.bankrupt = true;
@@ -214,7 +236,7 @@ public class Player {
   }
 
   /**
-   * Checks if the player skips their next turn.
+   * Checks if the player will skip their next turn.
    *
    * @return True if the player skips their next turn.
    */
@@ -234,7 +256,7 @@ public class Player {
   }
 
   /**
-   * Accessor method that gets the board game instance a player is playing on.
+   * Gets the board game instance a player is participating in.
    *
    * @return The board game.
    */
@@ -243,7 +265,7 @@ public class Player {
   }
 
   /**
-   * Gets the player's token.
+   * Gets the player's token identifier.
    *
    * @return The token.
    */
@@ -252,7 +274,7 @@ public class Player {
   }
 
   /**
-   * Stores a temporary property for the player.
+   * Stores property value in the player's property map.
    *
    * @param key The property key.
    * @param value The property value.
@@ -262,7 +284,7 @@ public class Player {
   }
 
   /**
-   * Gets a temporary property value.
+   * Gets a property value from the player's property map.
    *
    * @param key The property key.
    * @return The property value, or null if not found.
@@ -272,7 +294,7 @@ public class Player {
   }
 
   /**
-   * Gets all properties owned by this player.
+   * Gets a list of all properties owned by this player.
    *
    * @return The list of properties owned by this player.
    */
@@ -281,7 +303,7 @@ public class Player {
   }
 
   /**
-   * Gets the player's current money.
+   * Gets the player's current money balance.
    *
    * @return The player's current money.
    */

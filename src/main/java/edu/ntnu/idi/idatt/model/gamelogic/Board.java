@@ -15,8 +15,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class representing the game board. Consists of a collection of tiles.
- * Also keeps a complete overview of all tiles with their associated action.
+ * <h1>Board Class</h1>
+ *
+ * <p>Represents the game board consisting of a collection of connected tiles that players
+ * traverse during gameplay. The board maintains a complete mapping of tiles and their
+ * associated game actions</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Maintains an organized collection of game tiles with unique identifiers</li>
+ *   <li>Associates specific actions with tiles based on game variant</li>
+ *   <li>Provides tile configuration methods for different game variants</li>
+ *   <li>Supports various game modes: Ladder Game (Classic, Advanced, Extreme) and Monopoly</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class Board {
   private final Map<Integer, Tile> tiles = new HashMap<>();

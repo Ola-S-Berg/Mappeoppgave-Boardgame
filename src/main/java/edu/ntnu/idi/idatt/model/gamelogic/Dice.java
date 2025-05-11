@@ -4,7 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class representing a collection of die. Creates a list of die and stores them in an ArrayList.
+ * <h1>Dice Class</h1>
+ *
+ * <p>Represents a collection of dice used in board games. This class manages multiple
+ * individual die objects and provides methods for rolling all dice simultaneously and
+ * retrieving their values.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Creates and manages a customizable number of six-sided dice</li>
+ *   <li>Provides rolling functionality for all dice at once</li>
+ *   <li>Calculates the sum of all dice values automatically</li>
+ *   <li>Allows access to individual die values when needed</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @author Markus Øyen Lund
+ * @since v1.1.0
  */
 public class Dice {
   private final List<Die> dice;

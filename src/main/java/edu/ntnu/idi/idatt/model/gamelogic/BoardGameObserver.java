@@ -1,7 +1,23 @@
 package edu.ntnu.idi.idatt.model.gamelogic;
 
 /**
- * Observer for the BoardGame.
+ * <h1>Board Game Observer Interface</h1>
+ *
+ * <p>Defines the interface for objects that wish to observe and react to game state changes
+ * in a board game. Implements the Observer pattern to decouple game logic from UI
+ * and other components that need to respond to game events.</p>
+ *
+ * <h2>Event types</h2>
+ * <ul>
+ *   <li>Player movement: Triggered when a player moves from one tile to another</li>
+ *   <li>Game Won: Triggered when a player wins the game</li>
+ *   <li>Turn skip: Triggered when a player must skip their turn</li>
+ *   <li>Player change: Triggered when the active player changes</li>
+ *   <li>Player bankruptcy: Triggered when a player goes bankrupt</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public interface BoardGameObserver {
 

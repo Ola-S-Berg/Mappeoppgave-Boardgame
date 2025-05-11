@@ -7,7 +7,30 @@ import java.util.List;
 
 
 /**
- * The class that handles information about the game.
+ * <h1>Board Game</h1>
+ *
+ * <p>Represents the core game engine that manages game state, player interactions and board
+ * operations. Serves as the central controller for gameplay mechanics and orchestrates the
+ * flow of the game.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Maintains the game state and manages player turns</li>
+ *   <li>Creates and configures game boards for different variants</li>
+ *   <li>Handler player movement and actions</li>
+ *   <li>Supports Observer pattern for UI updates and game event notifications</li>
+ *   <li>Provides game initialization, turn processing and win condition checking</li>
+ *   <li>Manages special game conditions like bankruptcy and passing start</li>
+ * </ul>
+ *
+ * <h2>Observer implementation</h2>
+ *
+ * <p>The class uses the Observer pattern to notify registered listeners about important
+ *  game events such as player movements, turn skipping, player bankruptcy, and game completion.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @author Markus Øyen Lund
+ * @since v1.1.0
  */
 public class BoardGame {
 
@@ -195,6 +218,11 @@ public class BoardGame {
     return null;
   }
 
+  /**
+   * Sets the flag indicating whether this game was loaded from a save state.
+   *
+   * @param isLoadedGame True, if the game is loaded from a save state, false otherwise.
+   */
   public void setIsLoadedGame(boolean isLoadedGame) {
     this.isLoadedGame = isLoadedGame;
   }

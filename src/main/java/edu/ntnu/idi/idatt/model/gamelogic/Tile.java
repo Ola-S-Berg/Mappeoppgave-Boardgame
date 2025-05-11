@@ -4,7 +4,23 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 
 /**
- * Class representing a tile on the game board.
+ * <h1>Tile Class</h1>
+ *
+ * <p>Represents a single tile on a board game. Each tile has a unique identifier, may have an
+ * associated action that executes when a player lands on it, and is connected to other tiles
+ * to form the game board path.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Unique identification through tileId</li>
+ *   <li>Sequential linking to form the game board path</li>
+ *   <li>Flexible action system that triggers when players land on tiles</li>
+ *   <li>Support for both generic and game-specific behaviors</li>
+ *   <li>Named representation for monopoly tile types</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class Tile {
   private Tile nextTile;
@@ -12,16 +28,16 @@ public class Tile {
   private TileAction action;
 
   /**
-   * The constructor for the tile class.
+   * Constructs a new tile with the specified ID.
    *
-   * @param tileId The ID of a tile.
+   * @param tileId The unique ID for this tile.
    */
   public Tile(int tileId) {
     this.tileId = tileId;
   }
 
   /**
-   * Checks which tile the player has landed on. Only performs actions for Monopoly.
+   * Processes a player landing on this tile. Only performs actions for Monopoly.
    *
    * @param player The player that lands.
    */
@@ -38,7 +54,7 @@ public class Tile {
   }
 
   /**
-   * Logs when a player leaves a tile.
+   * Processes when a player leaves this tile.
    *
    * @param player The player that leaves.
    */
@@ -47,7 +63,7 @@ public class Tile {
   }
 
   /**
-   * Sets the tile in sequence.
+   * Sets the tile in the game board sequence.
    *
    * @param nextTile The next tile.
    */
@@ -56,7 +72,7 @@ public class Tile {
   }
 
   /**
-   * Gets the tileID.
+   * Gets the unique ID for this tile.
    *
    * @return The tileID.
    */
@@ -97,7 +113,7 @@ public class Tile {
   }
 
   /**
-   * Gets the next tile in sequence.
+   * Gets the next tile in the game board sequence.
    *
    * @return The next tile.
    */
@@ -106,7 +122,7 @@ public class Tile {
   }
 
   /**
-   * Sets an action for this tile.
+   * Sets an action for this tile that will be executed when the player lands on it.
    *
    * @param action The action to be performed.
    */

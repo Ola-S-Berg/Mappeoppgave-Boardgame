@@ -28,16 +28,6 @@ import javafx.stage.Stage;
  *
  * <h2>Features</h2>
  *
- * <h3>Enhanced UI components</h3>
- * <ul>
- *   <li>Player information cards - Cards showing each player's financial and property status</li>
- *   <li>Money transaction feedback - Visual feedback for financial transactions</li>
- *   <li>Bankruptcy indication - Clear visual cues when a player goes bankrupt</li>
- *   <li>Property categorization - Color-coded grouping of properties by their types</li>
- *   <li>Dynamic player status highlighting for player turn or bankruptcy</li>
- *   <li>Displays game winner at the end of the game</li>
- * </ul>>
- *
  * <h3>Game Board Layout</h3>
  * <p>The game board uses an 11x11 grid layout, with tiles organized in the movement pattern of
  * the Monopoly Game. Grid coordinates are used to map logical tile positions to visual positions.
@@ -53,6 +43,16 @@ import javafx.stage.Stage;
  *   <li>Free parking - Shows when a player can move rent-free next turn</li>
  *   <li>Jail events - Handles the visual aspects for jail events like rolling or bail payment</li>
  * </ul>
+ *
+ * <h3>Enhanced UI components</h3>
+ * <ul>
+ *   <li>Player information cards - Cards showing each player's financial and property status</li>
+ *   <li>Money transaction feedback - Visual feedback for financial transactions</li>
+ *   <li>Bankruptcy indication - Clear visual cues when a player goes bankrupt</li>
+ *   <li>Property categorization - Color-coded grouping of properties by their types</li>
+ *   <li>Dynamic player status highlighting for player turn or bankruptcy</li>
+ *   <li>Displays game winner at the end of the game</li>
+ * </ul>>
  *
  * @author Ola Syrstad Berg
  * @since v1.1.0
