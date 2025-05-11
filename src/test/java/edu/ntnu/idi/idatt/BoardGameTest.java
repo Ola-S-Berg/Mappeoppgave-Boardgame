@@ -20,12 +20,10 @@ class BoardGameTest {
   @Test
   void addPlayer_Positive() {
    
-    Player player = new Player("Alice", "Blue",boardGame);
-    
-   
+    Player player = new Player("Alice", "Blue", boardGame, 200000);
+
     boardGame.addPlayer(player);
-    
-    
+
     assertEquals(player, boardGame.getPlayers().get(0), "Player should be added successfully.");
   }
 
@@ -39,17 +37,13 @@ class BoardGameTest {
   void createLadderGameBoard_Positive() {
    
     boardGame.createLadderGameBoard();
-    
-    
+
     assertNotNull(boardGame.getBoard(), "Board should be initialized.");
     assertEquals(90, boardGame.getBoard().getTile(90).getTileId(), "Tile 90 should exist.");
   }
 
   @Test
   void createLadderGameBoard_Negative_BeforeInitialization() {
-    
-    
-    
     
     assertThrows(NullPointerException.class, () -> boardGame.getBoard().getTile(1), "Should not allow accessing board before initialization.");
   }
@@ -58,13 +52,8 @@ class BoardGameTest {
   void createDice_Positive() {
     
     boardGame.createDice();
-
-    
     assertNotNull(boardGame.getDice(), "Dice should be initialized.");
 }
-
-  
-
 
   @Test
   void playGame_Positive() {
@@ -72,8 +61,8 @@ class BoardGameTest {
     boardGame.createLadderGameBoard();
     boardGame.createDice();
     
-    Player player1 = new Player("Alice", "Blue" ,boardGame);
-    Player player2 = new Player("Bob", "Red", boardGame);
+    Player player1 = new Player("Alice", "Blue", boardGame, 200000);
+    Player player2 = new Player("Bob", "Red", boardGame, 200000);
     
     boardGame.addPlayer(player1);
     boardGame.addPlayer(player2);
