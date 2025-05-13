@@ -47,11 +47,11 @@ public class TokenSelectionView {
 
 
   private final String[] tokenPaths = {
-      "/Images/tokens/BlueToken.png",
-      "/Images/tokens/LightBlueToken.png",
-      "/Images/tokens/RedToken.png",
-      "/Images/tokens/GreenToken.png",
-      "/Images/tokens/PinkToken.png"
+      "/images/tokens/BlueToken.png",
+      "/images/tokens/LightBlueToken.png",
+      "/images/tokens/RedToken.png",
+      "/images/tokens/GreenToken.png",
+      "/images/tokens/PinkToken.png"
   };
 
   /**

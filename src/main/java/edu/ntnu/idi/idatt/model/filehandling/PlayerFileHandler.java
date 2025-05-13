@@ -12,8 +12,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * File handler for managing player data in CSV files.
- * Implements the FileHandler interface for Player objects.
+ * <h1>Player File Handler</h1>
+ *
+ * <p>File handler for managing player data using CSV format. Provides functionality to save and
+ * load player information, including their game state, position, owned properties and money</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>CSV-based handling of player data</li>
+ *   <li>Support for tracking the current active player in saved games</li>
+ *   <li>Preservation of player properties, money and game positions</li>
+ *   <li>Complete player state reconstruction during loading</li>
+ * </ul>
+ *
+ * <h2>CSV format structure</h2>
+ *
+ * <p>The CSV file format used by this handler follows this pattern:</p>
+ * <ul>
+ *   <li>CURRENT_PLAYER: [player name]</li>
+ *   <li>[name], [token], [current tile ID], [money], [owned properties]</li>
+ *   <li>[name], [token], [current tile ID], [money], [owned properties]</li>
+ *   <li>...</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class PlayerFileHandler implements FileHandler<Player> {
 

@@ -14,8 +14,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Factory class for creating different variants of board games.
- * Can create predefined game types or load games from saved files.
+ * <h1>Board Game Factory</h1>
+ *
+ * <p>A factory class responsible for creating, loading and saving different variations of
+ * board games. This class follows the Factory design pattern, providing centralized
+ * creation methods for various board game types and handling game state operations.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Creating predefined board game variants (Ladder game, Monopoly game)</li>
+ *   <li>Saving game state to persistent storage</li>
+ *   <li>Loading previously saved game states</li>
+ *   <li>Managing game configuration and initialization</li>
+ *   <li>Handling file operations for game storage</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class BoardGameFactory {
   private static final String SAVE_FILES_DIRECTORY = "src/main/resources/saves";

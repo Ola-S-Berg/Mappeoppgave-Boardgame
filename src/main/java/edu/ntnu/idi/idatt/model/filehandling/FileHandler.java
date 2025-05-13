@@ -4,7 +4,25 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Interface for file handling. Defines methods for reading and writing objects to files.
+ * <h1>File Handler Interface</h1>
+ *
+ * <p>A generic interface that defines standard operations for writing objects to- and reading
+ * objects from files. This interface serves as a contract for implementing various file handling
+ * strategies across the application.</p>
+ *
+ * <h2>Responsibilities</h2>
+ * <ul>
+ *   <li>Writing collections of objects to file storage</li>
+ *   <li>Reading collections of objects from file storage</li>
+ *   <li>Handling potential I/O exceptions during file operations</li>
+ * </ul
+ *
+ * <h2>Type parameter</h2>>
+ * <p>This interface uses a type parameter {@code <T>} to allow implementations to specify
+ * the type of objects they can handle, providing type safety across the application.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public interface FileHandler<T> {
 

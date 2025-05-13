@@ -27,7 +27,32 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Handles file operations for BoardGame objects using JSON.
+ * <h1>Board File Handler</h1>
+ *
+ * <p>Specialized file handler that manages the serialization and deserialization of
+ * board game objects using JSON format. This class provides functionality to persist the complete
+ * state of a board game, including its tiles and their associated actions.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>JSON serialization of complete board game structures using GSON</li>
+ *   <li>Preservation of game variant information</li>
+ *   <li>Handling of tile relationships and action types</li>
+ *   <li>Full reconstruction of game boards from saved files</li>
+ * </ul>
+ *
+ * <h2>JSON format structure</h2>
+ *
+ * <p>The JSON file format follows the following structure:</p>
+ * <ul>
+ *   <li>Game metadata (name, description, variant)</li>
+ *   <li>Complete tile collection with IDs</li>
+ *   <li>Tile action configurations with type-specific properties</li>
+ *   <li>Inter-tile relationships and connections</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class BoardFileHandler implements FileHandler<BoardGame> {
 

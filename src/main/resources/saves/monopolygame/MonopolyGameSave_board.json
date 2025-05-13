@@ -1,0 +1,248 @@
+{
+  "name": "Monopoly Game",
+  "description": "A classic Monopoly game with 40 tiles.",
+  "variantName": "Monopoly Game",
+  "tiles": [
+    {
+      "id": 1,
+      "actionType": "start"
+    },
+    {
+      "id": 2,
+      "actionType": "property",
+      "propertyName": "Skolegata",
+      "cost": 6000,
+      "type": "blue"
+    },
+    {
+      "id": 3,
+      "actionType": "chance"
+    },
+    {
+      "id": 4,
+      "actionType": "property",
+      "propertyName": "Brattorgata",
+      "cost": 6000,
+      "type": "blue"
+    },
+    {
+      "id": 5,
+      "actionType": "tax",
+      "percentageTax": 10,
+      "fixedTax": 20000
+    },
+    {
+      "id": 6,
+      "actionType": "property",
+      "propertyName": "Nidarosdomen",
+      "cost": 20000,
+      "type": "landmark"
+    },
+    {
+      "id": 7,
+      "actionType": "property",
+      "propertyName": "Sverres gate",
+      "cost": 10000,
+      "type": "pink"
+    },
+    {
+      "id": 8,
+      "actionType": "chance"
+    },
+    {
+      "id": 9,
+      "actionType": "property",
+      "propertyName": "Tormods gate",
+      "cost": 10000,
+      "type": "pink"
+    },
+    {
+      "id": 10,
+      "actionType": "property",
+      "propertyName": "Olav Kyrres gate",
+      "cost": 12000,
+      "type": "pink"
+    },
+    {
+      "id": 11,
+      "actionType": "jail"
+    },
+    {
+      "id": 12,
+      "actionType": "property",
+      "propertyName": "Ragnhilds gate",
+      "cost": 14000,
+      "type": "green"
+    },
+    {
+      "id": 13,
+      "actionType": "chance"
+    },
+    {
+      "id": 14,
+      "actionType": "property",
+      "propertyName": "St. Olavs gate",
+      "cost": 14000,
+      "type": "green"
+    },
+    {
+      "id": 15,
+      "actionType": "property",
+      "propertyName": "Guttorms gate",
+      "cost": 16000,
+      "type": "green"
+    },
+    {
+      "id": 16,
+      "actionType": "property",
+      "propertyName": "Gamle Bybro",
+      "cost": 20000,
+      "type": "landmark"
+    },
+    {
+      "id": 17,
+      "actionType": "property",
+      "propertyName": "Nygata",
+      "cost": 18000,
+      "type": "gray"
+    },
+    {
+      "id": 18,
+      "actionType": "chance"
+    },
+    {
+      "id": 19,
+      "actionType": "property",
+      "propertyName": "Bakkegata",
+      "cost": 18000,
+      "type": "gray"
+    },
+    {
+      "id": 20,
+      "actionType": "property",
+      "propertyName": "Kirkegata",
+      "cost": 20000,
+      "type": "gray"
+    },
+    {
+      "id": 21,
+      "actionType": "FreeParking"
+    },
+    {
+      "id": 22,
+      "actionType": "property",
+      "propertyName": "Krambugata",
+      "cost": 22000,
+      "type": "red"
+    },
+    {
+      "id": 23,
+      "actionType": "chance"
+    },
+    {
+      "id": 24,
+      "actionType": "property",
+      "propertyName": "Fjordgata",
+      "cost": 22000,
+      "type": "red"
+    },
+    {
+      "id": 25,
+      "actionType": "property",
+      "propertyName": "Sandgata",
+      "cost": 24000,
+      "type": "red"
+    },
+    {
+      "id": 26,
+      "actionType": "property",
+      "propertyName": "Kristiansen Festning",
+      "cost": 20000,
+      "type": "landmark"
+    },
+    {
+      "id": 27,
+      "actionType": "property",
+      "propertyName": "Klostergata",
+      "cost": 26000,
+      "type": "yellow"
+    },
+    {
+      "id": 28,
+      "actionType": "property",
+      "propertyName": "Munkegata",
+      "cost": 26000,
+      "type": "yellow"
+    },
+    {
+      "id": 29,
+      "actionType": "chance"
+    },
+    {
+      "id": 30,
+      "actionType": "property",
+      "propertyName": "Bispegata",
+      "cost": 28000,
+      "type": "yellow"
+    },
+    {
+      "id": 31,
+      "actionType": "gotToJail"
+    },
+    {
+      "id": 32,
+      "actionType": "property",
+      "propertyName": "Sondre gate",
+      "cost": 30000,
+      "type": "purple"
+    },
+    {
+      "id": 33,
+      "actionType": "property",
+      "propertyName": "Erling Skakkes gate",
+      "cost": 30000,
+      "type": "purple"
+    },
+    {
+      "id": 34,
+      "actionType": "chance"
+    },
+    {
+      "id": 35,
+      "actionType": "property",
+      "propertyName": "Kongens gate",
+      "cost": 32000,
+      "type": "purple"
+    },
+    {
+      "id": 36,
+      "actionType": "property",
+      "propertyName": "Gloshaugen",
+      "cost": 20000,
+      "type": "landmark"
+    },
+    {
+      "id": 37,
+      "actionType": "wealthTax",
+      "amount": 10000
+    },
+    {
+      "id": 38,
+      "actionType": "property",
+      "propertyName": "Prinsens gate",
+      "cost": 35000,
+      "type": "orange"
+    },
+    {
+      "id": 39,
+      "actionType": "chance"
+    },
+    {
+      "id": 40,
+      "actionType": "property",
+      "propertyName": "Dronningens gate",
+      "cost": 40000,
+      "type": "orange"
+    }
+  ]
+}
