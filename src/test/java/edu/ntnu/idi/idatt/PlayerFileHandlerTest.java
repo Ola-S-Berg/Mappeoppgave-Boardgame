@@ -14,8 +14,8 @@ public class PlayerFileHandlerTest {
   @Test
   public void testWriteToFile() throws IOException {
     PlayerFileHandler playerFileHandler = new PlayerFileHandler();
-    Player player1 = new Player("Ola", "Red", null);
-    Player player2 = new Player("Markus", "Blue", null);
+    Player player1 = new Player("Ola", "Red", null, 200000);
+    Player player2 = new Player("Markus", "Blue", null, 200000);
 
     List<Player> players = List.of(player1, player2);
 
