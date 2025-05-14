@@ -89,7 +89,7 @@ public class MonopolyGameController implements BoardGameController {
   /**
    * Shutdown method to clean up resources.
    */
-  public void shutdown() {
+  private void shutdown() {
     if (isShutDown) {
       return;
     }

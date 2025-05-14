@@ -1,3 +1,4 @@
+
 package edu.ntnu.idi.idatt.model.actions.monopolygame;
 
 import edu.ntnu.idi.idatt.controllers.MonopolyGameController;
@@ -150,10 +151,16 @@ public class JailTileAction implements TileAction {
     BoardGame game = player.getGame();
     int[] diceValues = game.rollDice();
 
-    System.out.println(player.getName() + " rolled " + diceValues[0] + " and " + diceValues[1]);
+    String rollMessage = player.getName() + " rolled " + diceValues[0] + " and " + diceValues[1];
+
+    System.out.println(rollMessage);
+
+    if (controller != null) {
+      Platform.runLater(() -> controller.updateActionLabel(rollMessage));
+    }
 
     if (diceValues[0] == diceValues[1]) {
-      System.out.println(player.getName() + " rolled doubles and gets out of jail");
+      System.out.println(player.getName() + " Rolled doubles and gets out of jail");
       player.releaseFromJail();
       player.setProperty("jailTurnCount", "0");
 
@@ -173,11 +180,22 @@ public class JailTileAction implements TileAction {
       game.notifyPlayerMove(player, fromTileId, toTileId, steps);
 
       if (destinationTile.getAction() != null) {
+        if (controller != null) {
+          final String finalMessage = rollMessage + " - Rolled doubles and gets out of jail!";
+          Platform.runLater(() -> controller.updateActionLabel(finalMessage));
+        }
+
         destinationTile.getAction().perform(player);
-      } else {
-        System.out.println(player.getName() + " failed to roll doubles and stays in jail");
+      }
+    } else {
+      String stayInJailMessage = rollMessage + " - Failed to roll doubles and stays in jail.";
+      System.out.println(player.getName() + " Failed to roll doubles and stays in jail");
+
+      if (controller != null) {
+        Platform.runLater(() -> controller.updateActionLabel(stayInJailMessage));
       }
     }
+
     if (controller != null) {
       Platform.runLater(() -> controller.advanceToNextPlayer());
     }
