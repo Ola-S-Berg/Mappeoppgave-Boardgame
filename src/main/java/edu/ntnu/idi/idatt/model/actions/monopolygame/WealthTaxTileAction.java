@@ -41,6 +41,11 @@ public class WealthTaxTileAction implements TileAction {
     }
   }
 
+  /**
+   * Gets the amount of money the player has to pay.
+   *
+   * @return The amount of money the player has to pay.
+   */
   public int getAmount() {
     return amount;
   }
