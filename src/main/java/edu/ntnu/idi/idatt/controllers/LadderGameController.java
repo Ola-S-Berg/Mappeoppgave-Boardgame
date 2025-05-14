@@ -16,8 +16,23 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
- * Controller for the Ladder Game that handles game logic and coordinates
- * between the model (BoardGame) and view (LadderGameClassicView).
+ * <h1>Ladder Game Controller</h1>
+ *
+ * <p>A specialized controller implementation for the Ladder Game. This controller manages the
+ * complete game lifecycle, coordinates between the game model and the visual representation,
+ * and implements game-specific rules and mechanics.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Turn-based player management with automated progression</li>
+ *   <li>Dice rolling and movement calculation with support for special actions</li>
+ *   <li>Multithreaded animation coordination for a smooth gameplay experience</li>
+ *   <li>Game state persistence through save/load functionality</li>
+ *   <li>Position conversion between logical game state and visual grid representation</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class LadderGameController implements BoardGameController {
   private final BoardGame boardGame;

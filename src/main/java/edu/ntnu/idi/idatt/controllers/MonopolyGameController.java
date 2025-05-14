@@ -25,8 +25,27 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
- * Controller for the Monopoly Game that handles game logic and coordinates
- * between the model (BoardGame) and view (MonopolyGameView).
+ * <h1>Monopoly Game Controller</h1>
+ *
+ * <p>A specialized controller implementation for the Monopoly Game. This controller manages the
+ * complete game lifecycle, coordinates between the game model and the visual representation,
+ * and implements game-specific rules and mechanics.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Game action handling through a managed thread pool</li>
+ *   <li>Dice rolling and movement calculation with support for special actions</li>
+ *   <li>Multithreaded animation coordination for a smooth gameplay experience</li>
+ *   <li>Robust player state management including property ownership and financial status</li>
+ *   <li>Condition handling for jail, bankruptcy, and winning scenarios</li>
+ *   <li>Integration with various tile actions, major ones being Property, Chance, and Jail</li>
+ *   <li>Game state persistence through save/load functionality</li>
+ *   <li>Position conversion between logical game state and visual grid representation</li>
+ *   <li>Clean resource management with explicit shutdown procedures</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class MonopolyGameController implements BoardGameController {
   private final BoardGame boardGame;

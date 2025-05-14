@@ -3,7 +3,31 @@ package edu.ntnu.idi.idatt.controllers;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
- * Interface for the controllers.
+ * <h1>Board Game Controller Interface</h1>
+ *
+ * <p>This interface defines the core functionality required for controllers. It establishes
+ * a standard contract for all game controllers to implement, ensuring consistent behavior
+ * across different game variations.</p>
+ *
+ * <h2>Responsibilities</h2>
+ * <ul>
+ *   <li>Manging player turns and game state transitions</li>
+ *   <li>Handling dice rolls and player movement</li>
+ *   <li>Coordinating save/load functionality</li>
+ *   <li>Managing game lifecycle events (restart, quit)</li>
+ *   <li>Converting logical game positions to visual representations</li>
+ * </ul>
+ *
+ * <h2>Design Patterns</h2>
+ *
+ * <p>This interface follows the Model-View-Controller (MVC) pattern, where the controller
+ * acts as an intermediary between the game model and the UI views. Implementations of this
+ * interface are responsible for maintaining the application's business logic while keeping
+ * the view and model layers separate.</p>
+ *
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public interface BoardGameController {
 
