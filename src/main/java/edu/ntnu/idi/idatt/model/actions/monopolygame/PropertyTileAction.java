@@ -180,7 +180,7 @@ public class PropertyTileAction implements TileAction {
       return false;
     }
 
-    int totalPropertiesOfTpe = propertyTypeCounts.get(type);
+    int totalPropertiesOfType = propertyTypeCounts.get(type);
     int playerPropertiesOfType = 0;
 
     List<PropertyTileAction> playerProperties = player.getOwnedProperties();
@@ -190,7 +190,7 @@ public class PropertyTileAction implements TileAction {
       }
     }
 
-    return playerPropertiesOfType == totalPropertiesOfTpe;
+    return playerPropertiesOfType == totalPropertiesOfType;
   }
 
   /**
