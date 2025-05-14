@@ -6,13 +6,20 @@ import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 
 /**
- * Class representing action when landing on a "Go To Jail" tile in Monopoly.
+ * <h1>Go To Jail Action</h1>
+ *
+ * <p>Implements the action when a player lands on the "Go To Jail" tile in Monopoly.
+ * This class handles the mechanics of relocating a player to the jail tile and applying
+ * the Jail tile effect, see {@link JailTileAction}.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class GoToJailAction implements TileAction {
   private final int jailTileId;
 
   /**
-   * Constructor for GoToJailAction.
+   * Constructs a new GoToJailAction tile that sends players to jail.
    *
    * @param jailTileId The ID of the jail tile to send the player to.
    */

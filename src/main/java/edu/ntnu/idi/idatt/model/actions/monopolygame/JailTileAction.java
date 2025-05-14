@@ -11,7 +11,21 @@ import javafx.stage.Stage;
 
 
 /**
- * Class representing action when landing on a jail tile in Monopoly.
+ * <h1>Jail Tile Action</h1>
+ *
+ * <p>Represents the action and behavior of the jail tile in Monopoly. This class handles two cases:
+ * players who are imprisoned and must find a way out, and players who are "just visiting" jail.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Jail turn tracking and automatic release after maximum turns</li>
+ *   <li>Interactive options for players to escape jail (pay bail or roll doubles)</li>
+ *   <li>UI integration for presenting jail-related decisions</li>
+ *   <li>Proper game flow management during imprisonment</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class JailTileAction implements TileAction {
   private static final int JAIL_BAIL = 5000;

@@ -5,7 +5,13 @@ import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 
 /**
- * Class representing action when landing on a move back to start tile.
+ * <h1>Back To Start Action</h1>
+ *
+ * <p>Implements a game mechanic that forces a player to return to the starting position
+ * of the game board when landing on a specific tile with this action.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class BackToStartAction implements TileAction {
 

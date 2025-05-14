@@ -14,7 +14,29 @@ import javafx.stage.Stage;
 
 
 /**
- * Class representing action when landing on a property tile in Monopoly Game.
+ * <h1>Property Tile Action</h1>
+ *
+ * <p>Implements the core property mechanics of Monopoly, handling the acquisition of properties,
+ * rent collection, and ownership management. This class represents one of the central economic
+ * components of the Monopoly Game.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Property purchase dialog and transaction processing</li>
+ *   <li>Rent calculation with monopoly bonuses for complete property sets</li>
+ *   <li>Property ownership tracking and management</li>
+ *   <li>Special rent exemptions</li>
+ *   <li>UI integration for presenting property-related events</li>
+ * </ul>
+ *
+ * <h2>Property types</h2>
+ *
+ * <p>The system supports multiple property types (colors) and are categorized into groups
+ * according to their color (or landmark). Collecting all properties of one type grants special
+ * bonuses to rent amounts.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class PropertyTileAction implements TileAction {
   private final String propertyName;
@@ -38,7 +60,7 @@ public class PropertyTileAction implements TileAction {
   }
 
   /**
-   * Constructor for PropertyTileAction.
+   * Constructs a new PropertyTileAction with the specified name, cost, and type.
    *
    * @param propertyName The name of the property.
    * @param cost The cost to purchase the property.

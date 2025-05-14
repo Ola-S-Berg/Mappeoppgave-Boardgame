@@ -5,7 +5,22 @@ import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 
 /**
- * Class representing the action of landing on a ladder.
+ * <h1>Ladder Action</h1>
+ *
+ * <p>Implements the signature mechanic of the ladder game, allowing players to move up or down
+ * the game board when landing on ladder action tiles. The player moves up when landing on a ladder
+ * with a green tile and down when landing on a ladder with a red tile.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Bidirectional movement capability (up/down ladders)</li>
+ *   <li>Configurable destination points for adaptable board design</li>
+ *   <li>UI integration for event notification</li>
+ *   <li>Exception handling for missing destination tiles</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class LadderAction implements TileAction {
   private final int destinationTileId;

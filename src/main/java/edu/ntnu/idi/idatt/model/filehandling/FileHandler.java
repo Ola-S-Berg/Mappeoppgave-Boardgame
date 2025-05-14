@@ -18,6 +18,7 @@ import java.util.List;
  * </ul
  *
  * <h2>Type parameter</h2>>
+ *
  * <p>This interface uses a type parameter {@code <T>} to allow implementations to specify
  * the type of objects they can handle, providing type safety across the application.</p>
  *

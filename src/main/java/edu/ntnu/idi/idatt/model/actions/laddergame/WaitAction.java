@@ -4,7 +4,13 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
- * Class representing action when landing on a wait tile.
+ * <h1>Wait Action</h1>
+ *
+ * <p>Implements a turn-delay mechanism that temporarily prevents a player from rolling/moving.
+ * Forces a player who lands on a tile with this action to skip a turn.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class WaitAction implements TileAction {
 

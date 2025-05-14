@@ -4,7 +4,13 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
- * Class representing action when landing on or passing the Start tile in Monopoly.
+ * <h1>Start Tile Action</h1>
+ *
+ * <p>Implements the behavior of the Start tile in Monopoly, which rewards players with a monetary
+ * bonus when they land on- or pass this tile.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class StartTileAction implements TileAction {
   private static final int PASS_REWARD = 20000;

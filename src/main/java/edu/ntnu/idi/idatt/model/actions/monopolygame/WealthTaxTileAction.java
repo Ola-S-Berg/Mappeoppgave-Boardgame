@@ -4,13 +4,19 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
- * Class representing action when landing on a pay tile in Monopoly.
+ * <h1>Wealth Tax Tile Action</h1>
+ *
+ * <p>Implements a tax mechanism in Monopoly where players must pay a fixed amount when landing
+ * on this tile</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class WealthTaxTileAction implements TileAction {
   private final int amount;
 
   /**
-   * Constructor for PayTileAction.
+   * Constructs a new WealthTaxTileAction with a fixed tax amount.
    *
    * @param amount The amount of money the player has to pay.
    */

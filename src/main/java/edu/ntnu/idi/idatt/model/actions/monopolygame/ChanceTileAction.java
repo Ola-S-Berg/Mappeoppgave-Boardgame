@@ -7,7 +7,22 @@ import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.util.Random;
 
 /**
- * Class representing action when landing on a chance tile in Monopoly.
+ * <h1>Chance Tile Action</h1>
+ *
+ * <p>Implements the action when a player lands on a Chance tile in Monopoly. This class
+ * randomly selects one of several possible outcomes that can affect the player's position,
+ * wealth, or interactions with other players.</p>
+ *
+ * <h2>Features</h2>
+ * <ul>
+ *   <li>Random selection from a predefined set of chance actions</li>
+ *   <li>Player movement management and redirection</li>
+ *   <li>Financial transactions between players and the bank</li>
+ *   <li>Integration with the game controller for UI updates</li>
+ * </ul>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class ChanceTileAction implements TileAction {
   private static final Random random = new Random();

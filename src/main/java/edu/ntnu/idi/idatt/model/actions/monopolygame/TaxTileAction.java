@@ -7,7 +7,14 @@ import edu.ntnu.idi.idatt.views.DialogService;
 import javafx.stage.Stage;
 
 /**
- * Class representing action when landing on a tax tile in Monopoly.
+ * <h1>Tax Tile Action</h1>
+ *
+ * <p>Implements the behavior when a player lands on a tax tile in Monopoly. Presents the player
+ * with a strategic choice between two taxation methods: paying a percentage of their current
+ * money or a fixed amount.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class TaxTileAction implements TileAction {
   private final int percentageTax;
@@ -16,7 +23,7 @@ public class TaxTileAction implements TileAction {
   private MonopolyGameController controller;
 
   /**
-   * Constructor for TaxTileAction.
+   * Constructs a new TaxTileAction tile two taxation options.
    *
    * @param percentageTax The percentage of the player's money to pay as tax.
    * @param fixedTax The fixed amount to pay as tax.

@@ -4,7 +4,14 @@ import edu.ntnu.idi.idatt.model.actions.TileAction;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 
 /**
- * Class representing action when landing on the Free Parking tile in Monopoly.
+ * <h1>Free Parking Action</h1>
+ *
+ * <p>Represents the action that occurs when a player lands on the Free Parking tile in Monopoly.
+ * Sets a property flag that on the player that grants them a temporary benefit for their next turn,
+ * being the exemption from paying for parking/rent next turn.</p>
+ *
+ * @author Ola Syrstad Berg
+ * @since v1.1.0
  */
 public class FreeParkingAction implements TileAction {
 
