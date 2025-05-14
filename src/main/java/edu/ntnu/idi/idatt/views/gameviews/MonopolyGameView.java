@@ -29,6 +29,7 @@ import javafx.stage.Stage;
  * <h2>Features</h2>
  *
  * <h3>Game Board Layout</h3>
+ *
  * <p>The game board uses an 11x11 grid layout, with tiles organized in the movement pattern of
  * the Monopoly Game. Grid coordinates are used to map logical tile positions to visual positions.
  * Properties are positioned in a color-based grouping, with each grouping spread out by other
@@ -269,6 +270,37 @@ public class MonopolyGameView extends AbstractBoardGameView {
   }
 
   /**
+   * Gets the game-specific information to display in the game info dialog.
+   * This method provides detailed information about the Monopoly game, including its rules,
+   * objectives, and gameplay mechanics.
+   *
+   * @return A string containing the Monopoly Game information.
+   */
+  @Override
+  protected String getGameInformation() {
+
+    return """
+        Monopoly Game is a property management board game where players buy and rent \
+        properties to build wealth.
+        
+        """
+        + "Game Objective:\n"
+        + "• Become the wealthiest player by buying and renting properties.\n"
+        + "• The last player remaining after all others are bankrupt wins!\n\n"
+        + "Game Features:\n"
+        + "• Buy properties when you land on unowned spaces.\n"
+        + "• Collect rent from opponents who land on your properties.\n"
+        + "• Properties are color-coded by their types and values, collecting all properties"
+        + " of a type will grant a bonus to rent collection for that property type.\n"
+        + "• Landing on Chance draws a random event card\n"
+        + "• Pay taxes when landon on tax tiles\n"
+        + "• Go to Jail when landing on the Go To Jail tile. "
+        + "To escape jail, pay a bail of 5000$, roll doubles or wait for 3 turns\n"
+        + "• Collect money when passing or landing on Start.\n"
+        + "• Free parking grants rent immunity for one turn.";
+  }
+
+  /**
    * Sets up the player information panel as a box containing details about each player.
    * The panel includes a title and dynamically generated cards for every player in the game.
    * Each card displays the specific player's information.
@@ -319,26 +351,26 @@ public class MonopolyGameView extends AbstractBoardGameView {
   private VBox createPlayerInfoCard(Player player) {
     VBox playerCard = new VBox(5);
     playerCard.setPadding(new Insets(8));
-    playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; "
-        + "-fx-border-width: 1px; -fx-border-radius: 5px;");
+    playerCard.getStyleClass().add("player-panel");
 
     String playerColor = getPlayerColorStyle(player);
 
     Label nameLabel = new Label(player.getName());
-    nameLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; " + playerColor);
+    nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; " + playerColor);
 
-    Label moneyLabel = new Label(String.valueOf(player.getMoney()));
+    Label moneyLabel = new Label("$" + player.getMoney());
     moneyLabel.setId("money-" + player.getName());
-    moneyLabel.setStyle("-fx-font-size: 13px;");
+    moneyLabel.getStyleClass().add("player-money");
 
     VBox propertiesBox = new VBox(3);
     propertiesBox.setId("properties-" + player.getName());
 
-    updatePlayerProperties(propertiesBox, player);
+    populatePlayerPropertiesBox(propertiesBox, player);
 
     TitledPane propertiesPane = new TitledPane("Properties", propertiesBox);
     propertiesPane.setCollapsible(true);
     propertiesPane.setExpanded(false);
+    propertiesPane.getStyleClass().add("property-pane");
     propertiesPane.setStyle("-fx-font-size: 12px;");
 
     playerCard.getChildren().addAll(nameLabel, moneyLabel, propertiesPane);
@@ -404,14 +436,14 @@ public class MonopolyGameView extends AbstractBoardGameView {
   }
 
   /**
-   * Updates the specified VBox to display the properties owned by a given player.
+   * Populates the propertiesBox with the properties owned by a given player.
    * The properties are retrieved from the player's data and displayed as a list of labels.
    * If the player owns no properties, a message stating this is displayed instead.
    *
    * @param propertiesBox The VBox container to populate with the player's property information.
    * @param player The Player object whose properties are to be displayed in the VBox.
    */
-  private void updatePlayerProperties(VBox propertiesBox, Player player) {
+  private void populatePlayerPropertiesBox(VBox propertiesBox, Player player) {
     propertiesBox.getChildren().clear();
 
     List<PropertyTileAction> properties = player.getOwnedProperties();
@@ -447,7 +479,7 @@ public class MonopolyGameView extends AbstractBoardGameView {
         for (javafx.scene.Node node : playerCard.getChildren()) {
           if (node instanceof TitledPane && "Properties".equals(((TitledPane) node).getText())) {
             VBox propertiesBox = (VBox) ((TitledPane) node).getContent();
-            updatePlayerProperties(propertiesBox, player);
+            populatePlayerPropertiesBox(propertiesBox, player);
             break;
           }
         }
@@ -469,7 +501,7 @@ public class MonopolyGameView extends AbstractBoardGameView {
         for (javafx.scene.Node node : playerCard.getChildren()) {
           if (node instanceof Label && node.getId() != null
               && node.getId().startsWith("money-" + player.getName())) {
-            ((Label) node).setText(String.valueOf(player.getMoney()));
+            ((Label) node).setText("$" + player.getMoney());
             break;
           }
         }
@@ -484,12 +516,12 @@ public class MonopolyGameView extends AbstractBoardGameView {
    * @param player The player associated with the card being updated
    */
   private void updatePlayerCardHighlight(VBox playerCard, Player player) {
+    playerCard.getStyleClass().clear();
+
     if (player.equals(boardGame.getCurrentPlayer())) {
-      playerCard.setStyle("-fx-background-color: #e3f2fd; -fx-border-color: #2196f3; "
-          + "-fx-border-width: 2px; -fx-border-radius: 5px;");
+      playerCard.getStyleClass().add("current-player");
     } else {
-      playerCard.setStyle("-fx-background-color: white; -fx-border-color: #dddddd; "
-          + "-fx-border-width: 1px; -fx-border-radius: 5px;");
+      playerCard.getStyleClass().add("player-panel");
     }
   }
 

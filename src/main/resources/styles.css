@@ -20,6 +20,13 @@
   -fx-text-fill: #2c3e50;
 }
 
+.heading-small {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-padding: 6px 0;
+  -fx-text-fill: #CC0000;
+}
+
 /* Buttons */
 .button {
   -fx-background-color: #3498db;
@@ -154,45 +161,30 @@
   -fx-border-color: #3498db;
 }
 
-/* Game board elements */
-.board-tile {
-  -fx-background-color: white;
-  -fx-border-color: #bdc3c7;
-  -fx-border-radius: 3px;
-  -fx-padding: 5px;
-}
-
-.property-name {
-  -fx-font-weight: bold;
-  -fx-font-size: 13px;
-}
-
-.property-price {
-  -fx-font-size: 12px;
-  -fx-text-fill: #7f8c8d;
-}
-
 /* Player info panel */
 .player-panel {
   -fx-background-color: white;
-  -fx-border-color: #bdc3c7;
+  -fx-border-color: #dddddd;
+  -fx-border-width: 1px;
   -fx-border-radius: 5px;
-  -fx-padding: 10px;
 }
 
 .player-name {
   -fx-font-weight: bold;
-  -fx-font-size: 16px;
+  -fx-font-size: 14px;
 }
 
 .player-money {
-  -fx-font-size: 14px;
-  -fx-text-fill: #27ae60;
+  -fx-font-size: 13px;
+  -fx-text-fill: #1C7D46;
+  -fx-font-weight: bold;
 }
 
 .current-player {
-  -fx-border-color: #3498db;
+  -fx-background-color: #e3f2fd;
+  -fx-border-color: #2196f3;
   -fx-border-width: 2px;
+  -fx-border-radius: 5px;
 }
 
 /* Containers */
@@ -209,12 +201,4 @@
   -fx-border-radius: 5px;
   -fx-padding: 20px;
   -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 4);
-}
-
-/* Tooltips */
-.tooltip {
-  -fx-background-color: #34495e;
-  -fx-text-fill: white;
-  -fx-font-size: 12px;
-  -fx-padding: 5px 10px;
 }

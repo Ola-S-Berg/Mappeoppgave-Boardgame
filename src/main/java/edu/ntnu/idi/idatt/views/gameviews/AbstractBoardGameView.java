@@ -4,6 +4,8 @@ import edu.ntnu.idi.idatt.controllers.BoardGameController;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGameObserver;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
+import edu.ntnu.idi.idatt.views.CssUtil;
+import edu.ntnu.idi.idatt.views.DialogService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -47,11 +49,13 @@ import javafx.util.Duration;
  * </ul>
  *
  * <h2>Design Pattern</h2>
+ *
  * <p>This class uses the Template Method design pattern, defining the skeleton of the game UI
  * while allowing subclasses to override specific methods to provide game-specific behavior
  * without changing the overall structure.</p>
  *
  * <h2>Observer implementation</h2>
+ *
  * <p>As a BoardGameObserver, this class receives notifications about:</p>
  * <ul>
  *   <li>Player movements and position changes</li>
@@ -125,6 +129,7 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   protected void setupGameView() {
     BorderPane root = new BorderPane();
     root.setPadding(new Insets(10));
+    root.getStyleClass().add("root");
 
     setupTopSection(root);
     setupBoardPane(root);
@@ -132,6 +137,8 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     setupPlayerTokens();
 
     Scene scene = new Scene(root, 800, 700);
+    CssUtil.applyStyleSheet(scene);
+
     stage.setScene(scene);
     stage.setTitle(getGameTitle());
     stage.setMinWidth(700);
@@ -159,6 +166,22 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   protected abstract String getGameTitle();
 
   /**
+   * Gets the game-specific information to display in the game info dialog.
+   * This method should be overwritten by subclasses to provide game-specific information.
+   *
+   * @return A string containing the game information.
+   */
+  protected abstract String getGameInformation();
+
+  /**
+   * Shows the game information dialog.
+   * This method should be overwritten by subclasses to provide game-specific information.
+   */
+  protected void showGameInfoDialog() {
+    DialogService.showGameInfoDialog(stage, getGameTitle() + " Info", getGameInformation());
+  }
+
+  /**
    * Sets up the top section of the UI containing status labels.
    *
    * @param root The root border pane.
@@ -167,16 +190,17 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     VBox topSection = new VBox(10);
     topSection.setAlignment(Pos.CENTER);
     topSection.setPadding(new Insets(0, 0, 10, 0));
+    topSection.getStyleClass().add("content-box");
 
     Player startingPlayer = boardGame.getCurrentPlayer() != null
                           ? boardGame.getCurrentPlayer() :
                             boardGame.getPlayers().getFirst();
 
     statusLabel = new Label("Game Started! " + startingPlayer.getName() + "'s Turn To Roll");
-    statusLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+    statusLabel.getStyleClass().add("heading-medium");
 
     actionLabel = new Label("");
-    actionLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #CC0000;");
+    actionLabel.getStyleClass().add("heading-small");
     actionLabel.setVisible(false);
 
     topSection.getChildren().addAll(statusLabel, actionLabel);
@@ -191,6 +215,7 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   protected void setupBoardPane(BorderPane root) {
     StackPane boardPane = new StackPane();
     boardPane.setPadding(new Insets(5));
+    boardPane.getStyleClass().add("dialog-pane");
     boardPane.setStyle("-fx-background-color: white;"
         + " -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
     boardPane.prefWidthProperty().bind(root.widthProperty().multiply(0.85));
@@ -236,8 +261,7 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
   protected void setupControlsPane(BorderPane root) {
     Button saveButton = new Button("Save Game");
     saveButton.setMinWidth(120);
-    saveButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;"
-        + " -fx-background-color: #4CAF50; -fx-text-fill: white;");
+    saveButton.getStyleClass().addAll("button", "button-primary");
     saveButton.setOnAction(event -> {
       if (controller.saveGame()) {
         statusLabel.setText("Game saved successfully!");
@@ -246,10 +270,15 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       }
     });
 
+    Button infoButton = new Button("Game Info");
+    infoButton.setMinWidth(120);
+    infoButton.getStyleClass().add("button");
+    infoButton.setOnAction(event -> showGameInfoDialog());
+
+
     Button quitButton = new Button("Quit to Menu");
     quitButton.setMinWidth(120);
-    quitButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px 16px;"
-        + " -fx-background-color: #CC0000; -fx-text-fill: white;");
+    quitButton.getStyleClass().addAll("button", "button-danger");
     quitButton.setOnAction(event -> controller.quitToMenu());
 
     diceView1 = new ImageView();
@@ -266,10 +295,11 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     diceBox.getChildren().addAll(diceView1, diceView2);
 
     Label rollDiceLabel = new Label("Roll Dice:");
-    rollDiceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+    rollDiceLabel.getStyleClass().add("heading-medium");
 
     rollButton = new Button();
     rollButton.setOnAction(event -> controller.rollDice());
+    rollButton.getStyleClass().add("token-button");
 
     Image rollDieImage = new Image(Objects.requireNonNull(
         getClass().getResourceAsStream("/images/die/RollDie.png")));
@@ -279,7 +309,6 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
     rollDieImageView.setPreserveRatio(true);
 
     rollButton.setGraphic(rollDieImageView);
-    rollButton.setStyle("-fx-background-color: transparent; -fx-padding: 5px;");
 
     HBox diceControlLayout = new HBox(15);
     diceControlLayout.setAlignment(Pos.CENTER);
@@ -291,12 +320,13 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
 
     HBox buttonBox = new HBox(15);
     buttonBox.setAlignment(Pos.CENTER_LEFT);
-    buttonBox.getChildren().addAll(saveButton, quitButton);
+    buttonBox.getChildren().addAll(saveButton, infoButton, quitButton);
 
     BorderPane bottomLayout = new BorderPane();
     bottomLayout.setLeft(buttonBox);
     bottomLayout.setCenter(diceControlContainer);
     bottomLayout.setPadding(new Insets(10));
+    bottomLayout.getStyleClass().add("content-box");
     root.setBottom(bottomLayout);
   }
 

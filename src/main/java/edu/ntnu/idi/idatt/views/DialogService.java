@@ -362,6 +362,62 @@ public class DialogService {
   }
 
   /**
+   * Shows a dialog displaying game information.
+   *
+   * @param ownerStage The stage that owns this dialog.
+   * @param title The title of the dialog.
+   * @param gameInfo The information about the game to display.
+   */
+  public static void showGameInfoDialog(Stage ownerStage, String title, String gameInfo) {
+    if (ownerStage == null) {
+      return;
+    }
+
+    Stage dialogStage = new Stage();
+    dialogStage.initModality(Modality.APPLICATION_MODAL);
+    dialogStage.initOwner(ownerStage);
+    dialogStage.setTitle(title);
+
+    handleDialogCloseRequest(dialogStage, null);
+
+    VBox dialogVbox = new VBox(15);
+    dialogVbox.getStyleClass().add("dialog-pane");
+    dialogVbox.setPadding(new Insets(20));
+    dialogVbox.setAlignment(Pos.CENTER);
+
+    Label titleLabel = new Label(title);
+    titleLabel.getStyleClass().add("dialog-header");
+
+    Label infoLabel = new Label(gameInfo);
+    infoLabel.getStyleClass().add("dialog-message");
+    infoLabel.setWrapText(true);
+
+    Button closeButton = new Button("Close");
+    closeButton.getStyleClass().addAll("button", "button-secondary");
+    closeButton.setOnAction(event -> animateDialogAndClose(dialogStage));
+
+    dialogVbox.getChildren().addAll(titleLabel, infoLabel, closeButton);
+
+    Scene dialogScene = new Scene(dialogVbox, 600, 600);
+
+    try {
+      String cssPath = Objects.requireNonNull(
+          MainApp.class.getResource("/styles.css")).toExternalForm();
+      dialogScene.getStylesheets().add(cssPath);
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error loading CSS: " + e);
+    }
+
+    dialogStage.setScene(dialogScene);
+
+    try {
+      dialogStage.show();
+    } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Error showing dialog: " + e);
+    }
+  }
+
+  /**
    * Helper method to handle the dialog window close requests.
    *
    * @param dialogStage The dialog stage to handle.

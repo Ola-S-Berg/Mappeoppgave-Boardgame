@@ -13,6 +13,7 @@ import javafx.stage.Stage;
  * elements unique to this board game.</p>
  *
  * <h2>Game Variation</h2>
+ *
  * <p>The Ladder Game View supports three different game variations:</p>
  * <ul>
  *   <li><strong>Classic</strong> - The classic Ladder Game experience</li>
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
  * </ul>
  *
  * <h2>Game Board Layout</h2>
+ *
  * <p>The game board uses a 9x10 grid layout, with tiles organized in the movement pattern of
  * the Ladder Game. Grid coordinates are used to map logical tile positions to visual positions.</p>
  *
@@ -125,5 +127,47 @@ public class LadderGameView extends AbstractBoardGameView {
 
     actionLabel.setText(message);
     actionLabel.setVisible(true);
+  }
+
+  /**
+   * Gets the game-specific information to display in the game info dialog.
+   * This method provides detailed information about the Ladder Game, including its rules,
+   * objectives, and specific game variation features.
+   *
+   * @return A string containing the Ladder Game information.
+   */
+  @Override
+  protected String getGameInformation() {
+    StringBuilder info = new StringBuilder();
+    info.append("""
+        The ladder game is a classic board game where players move along a path with\
+         ladders, wait and back-to-start actions.
+        
+        """);
+    info.append("Game Objective:\n");
+    info.append("• Reach the final tile (tile 90) before your opponents.\n");
+    info.append("• The first player to reach the final tile wins!\n\n");
+
+    info.append("Game Rules:\n");
+    info.append("• Players take turns rolling a die and moving their token forward.\n");
+    info.append("• Landing on a ladder allows you to climb up or down depending on the type.\n");
+    info.append("• Special action tiles can send you back to start or make you skip a turn.\n\n");
+
+    info.append("Game Variations: ").append(gameVariation).append("\n");
+    switch (gameVariation) {
+      case "Ladder Game Advanced":
+        info.append("• Advanced game mode includes additional action tiles.\n");
+        info.append("• Players will encounter more actions that will impact their progress.\n");
+        break;
+      case "Ladder Game Extreme":
+        info.append("• Extreme mode flips all up ladders to down.\n");
+        info.append("• This creates a more challenging experience as progress is harder to make.\n");
+      default:
+        info.append("• Classic mode offers the traditional Ladder Game experience.\n");
+        info.append("• Offers a balanced amount of ladders and actions for fair gameplay.\n");
+        break;
+    }
+
+    return info.toString();
   }
 }
