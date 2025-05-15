@@ -1,12 +1,19 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
 import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileExceptionUtil;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileNotFoundException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerDataFormatException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerFileReadException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerFileWriteException;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,10 +53,10 @@ public class PlayerFileHandler implements FileHandler<Player> {
    *
    * @param filename The name of the file to write to.
    * @param players  The list of players to write to the file.
-   * @throws IOException If an error occurs during file writing.
+   * @throws PlayerFileWriteException If an error occurs during file writing.
    */
   @Override
-  public void writeToFile(String filename, List<Player> players) throws IOException {
+  public void writeToFile(String filename, List<Player> players) {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
       String currentPlayerName = null;
       for (Player player : players) {
@@ -65,20 +72,27 @@ public class PlayerFileHandler implements FileHandler<Player> {
       }
 
       for (Player player : players) {
-        int currentTileId =
-            (player.getCurrentTile() != null) ? player.getCurrentTile().getTileId() : 1;
-        String properties = player.getOwnedProperties().stream().map(
-            PropertyTileAction::getPropertyName).collect(
-            Collectors.joining(";"));
+        try {
+          int currentTileId =
+              (player.getCurrentTile() != null) ? player.getCurrentTile().getTileId() : 1;
+          String properties = player.getOwnedProperties().stream().map(
+              PropertyTileAction::getPropertyName).collect(
+              Collectors.joining(";"));
 
-        writer.write(player.getName() + ", "
-            + player.getToken() + ", "
-            + currentTileId + ", "
-            + player.getMoney() + ", "
-            + properties);
+          writer.write(player.getName() + ", "
+              + player.getToken() + ", "
+              + currentTileId + ", "
+              + player.getMoney() + ", "
+              + properties);
 
-        writer.newLine();
+          writer.newLine();
+        } catch (Exception e) {
+          throw FileExceptionUtil.createPlayerFileWriteException(
+              filename, player.getName(), "Failed to format player data: " + e.getMessage());
+        }
       }
+    } catch (IOException e) {
+      throw FileExceptionUtil.createPlayerFileWriteException(filename, e);
     }
   }
 
@@ -87,16 +101,30 @@ public class PlayerFileHandler implements FileHandler<Player> {
    *
    * @param filename The name of the file to read from.
    * @return A list of player objects.
-   * @throws IOException If an error occurs during file reading.
+   * @throws PlayerFileReadException If an error occurs during file reading.
+   * @throws PlayerDataFormatException If the player data format is invalid.
+   * @throws FileNotFoundException If the player file cannot be found.
    */
   @Override
-  public List<Player> readFromFile(String filename) throws IOException {
+  public List<Player> readFromFile(String filename) {
+    if (!Files.exists(Paths.get(filename))) {
+      throw FileExceptionUtil.wrapReadException(filename,
+          new java.io.FileNotFoundException("Player data file does not exist"));
+    }
+
     List<Player> players = new ArrayList<>();
     String currentPlayerName = null;
+    int lineNumber = 0;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
       String line;
       while ((line = reader.readLine()) != null) {
+        lineNumber++;
+
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+
         if (line.startsWith("CURRENT_PLAYER:")) {
           currentPlayerName = line.substring("CURRENT_PLAYER:".length()).trim();
           System.out.println("Current player from file: " + currentPlayerName);
@@ -104,11 +132,23 @@ public class PlayerFileHandler implements FileHandler<Player> {
         }
 
         String[] tokens = line.split(",");
-        if (tokens.length >= 4) {
+        if (tokens.length < 4) {
+          throw FileExceptionUtil.createPlayerDataFormatException(filename, lineNumber,
+              "Invalid player data format. Expected at least 4 fields but found " + tokens.length);
+        }
+
+        try {
           String name = tokens[0].trim();
           String token = tokens[1].trim();
           String tileId = tokens[2].trim();
-          int money = Integer.parseInt(tokens[3].trim());
+
+          int money;
+          try {
+            money = Integer.parseInt(tokens[3].trim());
+          } catch (NumberFormatException e) {
+            throw FileExceptionUtil.createPlayerDataFormatException(filename, name,
+                "Invalid money value: " + tokens[3].trim());
+          }
 
           Player player = new Player(name, token, null, money);
           player.setProperty("savedTileId", tileId);
@@ -127,6 +167,14 @@ public class PlayerFileHandler implements FileHandler<Player> {
               + ", tileId: " + tileId
               + ", money: " + money
               + (tokens.length >= 5 ? ", properties: " + tokens[4].trim() : ""));
+        } catch (Exception e) {
+          if (e instanceof PlayerDataFormatException) {
+            throw e;
+          } else {
+            throw FileExceptionUtil.createPlayerFileReadException("Error processing line "
+                + lineNumber
+                + ": " + e.getMessage());
+          }
         }
       }
 
@@ -135,6 +183,12 @@ public class PlayerFileHandler implements FileHandler<Player> {
         System.out.println("No current player found, defaulting to first player: "
             + players.getFirst().getName());
       }
+    } catch (IOException e) {
+      throw FileExceptionUtil.createPlayerFileReadException(filename, e);
+    }
+
+    if (players.isEmpty()) {
+      throw FileExceptionUtil.createPlayerFileReadException("No valid player data found in file");
     }
 
     return players;

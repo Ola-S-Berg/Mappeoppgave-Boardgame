@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import edu.ntnu.idi.idatt.model.actions.laddergame.BackToStartAction;
 import edu.ntnu.idi.idatt.model.actions.laddergame.LadderAction;
 import edu.ntnu.idi.idatt.model.actions.laddergame.WaitAction;
@@ -17,6 +18,11 @@ import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
 import edu.ntnu.idi.idatt.model.actions.monopolygame.StartTileAction;
 import edu.ntnu.idi.idatt.model.actions.monopolygame.TaxTileAction;
 import edu.ntnu.idi.idatt.model.actions.monopolygame.WealthTaxTileAction;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.BoardFileException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.DataFormatException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileExceptionUtil;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileReadException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileWriteException;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import java.io.FileWriter;
@@ -62,11 +68,18 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
    * Serializes a BoardGame object into a JSON representation, including the board's tiles
    * and their properties such as tile ID, the next tile in the sequence, and their actions.
    *
-   * @param boardGame The BoardGame object to be serialized; it contains the board and its tiles
-   * @return A JsonObject representing the serialized board game, including the board name,
-   *          description, and a list of tiles with their properties
+   * @param boardGame The BoardGame object to be serialized.
+   * @return A JsonObject representing the serialized board game.
    */
   public JsonObject serializeBoard(BoardGame boardGame) {
+    if (boardGame == null) {
+      throw FileExceptionUtil.createBoardFileException("Cannot serialize null board game object.");
+    }
+
+    if (boardGame.getVariantName() == null || boardGame.getVariantName().isEmpty()) {
+      throw FileExceptionUtil.createBoardFileException("Invalid board game: missing variant name");
+    }
+
     JsonObject boardJson = new JsonObject();
     String variantName = boardGame.getVariantName();
 
@@ -115,9 +128,9 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
         } else if (tile.getAction() instanceof JailTileAction) {
           tileJson.addProperty("actionType", "jail");
         } else if (tile.getAction() instanceof GoToJailAction) {
-          tileJson.addProperty("actionType", "gotToJail");
+          tileJson.addProperty("actionType", "goToJail");
         } else if (tile.getAction() instanceof FreeParkingAction) {
-          tileJson.addProperty("actionType", "FreeParking");
+          tileJson.addProperty("actionType", "freeParking");
         } else if (tile.getAction() instanceof TaxTileAction taxTileAction) {
           tileJson.addProperty("actionType", "tax");
           tileJson.addProperty("percentageTax", taxTileAction.getPercentageTax());
@@ -139,20 +152,32 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
    * Writes a list of BoardGame objects to a file in JSON format.
    * Only the first BoardGame in the list is serialized and written to the file.
    *
-   * @param filename the name of the file to write to
-   * @param boards the list of BoardGame objects to be written; cannot be empty
-   * @throws IOException if an I/O error occurs
-   * @throws IllegalArgumentException if the list of BoardGame objects is empty
+   * @param filename the name of the file to write to.
+   * @param boards the list of BoardGame objects to be written; cannot be empty.
+   * @throws FileWriteException if an I/O error occurs.
+   * @throws BoardFileException if the list of BoardGame objects is empty or invalid.
    */
   @Override
-  public void writeToFile(String filename, List<BoardGame> boards) throws IOException {
-    if (boards.isEmpty()) {
-      throw new IllegalArgumentException("Cannot write empty board list to file.");
+  public void writeToFile(String filename, List<BoardGame> boards)
+      throws FileWriteException, BoardFileException {
+
+    if (filename == null || filename.isEmpty()) {
+      throw FileExceptionUtil.createBoardFileException("Cannot write a null or empty file name.");
+    }
+
+    if (boards == null || boards.isEmpty()) {
+      throw FileExceptionUtil.createBoardFileException("Cannot write empty board list to file.");
     }
 
     JsonObject boardJson = serializeBoard(boards.getFirst());
     try (Writer writer = new FileWriter(filename)) {
       gson.toJson(boardJson, writer);
+    } catch (IOException e) {
+      throw FileExceptionUtil.wrapWriteException(filename, e);
+    } catch (BoardFileException e) {
+      throw e;
+    } catch (Exception e) {
+      throw FileExceptionUtil.createBoardFileException("Error serializing board:" + e.getMessage());
     }
   }
 
@@ -161,83 +186,156 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
    * The JSON file is expected to have a list of tiles with their properties,
    * which are used to set up the game board and its relationships between tiles.
    *
-   * @param filename the name of the file to read from
-   * @return a list containing a single BoardGame object initialized based on the JSON file content
-   * @throws IOException if an I/O error occurs during file reading
+   * @param filename the name of the file to read from.
+   * @return a list containing a single BoardGame object initialized based on the JSON file content.
+   * @throws FileReadException if an I/O error occurs during file reading.
+   * @throws DataFormatException if the file content is not in the expected format.
+   * @throws BoardFileException if there is an error related to the board structure.
    */
   @Override
-  public List<BoardGame> readFromFile(String filename) throws IOException {
-    String json = new String(Files.readAllBytes(Paths.get(filename)));
-    JsonObject boardJson = JsonParser.parseString(json).getAsJsonObject();
-
-    BoardGame boardGame = new BoardGame();
-
-    String variantName = boardJson.has("variantName")
-        ? boardJson.get("variantName").getAsString() : "";
-    boardGame.setVariantName(variantName);
-
-    if ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) {
-      boardGame.createMonopolyGameBoard();
-    } else {
-      boardGame.createLadderGameBoard();
+  public List<BoardGame> readFromFile(String filename)
+      throws FileReadException, DataFormatException, BoardFileException {
+    if (filename == null || filename.isEmpty()) {
+      throw new FileReadException("Cannot read from a null or empty filename");
     }
 
-    JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
-    for (JsonElement tileElement : tilesJson) {
-      JsonObject tileJson = tileElement.getAsJsonObject();
-      int id = tileJson.get("id").getAsInt();
-      Tile tile = boardGame.getBoard().getTile(id);
+    try {
+      String json = new String(Files.readAllBytes(Paths.get(filename)));
 
-      if (tileJson.has("actionType")) {
-        String actionType = tileJson.get("actionType").getAsString();
+      JsonObject boardJson;
+      try {
+        boardJson = JsonParser.parseString(json).getAsJsonObject();
+      } catch (JsonSyntaxException e) {
+        throw FileExceptionUtil.createDataFormatException(filename, 1,
+            "Invalid JSON syntax: " + e.getMessage());
+      }
 
-        switch (actionType) {
-          case "ladder":
-            int destination = tileJson.get("destination").getAsInt();
-            String direction = tileJson.get("direction").getAsString();
-            tile.setAction(new LadderAction(destination, direction));
-            break;
-          case "backToStart":
-            tile.setAction(new BackToStartAction());
-            break;
-          case "wait":
-            tile.setAction(new WaitAction());
-            break;
-          case "property":
-            String propertyName = tileJson.get("propertyName").getAsString();
-            int cost = tileJson.get("cost").getAsInt();
-            String type = tileJson.get("type").getAsString();
-            tile.setAction(new PropertyTileAction(propertyName, cost, type));
-            break;
-          case "chance":
-            tile.setAction(new ChanceTileAction());
-            break;
-          case "jail":
-            tile.setAction(new JailTileAction());
-            break;
-          case "goToJail":
-            int jailTileId = tileJson.get("jailTileId").getAsInt();
-            tile.setAction(new GoToJailAction(jailTileId));
-            break;
-          case "freeParking":
-            tile.setAction(new FreeParkingAction());
-            break;
-          case "tax":
-            int percentageTax = tileJson.get("percentageTax").getAsInt();
-            int fixedTax = tileJson.get("fixedTax").getAsInt();
-            tile.setAction(new TaxTileAction(percentageTax, fixedTax));
-            break;
-          case "wealthTax":
-            int amount = tileJson.get("amount").getAsInt();
-            tile.setAction(new WealthTaxTileAction(amount));
-            break;
-          default:
-            System.out.println("Could not find action type");
-            break;
+      if (!boardJson.has("variantName")) {
+        throw FileExceptionUtil.createDataFormatException(filename, 1,
+            "Missing required property: variantName");
+      }
+
+      if (!boardJson.has("tiles")) {
+        throw FileExceptionUtil.createDataFormatException(filename, 1,
+            "Missing required property: tiles");
+      }
+
+      BoardGame boardGame = new BoardGame();
+      String variantName = boardJson.get("variantName").getAsString();
+      boardGame.setVariantName(variantName);
+
+      if ("Monopoly Game".equals(variantName) || "monopolyGame".equals(variantName)) {
+        boardGame.createMonopolyGameBoard();
+      } else {
+        boardGame.createLadderGameBoard();
+      }
+
+      JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
+      int lineNumber = 1;
+
+      for (JsonElement tileElement : tilesJson) {
+        lineNumber++;
+        JsonObject tileJson = tileElement.getAsJsonObject();
+
+        if (!tileJson.has("id")) {
+          throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+              "Tile is missing required 'id' property");
+        }
+
+        int id = tileJson.get("id").getAsInt();
+        Tile tile = boardGame.getBoard().getTile(id);
+
+        if (tile == null) {
+          throw FileExceptionUtil.createBoardFileException(variantName, "Invalid tile ID: " + id);
+        }
+
+        if (tileJson.has("actionType")) {
+          String actionType = tileJson.get("actionType").getAsString();
+
+          try {
+            switch (actionType) {
+              case "ladder":
+                if (!tileJson.has("destination")
+                    || !tileJson.has("direction")) {
+                  throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+                      "Ladder action missing required properties (destination and/or direction)");
+                }
+                int destination = tileJson.get("destination").getAsInt();
+                String direction = tileJson.get("direction").getAsString();
+                tile.setAction(new LadderAction(destination, direction));
+                break;
+              case "backToStart":
+                tile.setAction(new BackToStartAction());
+                break;
+              case "wait":
+                tile.setAction(new WaitAction());
+                break;
+              case "property":
+                if (!tileJson.has("propertyName") || !tileJson.has("cost")
+                    || !tileJson.has("type")) {
+                  throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+                      "Property action missing required properties (propertyName, cost, or type)");
+                }
+                String propertyName = tileJson.get("propertyName").getAsString();
+                int cost = tileJson.get("cost").getAsInt();
+                String type = tileJson.get("type").getAsString();
+                tile.setAction(new PropertyTileAction(propertyName, cost, type));
+                break;
+              case "chance":
+                tile.setAction(new ChanceTileAction());
+                break;
+              case "jail":
+                tile.setAction(new JailTileAction());
+                break;
+              case "goToJail":
+                if (!tileJson.has("jailTileId")) {
+                  throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+                      "GoToJail action missing required property: jailTileId");
+                }
+                int jailTileId = tileJson.get("jailTileId").getAsInt();
+                tile.setAction(new GoToJailAction(jailTileId));
+                break;
+              case "freeParking":
+                tile.setAction(new FreeParkingAction());
+                break;
+              case "tax":
+                if (!tileJson.has("percentageTax")
+                    || !tileJson.has("fixedTax")) {
+                  throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+                      "Tax action missing required properties (percentageTax and/or fixedTax)");
+                }
+                int percentageTax = tileJson.get("percentageTax").getAsInt();
+                int fixedTax = tileJson.get("fixedTax").getAsInt();
+                tile.setAction(new TaxTileAction(percentageTax, fixedTax));
+                break;
+              case "wealthTax":
+                if (!tileJson.has("amount")) {
+                  throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+                      "WealthTax action missing required property: amount");
+                }
+                int amount = tileJson.get("amount").getAsInt();
+                tile.setAction(new WealthTaxTileAction(amount));
+                break;
+              default:
+                throw FileExceptionUtil.createDataFormatException(filename, lineNumber,
+                    "Unknown action type: " + actionType);
+            }
+          } catch (IllegalArgumentException e) {
+            throw FileExceptionUtil.createBoardFileException(variantName,
+                "Invalid value for action type '" + actionType
+                    + "' at tile " + id + ": " + e.getMessage());
+          }
         }
       }
-    }
 
-    return List.of(boardGame);
+      return List.of(boardGame);
+    } catch (IOException e) {
+      throw FileExceptionUtil.wrapReadException(filename, e);
+    } catch (DataFormatException | BoardFileException e) {
+      throw e;
+    } catch (Exception e) {
+      throw FileExceptionUtil.createBoardFileException("Failed to parse board file: "
+          + e.getMessage());
+    }
   }
 }

@@ -271,23 +271,20 @@ public class GameSelectionView {
    * @param saveName The name of the saved game file to load.
    */
   private void loadGame(String saveName, String gameType) {
-    try {
-      String gameDirectoryType = gameType.equals("Ladder Game") ? "laddergame" : "monopolygame";
-      BoardGame loadedGame = BoardGameFactory.loadSavedGame(gameDirectoryType, saveName);
-      String gameVariation = loadedGame.getVariantName();
+    String gameDirectoryType = gameType.equals("Ladder Game") ? "laddergame" : "monopolygame";
+    BoardGame loadedGame = BoardGameFactory.loadSavedGame(gameDirectoryType, saveName);
+    String gameVariation = loadedGame.getVariantName();
 
-      if (gameType.equals("Ladder Game")) {
-        String displayName = switch (gameVariation) {
-          case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
-          case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
-          default -> "Ladder Game Classic";
-        };
-        new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
-      } else {
-        new MonopolyGameController(loadedGame, application.getPrimaryStage(), "Monopoly Game");
-      }
-    } catch  (IOException e) {
-      System.err.println("Failed to load save: " + e.getMessage());
+    if (gameType.equals("Ladder Game")) {
+      String displayName = switch (gameVariation) {
+        case "Ladder Game Advanced", "ladderGameAdvanced" -> "Ladder Game Advanced";
+        case "Ladder Game Extreme", "ladderGameExtreme" -> "Ladder Game Extreme";
+        default -> "Ladder Game Classic";
+      };
+      new LadderGameController(loadedGame, application.getPrimaryStage(), displayName);
+    } else {
+      new MonopolyGameController(loadedGame, application.getPrimaryStage(),
+          "Monopoly Game");
     }
   }
 

@@ -1,5 +1,8 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileHandlerException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileReadException;
+import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileWriteException;
 import java.io.IOException;
 import java.util.List;
 
@@ -32,16 +35,18 @@ public interface FileHandler<T> {
    *
    * @param filename The name of the file to write to.
    * @param objects The list of objects to be written to the file.
-   * @throws IOException If an I/O error occurs during writing.
+   * @throws FileWriteException If an error occurs during writing to the file.
+   * @throws FileHandlerException If a general file handling error occurs.
    */
-  void writeToFile(String filename, List<T> objects) throws IOException;
+  void writeToFile(String filename, List<T> objects) throws FileWriteException, FileHandlerException;
 
   /**
    * Reads a list of objects from the specified file.
    *
    * @param filename The name of the file to read from.
    * @return A list of objects read from the file.
-   * @throws IOException If an I/O error occurs during reading.
+   * @throws FileReadException If an error occurs during reading from the file.
+   * @throws FileHandlerException If a general file handling error occurs.
    */
-  List<T> readFromFile(String filename) throws IOException;
+  List<T> readFromFile(String filename) throws FileReadException, FileHandlerException;
 }
