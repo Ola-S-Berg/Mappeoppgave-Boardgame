@@ -1,6 +1,5 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.model.gamelogic;
 
-import edu.ntnu.idi.idatt.model.gamelogic.Die;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

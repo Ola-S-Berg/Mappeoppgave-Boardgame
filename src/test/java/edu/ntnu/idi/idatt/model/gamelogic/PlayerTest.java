@@ -1,8 +1,5 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.model.gamelogic;
 
-import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
-import edu.ntnu.idi.idatt.model.gamelogic.Player;
-import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
