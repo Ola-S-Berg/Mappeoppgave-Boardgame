@@ -25,7 +25,7 @@ import java.util.Random;
  * @since v1.1.0
  */
 public class ChanceTileAction implements TileAction {
-  private static final Random random = new Random();
+  private static Random random = new Random();
   private MonopolyGameController controller;
   private static final String[] CHANCE_ACTIONS = {
       "Move forward 3 spaces",
@@ -47,6 +47,11 @@ public class ChanceTileAction implements TileAction {
    */
   @Override
   public void perform(Player player) {
+    if (player == null) {
+      System.out.println("Cannot perform action on null player");
+      return;
+    }
+
     int actionIndex = random.nextInt(CHANCE_ACTIONS.length);
     String action = CHANCE_ACTIONS[actionIndex];
 
@@ -66,6 +71,10 @@ public class ChanceTileAction implements TileAction {
    * @param actionIndex The index of the action to perform.
    */
   private void executeChanceAction(Player player, int actionIndex) {
+    if (player == null) {
+      return;
+    }
+
     String actionMessage;
     int playerCount = 0;
     switch (actionIndex) {
