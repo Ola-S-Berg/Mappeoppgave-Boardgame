@@ -57,6 +57,21 @@ public class PlayerFileHandler implements FileHandler<Player> {
    */
   @Override
   public void writeToFile(String filename, List<Player> players) {
+    if (filename == null) {
+      throw FileExceptionUtil.createPlayerFileWriteException(
+          "null", "null", "Filename cannot be null");
+    }
+
+    if (filename.trim().isEmpty()) {
+      throw FileExceptionUtil.createPlayerFileWriteException(
+          "", "null", "Filename cannot be empty");
+    }
+
+    if (players == null || players.isEmpty()) {
+      throw FileExceptionUtil.createPlayerFileWriteException(
+          filename, "null", "Player list cannot be empty");
+    }
+
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
       String currentPlayerName = null;
       for (Player player : players) {
@@ -107,9 +122,21 @@ public class PlayerFileHandler implements FileHandler<Player> {
    */
   @Override
   public List<Player> readFromFile(String filename) {
+    // Check for null filename
+    if (filename == null) {
+      throw FileExceptionUtil.createPlayerFileWriteException(
+          "null", "null", "Filename cannot be null");
+    }
+
+    // Check for empty filename
+    if (filename.trim().isEmpty()) {
+      throw FileExceptionUtil.createPlayerFileWriteException(
+          "", "null", "Filename cannot be empty");
+    }
+
     if (!Files.exists(Paths.get(filename))) {
-      throw FileExceptionUtil.wrapReadException(filename,
-          new java.io.FileNotFoundException("Player data file does not exist"));
+      throw FileExceptionUtil.createPlayerFileWriteException(
+          filename, "null", "Player data file does not exist");
     }
 
     List<Player> players = new ArrayList<>();
@@ -118,7 +145,10 @@ public class PlayerFileHandler implements FileHandler<Player> {
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
       String line;
+      boolean hasContent = false;
+
       while ((line = reader.readLine()) != null) {
+        hasContent = true;
         lineNumber++;
 
         if (line.trim().isEmpty()) {
@@ -159,6 +189,8 @@ public class PlayerFileHandler implements FileHandler<Player> {
 
           if (name.equals(currentPlayerName)) {
             player.setProperty("isCurrentPlayer", "true");
+          } else {
+            player.setProperty("isCurrentPlayer", "false");
           }
 
           players.add(player);
@@ -178,8 +210,16 @@ public class PlayerFileHandler implements FileHandler<Player> {
         }
       }
 
+      if (!hasContent) {
+        throw FileExceptionUtil.createPlayerDataFormatException(filename, 0,
+            "File is empty, no player data found");
+      }
+
       if (currentPlayerName == null && !players.isEmpty()) {
         players.getFirst().setProperty("isCurrentPlayer", "true");
+        for (int i = 1; i < players.size(); i++) {
+          players.get(i).setProperty("isCurrentPlayer", "false");
+        }
         System.out.println("No current player found, defaulting to first player: "
             + players.getFirst().getName());
       }
@@ -188,7 +228,8 @@ public class PlayerFileHandler implements FileHandler<Player> {
     }
 
     if (players.isEmpty()) {
-      throw FileExceptionUtil.createPlayerFileReadException("No valid player data found in file");
+      throw FileExceptionUtil.createPlayerDataFormatException(filename, 0,
+          "No valid player data found in file");
     }
 
     return players;
