@@ -26,7 +26,7 @@ class LadderActionTest {
   @DisplayName("Should move player from tile 10 to tile 20")
   void ladderMovesPlayer() {
     player.placeOnTile(game.getBoard().getTile(10));
-    LadderAction ladder = new LadderAction(20, "Climb to 20");
+    LadderAction ladder = new LadderAction(20, "up");
     ladder.perform(player);
     assertEquals(20, player.getCurrentTile().getTileId());
   }
@@ -35,7 +35,7 @@ class LadderActionTest {
     void ladderToWinningTile() {
       player.placeOnTile(game.getBoard().getTile(89));
       game.addPlayer(player);
-      LadderAction ladder = new LadderAction(90, "Climb to finish line");
+      LadderAction ladder = new LadderAction(90, "up");
       ladder.perform(player);
     
       assertEquals(90, player.getCurrentTile().getTileId());
@@ -46,7 +46,7 @@ class LadderActionTest {
     @DisplayName("Should handle invalid destination tile IDs")
     void ladderToInvalidTileThrows() {
       player.placeOnTile(game.getBoard().getTile(5));
-      LadderAction ladder = new LadderAction(999, "Invalid destination");
+      LadderAction ladder = new LadderAction(999, "up");
   
       assertThrows(IllegalStateException.class, () -> ladder.perform(player));
   }
