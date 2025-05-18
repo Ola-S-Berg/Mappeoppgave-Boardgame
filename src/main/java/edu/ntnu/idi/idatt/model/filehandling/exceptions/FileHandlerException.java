@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.exceptions.filehandling;
+package edu.ntnu.idi.idatt.model.filehandling.exceptions;
 
 /**
  * <h1>File Handler Exception</h1>

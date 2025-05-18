@@ -2,13 +2,13 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
 import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.BoardFileException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileExceptionUtil;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileHandlerException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileNotFoundException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.GameLoadException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.GameSaveException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerFileException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.BoardFileException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileExceptionUtil;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileHandlerException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileNotFoundException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.GameLoadException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.GameSaveException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.PlayerFileException;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;

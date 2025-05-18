@@ -1,11 +1,11 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
 import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileExceptionUtil;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileNotFoundException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerDataFormatException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerFileReadException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.PlayerFileWriteException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileExceptionUtil;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileNotFoundException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.PlayerDataFormatException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.PlayerFileReadException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.PlayerFileWriteException;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

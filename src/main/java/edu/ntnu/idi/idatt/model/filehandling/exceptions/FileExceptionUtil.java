@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt.model.exceptions.filehandling;
+package edu.ntnu.idi.idatt.model.filehandling.exceptions;
 
 import java.io.IOException;
 

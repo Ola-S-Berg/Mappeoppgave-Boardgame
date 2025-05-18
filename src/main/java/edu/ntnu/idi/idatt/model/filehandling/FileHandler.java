@@ -1,9 +1,8 @@
 package edu.ntnu.idi.idatt.model.filehandling;
 
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileHandlerException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileReadException;
-import edu.ntnu.idi.idatt.model.exceptions.filehandling.FileWriteException;
-import java.io.IOException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileHandlerException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileReadException;
+import edu.ntnu.idi.idatt.model.filehandling.exceptions.FileWriteException;
 import java.util.List;
 
 /**
