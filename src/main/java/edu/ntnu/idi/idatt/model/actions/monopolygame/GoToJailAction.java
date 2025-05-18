@@ -58,4 +58,13 @@ public class GoToJailAction implements TileAction {
     System.out.println(player.getName()
         + " went to jail and must wait 3 turns or pay bail/roll doubles to get out");
   }
+
+  /**
+   * Gets the jail tile ID associated with this action.
+   *
+   * @return The jail tile ID.
+   */
+  public int getJailTileId() {
+    return jailTileId;
+  }
 }
