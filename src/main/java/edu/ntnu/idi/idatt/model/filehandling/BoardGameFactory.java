@@ -1,4 +1,3 @@
-
 package edu.ntnu.idi.idatt.model.filehandling;
 
 import edu.ntnu.idi.idatt.model.actions.monopolygame.PropertyTileAction;
@@ -42,7 +41,8 @@ import java.util.stream.Stream;
  * @since v1.1.0
  */
 public class BoardGameFactory {
-  private static final String SAVE_FILES_DIRECTORY = "src/main/resources/saves";
+  //Cannot be final due to tests:
+  private static String SAVE_FILES_DIRECTORY = "src/main/resources/saves";
   static Logger LOGGER = Logger.getLogger(BoardGameFactory.class.getName());
 
   /**
@@ -119,11 +119,10 @@ public class BoardGameFactory {
    */
   public static BoardGame createBoardGame(String boardName) {
     return switch (boardName) {
-      case "Ladder Game Classic" -> createLadderGameClassic();
       case "Ladder Game Advanced" -> createLadderGameAdvanced();
       case "Ladder Game Extreme" -> createLadderGameExtreme();
       case "Monopoly Game" -> createMonopolyGame();
-      default -> createLadderGameClassic(); // Default to classic game
+      default -> createLadderGameClassic();
     };
   }
 
@@ -135,25 +134,35 @@ public class BoardGameFactory {
    * @throws GameSaveException If an error occurs during saving the game.
    */
   public static void saveBoardGame(BoardGame boardGame, String boardName) {
+    if (boardName == null) {
+      throw new GameSaveException("Cannot save game with null name", null);
+    }
+
     try {
       String gameType = getGameType(boardGame);
-      String filename = getBoardSaveFilePath(gameType, boardName);
+      String boardFilename = getBoardSaveFilePath(gameType, boardName);
+      String playerFilename = getPlayerSaveFilePath(gameType, boardName);
 
       if (!boardGame.getPlayers().isEmpty() && boardGame.getCurrentPlayer() != null) {
         String currentPlayerName = boardGame.getCurrentPlayer().getName();
         boardGame.getPlayers().getFirst().setProperty("currentPlayerName", currentPlayerName);
+
+        PlayerFileHandler playerFileHandler = new PlayerFileHandler();
+        playerFileHandler.writeToFile(playerFilename, boardGame.getPlayers());
       }
 
       BoardFileHandler fileHandler = new BoardFileHandler();
-      fileHandler.writeToFile(filename, List.of(boardGame));
+      fileHandler.writeToFile(boardFilename, List.of(boardGame));
     } catch (IOException e) {
       throw FileExceptionUtil.createSaveException(boardName, e);
+    } catch (GameSaveException e) {
+      throw e;
     } catch (Exception e) {
-      throw FileExceptionUtil.createSaveException(boardName, boardGame.getVariantName(),
+      throw FileExceptionUtil.createSaveException(boardName,
+          boardGame != null ? boardGame.getVariantName() : "unknown",
           "An unexpected error occurred while saving the game: " + e.getMessage());
     }
   }
-
 
   /**
    * Loads a saved game from specified save files. This method reads the board
@@ -161,6 +170,7 @@ public class BoardGameFactory {
    * the game state, initializes any missing components, and positions players
    * on the appropriate tiles.
    *
+   * @param gameType The type of game to load (monopolygame, laddergame).
    * @param saveName The name of the save file to load the game from, excluding file extensions.
    * @return The loaded BoardGame instance with restored state and player positions.
    * @throws GameLoadException If an error occurs while loading the game.
@@ -168,19 +178,34 @@ public class BoardGameFactory {
    * @throws PlayerFileException If an error occurs with the player file.
    */
   public static BoardGame loadSavedGame(String gameType, String saveName) {
+    if (gameType == null) {
+      throw new GameLoadException("null", "unknown", "Game type cannot be null");
+    }
+
+    if (saveName == null) {
+      throw new GameLoadException("null", gameType, "Save name cannot be null");
+    }
+
     try {
       String boardFilename = getBoardSaveFilePath(gameType, saveName);
       String playerFilename = getPlayerSaveFilePath(gameType, saveName);
 
-      PlayerFileHandler playerFileHandler = new PlayerFileHandler();
-      List<Player> players;
+      Path boardFilePath = Paths.get(boardFilename);
+      Path playerFilePath = Paths.get(playerFilename);
 
-      players = playerFileHandler.readFromFile(playerFilename);
+      if (!Files.exists(boardFilePath)) {
+        throw new FileNotFoundException(boardFilename);
+      }
+
+      if (!Files.exists(playerFilePath)) {
+        throw new FileHandlerException("Player data file does not exist: " + playerFilename);
+      }
+
+      PlayerFileHandler playerFileHandler = new PlayerFileHandler();
+      List<Player> players = playerFileHandler.readFromFile(playerFilename);
 
       BoardFileHandler fileHandler = new BoardFileHandler();
-      List<BoardGame> loadedGames;
-
-      loadedGames = fileHandler.readFromFile(boardFilename);
+      List<BoardGame> loadedGames = fileHandler.readFromFile(boardFilename);
 
       if (loadedGames.isEmpty()) {
         throw FileExceptionUtil.createBoardFileException(gameType,
@@ -261,7 +286,7 @@ public class BoardGameFactory {
     } catch (Exception e) {
       throw FileExceptionUtil.createLoadException(saveName, gameType,
           "An unexpected error occurred: "
-          + e.getMessage());
+              + e.getMessage());
     }
   }
 
@@ -324,6 +349,10 @@ public class BoardGameFactory {
    * @return A string identifying the game type (monopoly or ladder).
    */
   private static String getGameType(BoardGame boardGame) {
+    if (boardGame == null) {
+      throw new IllegalArgumentException("Board game cannot be null");
+    }
+
     String variantName = boardGame.getVariantName();
     if (variantName != null && variantName.toLowerCase().contains("monopoly")) {
       return "monopolygame";
@@ -336,6 +365,7 @@ public class BoardGameFactory {
    * Resolves and returns the full file path for a save file, using the specified save name.
    * Ensures that the directory for saving files exists before constructing the file path.
    *
+   * @param gameType The type of game to get the save path for.
    * @param saveName The name of the save file (without extension).
    * @return The full path to the save file, as a string.
    * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.
@@ -349,6 +379,7 @@ public class BoardGameFactory {
    * Resolves and returns the full file path for a player save file, using the specified save name.
    * Ensures that the directory for saving files exists before constructing the file path.
    *
+   * @param gameType The type of game to get the save path for.
    * @param saveName The name of the save file (without extension).
    * @return The full path to the player save file, as a string.
    * @throws IOException If an I/O error occurs while ensuring the "saves" directory exists.

@@ -337,7 +337,6 @@ public class BoardFileHandler implements FileHandler<BoardGame> {
             "Invalid JSON syntax: " + e.getMessage());
       }
 
-      // Basic validation before deserialization
       if (!boardJson.has("variantName")) {
         throw FileExceptionUtil.createDataFormatException(filename, 1,
             "Missing required property: variantName");

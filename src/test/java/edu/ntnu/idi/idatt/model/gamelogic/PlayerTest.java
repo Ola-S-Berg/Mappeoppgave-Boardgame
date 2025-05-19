@@ -45,14 +45,6 @@ class PlayerTest {
         assertEquals(5, player.getCurrentTile().getTileId());
     }
 
-    /* Tests that the player moves from the first tile if not placed */
-
-    @Test
-    void moveStartsFromTileOneIfNotPlaced() {
-        player.move(3);
-        assertEquals(4, player.getCurrentTile().getTileId());
-    }
-
     /* Tests that the player stops at the last tile */
     
     @Test

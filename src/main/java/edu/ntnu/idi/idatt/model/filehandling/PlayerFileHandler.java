@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * <h1>Player File Handler</h1>
  *
  * <p>File handler for managing player data using CSV format. Provides functionality to save and
- * load player information, including their game state, position, owned properties and money</p>
+ * load player information, including their game state, position, owned properties and money.</p>
  *
  * <h2>Features</h2>
  * <ul>
@@ -49,7 +49,7 @@ public class PlayerFileHandler implements FileHandler<Player> {
 
   /**
    * Writes a list of players to a CSV file. Each player is written on a new line with the format:
-   * playerName, game
+   * playerName, game.
    *
    * @param filename The name of the file to write to.
    * @param players  The list of players to write to the file.
@@ -122,13 +122,11 @@ public class PlayerFileHandler implements FileHandler<Player> {
    */
   @Override
   public List<Player> readFromFile(String filename) {
-    // Check for null filename
     if (filename == null) {
       throw FileExceptionUtil.createPlayerFileWriteException(
           "null", "null", "Filename cannot be null");
     }
 
-    // Check for empty filename
     if (filename.trim().isEmpty()) {
       throw FileExceptionUtil.createPlayerFileWriteException(
           "", "null", "Filename cannot be empty");
