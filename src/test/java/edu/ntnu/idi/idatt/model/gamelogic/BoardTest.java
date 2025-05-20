@@ -9,11 +9,13 @@ class BoardTest {
 
     private Board board;
 
+    /* Set up the board before each test */
     @BeforeEach
     void setUp() {
         board = new Board();
     }
 
+    /* Test that the addTile method works */
     @Test
     void addTile_Works() {
         
@@ -26,6 +28,7 @@ class BoardTest {
         assertEquals(tile, board.getTile(1), "Tile should be added successfully.");
     }
 
+    /* Test that the getTile method returns the correct tile */
     @Test
     void getTile_ReturnsCorrectTile() {
        
@@ -38,12 +41,14 @@ class BoardTest {
         assertEquals(tile2, board.getTile(2), "Should return the correct tile.");
     }
 
+    /* Test that the getTile method returns null for a tile that does not exist */
     @Test
     void getTile_ReturnsNullForNonExistentTile() {
        
         assertNull(board.getTile(140), "Should return null for a tile that does not exist.");
     }
 
+    /* Test that the addMultipleTiles method works */
     @Test
     void addMultipleTiles_Works() {
         

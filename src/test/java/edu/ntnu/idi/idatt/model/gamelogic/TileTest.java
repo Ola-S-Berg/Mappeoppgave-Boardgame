@@ -10,16 +10,18 @@ class TileTest {
 
     private Tile tile;
 
+    /* Set up the tile before each test */
     @BeforeEach
     void setUp() {
         tile = new Tile(42);
     }
-
+    
+    /* Test that the tile id can be set and retrieved correctly */
     @Test
     void tileIdIsSetCorrectly() {
         assertEquals(42, tile.getTileId());
     }
-
+    /* Test that the next tile can be set and retrieved correctly */
     @Test
     void canSetAndGetNextTile() {
         Tile next = new Tile(43);
