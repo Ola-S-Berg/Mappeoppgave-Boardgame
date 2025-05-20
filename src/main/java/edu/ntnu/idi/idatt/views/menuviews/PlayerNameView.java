@@ -32,13 +32,11 @@ import javafx.stage.Stage;
  * @author Ola Syrstad Berg
  * @since v1.1.0
  */
-public class PlayerNameView {
-  private final MainApp application;
+public class PlayerNameView extends AbstractMenuView {
   private final String selectedGame;
   private final int playerCount;
   private final String[] playerNames;
   private int currentPlayerIndex;
-  private Scene scene;
 
   /**
    * Constructor that creates the player name view.
@@ -48,12 +46,11 @@ public class PlayerNameView {
    * @param playerCount The number of players.
    */
   public PlayerNameView(MainApp application, String selectedGame, int playerCount) {
-    this.application = application;
+    super(application);
     this.selectedGame = selectedGame;
     this.playerCount = playerCount;
     this.playerNames = new String[playerCount];
     this.currentPlayerIndex = 0;
-
     createView();
   }
 
