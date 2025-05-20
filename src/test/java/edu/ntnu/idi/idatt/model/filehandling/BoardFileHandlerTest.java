@@ -43,10 +43,12 @@ public class BoardFileHandlerTest {
   private BoardGame ladderGame;
   private static final String TEST_FILE_NAME = "testBoard.json";
 
+  /* Create a temporary directory for the test */
   @TempDir
   File tempDir;
   private String testFilePath;
 
+  /* Set up the board file handler and the monopoly game board before each test */
   @BeforeEach
   public void setUp() {
     boardFileHandler = new BoardFileHandler();
@@ -94,6 +96,7 @@ public class BoardFileHandlerTest {
     testFilePath = tempDir.getAbsolutePath() + File.separator + TEST_FILE_NAME;
   }
 
+  /* Delete the test file after each test */
   @AfterEach
   public void tearDown() {
     try {

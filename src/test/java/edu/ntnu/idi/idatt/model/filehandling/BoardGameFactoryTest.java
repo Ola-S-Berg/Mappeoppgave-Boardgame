@@ -29,12 +29,14 @@ public class BoardGameFactoryTest {
   private BoardGame ladderGameClassic;
   private BoardGame monopolyGame;
 
+  /* Create a temporary directory for the test */
   @TempDir
   File tempDir;
   private Path savesDirectory;
   private Path ladderGameSavesDir;
   private Path monopolyGameSavesDir;
 
+  /* Set up the test by creating a temporary directory and game boards with 2 players */
   @BeforeEach
   public void setUp() throws IOException {
     savesDirectory = tempDir.toPath().resolve("saves");
@@ -75,6 +77,7 @@ public class BoardGameFactoryTest {
     propertyTile.setAction(property);
   }
 
+  /* Delete the test file after each test */
   @AfterEach
   public void tearDown() {
     try {
