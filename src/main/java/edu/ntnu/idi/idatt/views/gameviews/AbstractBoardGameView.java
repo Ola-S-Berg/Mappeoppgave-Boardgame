@@ -426,7 +426,7 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       tokenView.setFitHeight(tokenSize);
       tokenView.setFitWidth(tokenSize);
 
-      double[] offsetPosition = controller.calculateTokenOffset(playerIndex,
+      double[] offsetPosition = calculateTokenOffset(playerIndex,
           boardGame.getPlayers().size(),
           Math.min(cell.getWidth(), cell.getHeight()) * 0.25);
       double offsetX = offsetPosition[0];
@@ -494,7 +494,7 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
       animatedToken.setFitWidth(tokenSize);
       animatedToken.setPreserveRatio(true);
 
-      double[] offsetPosition = controller.calculateTokenOffset(playerIndex,
+      double[] offsetPosition = calculateTokenOffset(playerIndex,
           boardGame.getPlayers().size(),
           Math.min(fromBounds.getWidth(), fromBounds.getHeight()) * 0.25);
       double offsetX = offsetPosition[0];
@@ -765,4 +765,30 @@ public abstract class AbstractBoardGameView implements BoardGameObserver {
    * @param actionType The type of action being performed.
    */
   public abstract void showActionMessage(Player player, String actionType);
+
+  /**
+   * Calculates the offset position for a player token based on its index.
+   * This is a view-specific calculation for visual layout purposes.
+   *
+   * @param playerIndex The index of the player.
+   * @param totalPlayers The total number of players in the game.
+   * @param baseRadius The base radius to use for the offset calculation.
+   * @return A double array where the first element is the X offset
+   *         and the second element is the Y offset.
+   */
+  protected double[] calculateTokenOffset(int playerIndex, int totalPlayers, double baseRadius) {
+    if (totalPlayers <= 0) {
+      return new double[] {0, 0};
+    }
+
+    playerIndex = Math.max(0, Math.min(totalPlayers - 1, playerIndex));
+
+    int row = playerIndex / 2;
+    int col = playerIndex % 2;
+
+    double offsetX = (col * 2 - 0.5) * baseRadius * 0.8;
+    double offsetY = (row * 2 - 0.5) * baseRadius * 0.8;
+
+    return new double[] {offsetX, offsetY};
+  }
 }

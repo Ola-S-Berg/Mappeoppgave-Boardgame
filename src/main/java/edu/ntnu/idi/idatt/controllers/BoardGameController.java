@@ -77,15 +77,4 @@ public interface BoardGameController {
    *         the first element is the row index and the second element is the column index.
    */
   int[] convertTileIdToGridCoordinates(int tileId);
-
-  /**
-   * Calculates the offset position for a player token based on its index.
-   *
-   * @param playerIndex The index of the player.
-   * @param totalPlayers The total number of players in the game.
-   * @param baseRadius The base radius to use for the offset calculation.
-   * @return A double array where the first element is the X offset
-   *         and the second element is the Y offset.
-   */
-  double[] calculateTokenOffset(int playerIndex, int totalPlayers, double baseRadius);
 }
