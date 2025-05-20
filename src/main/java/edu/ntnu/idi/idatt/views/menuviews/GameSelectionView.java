@@ -43,9 +43,7 @@ import javafx.stage.Stage;
  * @author Ola Syrstad Berg
  * @since v1.1.0
  */
-public class GameSelectionView {
-  private final MainApp application;
-  private Scene scene;
+public class GameSelectionView extends AbstractMenuView {
   private static final String LADDER_GAME_DIRECTORY = "src/main/resources/saves/laddergame";
   private static final String MONOPOLY_GAME_DIRECTORY = "src/main/resources/saves/monopolygame";
 
@@ -55,7 +53,7 @@ public class GameSelectionView {
    * @param application The application to create.
    */
   public GameSelectionView(MainApp application) {
-    this.application = application;
+    super(application);
     createView();
   }
 
@@ -63,15 +61,6 @@ public class GameSelectionView {
    * Creates the game selection view components.
    */
   private void createView() {
-    BorderPane root = new BorderPane();
-    root.getStyleClass().add("root");
-    root.setPadding(new Insets(10));
-
-    VBox layout = new VBox(30);
-    layout.setAlignment(Pos.CENTER);
-    layout.setPadding(new Insets(10));
-    layout.getStyleClass().add("content-box");
-
     Label titleLabel = new Label("Select a game to play");
     titleLabel.getStyleClass().add("heading-large");
     layout.getChildren().add(titleLabel);
@@ -87,16 +76,6 @@ public class GameSelectionView {
     exitButton.setOnAction(event -> application.getPrimaryStage().close());
 
     layout.getChildren().add(exitButton);
-
-    root.setCenter(layout);
-
-    scene = new Scene(root, 800, 600);
-    CssUtil.applyStyleSheet(scene);
-
-    Stage stage = application.getPrimaryStage();
-    stage.setMinWidth(600);
-    stage.setMinHeight(600);
-    stage.centerOnScreen();
   }
 
   /**

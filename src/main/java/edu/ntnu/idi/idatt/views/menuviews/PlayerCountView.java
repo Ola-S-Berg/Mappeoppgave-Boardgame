@@ -28,10 +28,8 @@ import javafx.stage.Stage;
  * @author Ola Syrstad Berg
  * @since v1.1.0
  */
-public class PlayerCountView {
-  private final MainApp application;
+public class PlayerCountView extends AbstractMenuView {
   private final String selectedGame;
-  private Scene scene;
 
   /**
    * Constructor that creates the player count view.
@@ -40,7 +38,7 @@ public class PlayerCountView {
    * @param selectedGame The game selected by the user.
    */
   public PlayerCountView(MainApp application, String selectedGame) {
-    this.application = application;
+    super(application);
     this.selectedGame = selectedGame;
     createView();
   }
