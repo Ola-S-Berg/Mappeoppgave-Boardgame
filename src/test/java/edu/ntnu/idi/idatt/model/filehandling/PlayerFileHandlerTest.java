@@ -21,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/* Test class for the PlayerFileHandler class. */
 public class PlayerFileHandlerTest {
 
   private PlayerFileHandler playerFileHandler;
@@ -29,11 +30,12 @@ public class PlayerFileHandlerTest {
   private Player player3;
   private List<Player> players;
 
+  /* Create a temporary directory for the test */
   @TempDir
   File tempDir;
   private String testFilePath;
 
-
+  /* Set up the player file handler before each test by creating a new player file handler, and creating 3 players with 200000 money */
   @BeforeEach
   public void SetUp() {
     playerFileHandler = new PlayerFileHandler();
@@ -58,6 +60,7 @@ public class PlayerFileHandlerTest {
     testFilePath = tempDir.getAbsolutePath() + File.separator + "players.csv";
   }
 
+  /* Delete the test file after each test */
   @AfterEach
   public void tearDown() {
     try {
@@ -67,6 +70,7 @@ public class PlayerFileHandlerTest {
     }
   }
 
+  /* Test that the writeToFile method works by writing player data to a file and reading it back */
   @Test
   @DisplayName("Should successfully write player data to file and read it back")
   public void testWriteAndReadPlayerData() {
@@ -102,6 +106,7 @@ public class PlayerFileHandlerTest {
         "Third player should not be marked as current player");
   }
 
+  /* Test that the handleCurrentPlayer method works by setting the current player to Markus and writing the data to a file and reading it back */
   @Test
   @DisplayName("Should handle current player correctly")
   public void testHandleCurrentPlayer() {
@@ -117,6 +122,7 @@ public class PlayerFileHandlerTest {
     assertEquals("Markus", currentPlayer.getName(), "Current player should be Markus");
   }
 
+  /* Test that the default current player method works by setting the current player to null and writing the data to a file and reading it back */
   @Test
   @DisplayName("Should set first player as current when no current player specified")
   public void testDefaultCurrentPlayer() {
@@ -135,6 +141,7 @@ public class PlayerFileHandlerTest {
         "First player should be marked as current by default");
   }
 
+  /* Test that the writeToFile method throws an exception when writing to a null filename */
   @Test
   @DisplayName("Should throw exception when writing to null filename")
   public void testWriteToFileWithNullFilename() {
@@ -144,6 +151,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when filename is null");
   }
 
+  /* Test that the writeToFile method throws an exception when writing to an empty player list */
   @Test
   @DisplayName("Should throw exception when writing empty player list")
   public void testWriteToFileWithEmptyPlayerList() {
@@ -154,6 +162,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when player list is empty");
   }
 
+  /* Test that the readFromFile method throws an exception when reading from a null filename */
   @Test
   @DisplayName("Should throw exception when reading from null filename")
   public void testReadFromFileWithNullFilename() {
@@ -163,6 +172,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when filename is null");
   }
 
+  /* Test that the readFromFile method throws an exception when reading from an empty filename */
   @Test
   @DisplayName("Should throw exception when reading from empty filename")
   public void testReadFromFileWithEmptyFilename() {
@@ -172,6 +182,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when filename is empty");
   }
 
+  /* Test that the readFromFile method throws an exception when reading from a non-existent file */
   @Test
   @DisplayName("Should throw exception when reading non-existent file")
   public void testReadFromNonExistentFile() {
@@ -181,6 +192,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when file does not exist");
   }
 
+  /* Test that the readFromFile method throws an exception when reading from a file with an invalid CSV format */
   @Test
   @DisplayName("Should throw exception when reading file with invalid CSV file format")
   public void testReadFromFileWithInvalidCSVFormat() throws IOException {
@@ -192,6 +204,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when file has invalid CSV format");
   }
 
+  /* Test that the readFromFile method throws an exception when reading from a CSV file with an invalid money value */
   @Test
   @DisplayName("Should throw exception when reading CSV with invalid money value")
   public void testReadCSVWithInvalidMoneyValue() throws IOException {
@@ -203,6 +216,7 @@ public class PlayerFileHandlerTest {
         "Should throw PlayerFileWriteException when CSV has invalid money value");
   }
 
+  /* Test that the readFromFile method throws an exception when reading from an empty CSV file */
   @Test
   @DisplayName("Should throw exception when reading empty CSV file")
   public void testReadEmptyCSVFile() throws IOException {
