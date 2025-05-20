@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/* Test class for the BoardGame class. */
 class BoardGameTest {
   
   private BoardGame boardGame;
