@@ -37,6 +37,7 @@ public class PlayerNameView extends AbstractMenuView {
   private final int playerCount;
   private final String[] playerNames;
   private int currentPlayerIndex;
+  private static final int MAX_NAME_LENGTH = 12;
 
   /**
    * Constructor that creates the player name view.
@@ -71,12 +72,23 @@ public class PlayerNameView extends AbstractMenuView {
     titleLabel.getStyleClass().add("heading-medium");
 
     TextField nameField = new TextField();
-    nameField.setPromptText("Enter Player Name");
+    nameField.setPromptText("Enter Player Name (max 12 characters)");
     nameField.setAlignment(Pos.CENTER);
     nameField.getStyleClass().add("text-field");
     nameField.setMinWidth(50);
     nameField.setMaxWidth(200);
     nameField.prefWidthProperty().bind(root.widthProperty().multiply(0.6));
+
+    
+    nameField.textProperty().addListener((observable, oldValue, newValue) -> {
+      if (newValue.length() > MAX_NAME_LENGTH) {
+        nameField.setText(oldValue);
+      }
+    });
+
+    Label errorLabel = new Label();
+    errorLabel.getStyleClass().add("error-label");
+    errorLabel.setVisible(false);
 
     HBox buttonLayout = new HBox(20);
     buttonLayout.setAlignment(Pos.CENTER);
@@ -84,20 +96,31 @@ public class PlayerNameView extends AbstractMenuView {
     Button continueButton = new Button("Continue");
     continueButton.getStyleClass().add("button");
     continueButton.getStyleClass().add("button-primary");
-
     continueButton.setDisable(true);
 
-    nameField.textProperty().addListener((observable, oldValue, newValue) ->
-        continueButton.setDisable(newValue.trim().isEmpty()));
+    nameField.textProperty().addListener((observable, oldValue, newValue) -> {
+      String trimmedName = newValue.trim();
+      boolean isEmpty = trimmedName.isEmpty();
+      boolean isDuplicate = isDuplicateName(trimmedName);
+      
+      continueButton.setDisable(isEmpty || isDuplicate);
+      
+      if (isDuplicate) {
+        errorLabel.setText("This name is already taken!");
+        errorLabel.setVisible(true);
+      } else {
+        errorLabel.setVisible(false);
+      }
+    });
 
     continueButton.setOnAction(e -> {
       String playerName = nameField.getText().trim();
-      if (!playerName.isEmpty()) {
+      if (!playerName.isEmpty() && !isDuplicateName(playerName)) {
         playerNames[currentPlayerIndex] = playerName;
         currentPlayerIndex++;
 
         if (currentPlayerIndex < playerCount) {
-          updateView(titleLabel, nameField);
+          updateView(titleLabel, nameField, errorLabel);
         } else {
           application.showTokenSelectionView(selectedGame, playerNames);
         }
@@ -111,7 +134,7 @@ public class PlayerNameView extends AbstractMenuView {
 
     buttonLayout.getChildren().addAll(backButton, continueButton);
 
-    layout.getChildren().addAll(titleLabel, nameField, buttonLayout);
+    layout.getChildren().addAll(titleLabel, nameField, errorLabel, buttonLayout);
 
     root.setCenter(layout);
     scene = new Scene(root, 800, 600);
@@ -124,14 +147,31 @@ public class PlayerNameView extends AbstractMenuView {
   }
 
   /**
+   * Checks if a name is already taken by another player.
+   *
+   * @param name The name to check.
+   * @return true if the name is already taken, false otherwise.
+   */
+  private boolean isDuplicateName(String name) {
+    for (int i = 0; i < currentPlayerIndex; i++) {
+      if (name.equalsIgnoreCase(playerNames[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Updates the view for the next player.
    *
    * @param titleLabel The title label to update.
    * @param nameField The name field to clear.
+   * @param errorLabel The error label to reset.
    */
-  private void updateView(Label titleLabel, TextField nameField) {
+  private void updateView(Label titleLabel, TextField nameField, Label errorLabel) {
     titleLabel.setText("Player " + (currentPlayerIndex + 1) + ": Enter Name");
     nameField.clear();
+    errorLabel.setVisible(false);
   }
 
   /**
