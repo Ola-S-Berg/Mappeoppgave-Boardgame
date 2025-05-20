@@ -15,6 +15,7 @@ class LadderActionTest {
   private Player player;
   private BoardGame game;
 
+  /* Set up the ladder action and the game board before each test */
   @BeforeEach
   void setUp() {
     game = new BoardGame();

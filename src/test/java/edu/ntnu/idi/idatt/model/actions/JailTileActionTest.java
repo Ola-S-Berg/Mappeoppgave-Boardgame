@@ -20,6 +20,7 @@ class JailTileActionTest {
   private Player player;
   private BoardGame game;
 
+  /* Set up the jail tile action and the game board before each test */
   @BeforeEach
   void setUp() {
     jailAction = new JailTileAction();

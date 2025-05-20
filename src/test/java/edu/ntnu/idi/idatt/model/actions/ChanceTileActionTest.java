@@ -22,6 +22,7 @@ public class ChanceTileActionTest {
   private Player player;
   private BoardGame game;
 
+  /* Set up the chance tile action and the game board before each test */
   @BeforeEach
   void setUp() {
     chanceAction = new ChanceTileAction();

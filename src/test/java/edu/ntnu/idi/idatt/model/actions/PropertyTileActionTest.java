@@ -21,6 +21,7 @@ public class PropertyTileActionTest {
   private PropertyTileAction property1;
   private PropertyTileAction property2;
 
+  /* Set up the property tile action and the game board before each test */
   @BeforeEach
   void setUp() {
     game = new BoardGame();
