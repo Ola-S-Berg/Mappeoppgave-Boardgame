@@ -84,13 +84,4 @@ public class PlayerCountView extends AbstractMenuView {
     stage.setMinHeight(600);
     stage.centerOnScreen();
   }
-
-  /**
-   * Returns the scene for this view.
-   *
-   * @return The scene.
-   */
-  public Scene getScene() {
-    return scene;
-  }
 }
