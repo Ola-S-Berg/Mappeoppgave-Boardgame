@@ -133,7 +133,7 @@ public class MainApp extends Application {
     boardGame = BoardGameFactory.createBoardGame(selectedGame);
 
     for (int i = 0; i < playerNames.length; i++) {
-      Player player = new Player(playerNames[i], playerTokens[i], boardGame, 200000);
+      Player player = new Player(playerNames[i], playerTokens[i], boardGame, 100000);
       boardGame.addPlayer(player);
     }
 

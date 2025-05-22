@@ -162,6 +162,7 @@ public class LadderGameView extends AbstractBoardGameView {
       case "Ladder Game Extreme":
         info.append("• Extreme mode flips all up ladders to down.\n");
         info.append("• This creates a more challenging experience as progress is harder to make.\n");
+        break;
       default:
         info.append("• Classic mode offers the traditional Ladder Game experience.\n");
         info.append("• Offers a balanced amount of ladders and actions for fair gameplay.\n");

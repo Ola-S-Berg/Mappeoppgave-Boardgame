@@ -12,8 +12,8 @@ import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
-import edu.ntnu.idi.idatt.utils.SoundUtil;
 import edu.ntnu.idi.idatt.views.DialogService;
+import edu.ntnu.idi.idatt.views.SoundUtil;
 import edu.ntnu.idi.idatt.views.gameviews.MonopolyGameView;
 import java.io.IOException;
 import java.util.List;
@@ -441,7 +441,7 @@ public class MonopolyGameController implements BoardGameController {
     BoardGame newGame = BoardGameFactory.createBoardGame(gameVariation);
 
     for (int i = 0; i < playerNames.length; i++) {
-      Player player = new Player(playerNames[i], playerTokens[i], newGame, 200000);
+      Player player = new Player(playerNames[i], playerTokens[i], newGame, 100000);
       newGame.addPlayer(player);
     }
 

@@ -207,6 +207,11 @@ public class BoardGameFactory {
       BoardFileHandler fileHandler = new BoardFileHandler();
       List<BoardGame> loadedGames = fileHandler.readFromFile(boardFilename);
 
+      if (players.isEmpty()) {
+        throw FileExceptionUtil.createPlayerFileException(saveName,
+            "Player file contains no valid player data");
+      }
+
       if (loadedGames.isEmpty()) {
         throw FileExceptionUtil.createBoardFileException(gameType,
             "Board file exists but contains no valid board game data");
@@ -217,11 +222,6 @@ public class BoardGameFactory {
 
       if (loadedGame.getDice() == null) {
         loadedGame.createDice();
-      }
-
-      if (players.isEmpty()) {
-        throw FileExceptionUtil.createPlayerFileException(saveName,
-            "Player file contains no valid player data");
       }
 
       int currentPlayerIndex = -1;
