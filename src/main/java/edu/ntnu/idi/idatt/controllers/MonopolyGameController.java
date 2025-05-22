@@ -12,6 +12,7 @@ import edu.ntnu.idi.idatt.model.filehandling.PlayerFileHandler;
 import edu.ntnu.idi.idatt.model.gamelogic.BoardGame;
 import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
+import edu.ntnu.idi.idatt.utils.SoundUtil;
 import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.views.gameviews.MonopolyGameView;
 import java.io.IOException;
@@ -45,6 +46,7 @@ import javafx.stage.Stage;
  * </ul>
  *
  * @author Ola Syrstad Berg
+ * @author Markus Øyen Lund
  * @since v1.1.0
  */
 public class MonopolyGameController implements BoardGameController {
@@ -137,6 +139,9 @@ public class MonopolyGameController implements BoardGameController {
       advanceToNextPlayer();
       return;
     }
+
+    // Play dice roll sound
+    SoundUtil.playDiceRollSound();
 
     int[] diceValues = boardGame.rollDice();
     view.updateDiceDisplay(diceValues[0], diceValues[1]);
@@ -268,6 +273,7 @@ public class MonopolyGameController implements BoardGameController {
     if (activePlayers.size() <= 1) {
       if (activePlayers.size() == 1) {
         Player winner = activePlayers.getFirst();
+        SoundUtil.playVictorySound();
         view.showGameWonMessage(winner);
       }
     }

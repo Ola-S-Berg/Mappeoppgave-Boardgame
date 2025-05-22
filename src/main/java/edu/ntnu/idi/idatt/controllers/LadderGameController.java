@@ -9,6 +9,7 @@ import edu.ntnu.idi.idatt.model.gamelogic.Player;
 import edu.ntnu.idi.idatt.model.gamelogic.Tile;
 import edu.ntnu.idi.idatt.views.DialogService;
 import edu.ntnu.idi.idatt.views.gameviews.LadderGameView;
+import edu.ntnu.idi.idatt.utils.SoundUtil;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import javafx.stage.Stage;
  * </ul>
  *
  * @author Ola Syrstad Berg
+ * @author Markus Øyen Lund
  * @since v1.1.0
  */
 public class LadderGameController implements BoardGameController {
@@ -86,6 +88,9 @@ public class LadderGameController implements BoardGameController {
       return;
     }
 
+    // Play dice roll sound for each roll of the dice
+    SoundUtil.playDiceRollSound();
+
     int[] diceValues = boardGame.rollDice();
 
     int dice1 = (diceValues.length > 0) ? diceValues[0] : 1;
@@ -136,6 +141,7 @@ public class LadderGameController implements BoardGameController {
 
           Platform.runLater(() -> {
             if (player.getCurrentTile().getTileId() == 90) {
+              SoundUtil.playVictorySound();
               boardGame.notifyGameWon(player);
             } else {
               advanceToNextPlayer();
@@ -148,6 +154,7 @@ public class LadderGameController implements BoardGameController {
       }).start();
     } else {
       if (player.getCurrentTile().getTileId() == 90) {
+        SoundUtil.playVictorySound();
         boardGame.notifyGameWon(player);
       } else {
         new Thread(() -> {
